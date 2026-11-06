@@ -14,6 +14,7 @@ import WhatsAppPage from '../pages/crm/communications/WhatsAppPage.jsx';
 import EmailPage from '../pages/crm/communications/EmailPage.jsx';
 import ComposePage from '../pages/crm/communications/ComposePage.jsx';
 import ConversationPage from '../pages/crm/communications/ConversationPage.jsx';
+import ProspectingPage from '../pages/crm/prospecting/ProspectingPage.jsx';
 import ModulePlaceholder from '../pages/system/ModulePlaceholder.jsx';
 import NotFoundPage from '../pages/system/NotFoundPage.jsx';
 
@@ -41,7 +42,7 @@ export const router = createBrowserRouter([
       { path: 'crm/leads/new', element: <LeadFormPage /> },
       { path: 'crm/leads/:id', element: <LeadDetailPage /> },
       { path: 'crm/leads/:id/edit', element: <LeadFormPage /> },
-      { path: 'crm/prospecting', element: ph('crm', 'nav.prospecting') },
+      { path: 'crm/prospecting', element: <ProspectingPage /> },
       { path: 'crm/pipeline', element: <PipelinePage /> },
       { path: 'crm/pipeline/:id', element: <OpportunityPage /> },
 

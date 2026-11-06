@@ -71,7 +71,7 @@ export default function ContactsPage() {
         <ListToolbar
           search={<SearchInput value={list.q} onChange={list.setQ} placeholder={t('contacts.search')} />}
           activeFilters={Number(Boolean(hood)) + Number(Boolean(owner)) + Number(Boolean(list.q))}
-          onClear={() => { list.setFilter('hood', ''); list.setFilter('owner', ''); list.setQ(''); }}
+          onClear={() => list.setFilters({ hood: '', owner: '', q: '' })}
           filters={(
             <>
               <FilterSelect label={t('leads.fields.neighborhood')} value={hood} onChange={(v) => list.setFilter('hood', v)} options={NEIGHBORHOODS.map((n) => ({ value: n, label: n }))} />

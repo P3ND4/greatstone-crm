@@ -39,6 +39,7 @@ export default function useListState({ sort = '', view = 'table', pageSize = 15,
     setSort: (s) => patch({ sort: s }),
     setView: (v) => patch({ view: v }, { resetPage: false }),
     setFilter: (k, v) => patch({ [k]: v }),
+    setFilters: (obj) => patch(obj),
     clear,
   };
 }
