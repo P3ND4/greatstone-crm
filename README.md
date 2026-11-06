@@ -25,7 +25,7 @@ Requires Node 18+ (tested with Node 22).
 |---|---|---|
 | 1 | Structure, tokens, layout, router, base components, hybrid Modal/Page shells | ✅ |
 | 2 | Dashboard | ✅ |
-| 3 | CRM — Communications, Agenda, Contacts, Leads, Prospecting, Pipeline | ⏳ (New Lead page done as the page-pattern reference) |
+| 3 | CRM — Communications (WhatsApp + Email), Agenda, Contacts, Leads, Prospecting, Pipeline | ✅ |
 | 4 | Projects | ⏳ |
 | 5 | Finance | ⏳ |
 | 6 | AI | ⏳ |
@@ -41,6 +41,11 @@ Modules that are not built yet show a placeholder, so every route can already be
 - **+ New → Lead**: full **page** form with **← Back**. Back returns to the same screen, scroll and filters. If you leave with unsaved changes, it asks first.
 - Dashboard **date range**: stored in the URL (`?range=ytd`).
 - User menu → **Español / English**: i18n switch.
+- **Leads / Contacts**: table ↔ cards view, filters, sort and pagination all in the URL. Click a row to open the record page, then use **← Back** to return to the same filtered page.
+- **Pipeline**: drag cards between stages with the mouse, touch or keyboard (focus a card, Space, arrows, Space).
+- **Agenda**: month / week / day / list views. Drag an appointment to another day or hour to reschedule it. Click an empty slot to create an appointment there.
+- **Communications → WhatsApp**: 24h-window indicator, internal notes, quick templates, and a linked contact/project panel. **Email**: folders, labels, bulk actions, a reading pane with quick reply, and the full composer page.
+- **Prospecting**: prospect lists and campaigns with reply metrics, plus "Convert to lead".
 
 ## Deployment (later)
 

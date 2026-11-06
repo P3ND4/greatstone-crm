@@ -19,18 +19,22 @@ greatstone-crm/
    ├─ components/
    │  ├─ ui/            Button, IconButton, Field, Input, Select, Textarea (auto-grow), DatePicker,
    │  │                 Card, Badge, Avatar, Tabs, SegmentedControl, Table, Pagination, Menu,
-   │  │                 Toast, EmptyState, Skeleton, DataState, Kpi
+   │  │                 Toast, EmptyState, Skeleton, DataState, Kpi, Kanban, RichTextEditor
    │  ├─ shells/        FormShell · ModalShell · PageShell · FormPage · BackButton · ConfirmDialog
    │  ├─ layout/        AppLayout · Sidebar · Topbar · CommandPalette
-   │  ├─ quick/         QuickActionsProvider + Task / Appointment / Note modals
+   │  ├─ quick/         QuickActionsProvider + Task / Appointment / Note / Contact modals
+   │  ├─ list/          ListToolbar · SearchInput · FilterSelect · ViewToggle
+   │  ├─ crm/           shared cells (PersonCell, Score, StatusBadge, RowMenu, UserChip)
+   │  ├─ comms/         ChannelHeader · ConversationList · Bubbles · WaComposer · ContactPanel
    │  └─ charts/        ChartCard (with table view) · RevenueExpensesChart · HBarChart
-   ├─ hooks/            useResource · useUrlState · useForm · useHotkey · useFocusTrap · useScrollLock · useCssVars
-   ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard/search/lookup
+   ├─ hooks/            useResource · useUrlState · useListState · useForm · useHotkey · useFocusTrap · useScrollLock · useCssVars
+   ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard · crm · communications · prospecting · search · lookup
    ├─ data/
-   │  ├─ mock/          core.js · people.js · users.js   (never imported by components)
+   │  ├─ mock/          core.js · people.js · users.js · prospecting.js   (never imported by components)
+   │  ├─ constants.js   static option lists (neighborhoods, services, sources)
    │  └─ schema.md      entities → DB model
    ├─ lib/              format (USD, dates) · random (seeded) · cx
-   └─ pages/            dashboard/ · crm/leads/ · system/ (placeholder, 404)
+   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · system/ (placeholder, 404)
 ```
 
 ## Routes
@@ -38,12 +42,15 @@ greatstone-crm/
 | Route | Screen | Status |
 |---|---|---|
 | `/` | Dashboard (`?range=`) | ✅ |
-| `/crm/communications/whatsapp` · `/email` | Communications | placeholder |
-| `/crm/agenda` | Agenda | placeholder |
-| `/crm/contacts` · `/crm/contacts/:id` | Contacts / contact page | placeholder |
-| `/crm/leads` · `/crm/leads/new` · `/crm/leads/:id` | Leads / **New lead (page)** / lead page | new ✅ |
-| `/crm/prospecting` | Prospecting | placeholder |
-| `/crm/pipeline` | Pipeline (Kanban) | placeholder |
+| `/crm/communications/whatsapp?c=&f=&q=` | WhatsApp inbox (list · thread · contact panel) | ✅ |
+| `/crm/communications/email?folder=&label=&c=&q=` | Email (folders · list · reader) | ✅ |
+| `/crm/communications/email/compose?to=&reply=` | Email composer (page) | ✅ |
+| `/crm/communications/:channel/:id` | Expanded conversation (page) | ✅ |
+| `/crm/agenda?view=&date=&type=&assignee=` · `/crm/agenda/:id` | Calendar / appointment page | ✅ |
+| `/crm/contacts?tab=&q=&hood=&owner=&view=` · `/crm/contacts/:id?tab=` | Contacts / contact page | ✅ |
+| `/crm/leads?status=&source=&service=&assignee=&view=` · `/new` · `/:id` · `/:id/edit` | Leads / new / lead page / edit | ✅ |
+| `/crm/prospecting?tab=&list=&segment=&status=` | Prospects · lists · campaigns · sequences | ✅ |
+| `/crm/pipeline?owner=&q=` · `/crm/pipeline/:id` | Kanban / opportunity page | ✅ |
 | `/projects` · `/projects/:id` | Projects / project detail | placeholder |
 | `/finance/estimates` · `/invoices` · `/expenses` · `/reports` | Finance | placeholder |
 | `/ai` | AI hub | placeholder |
@@ -59,7 +66,7 @@ Rule of thumb: a short, self-contained action with roughly 6 fields or fewer ope
 | New / edit task | Modal | sm |
 | New / edit note | Modal | sm |
 | New / edit appointment (quick) | Modal | md |
-| Quick add contact | Modal | md |
+| Quick add / edit contact | Modal | md |
 | Record payment | Modal | sm |
 | Pickers (contact, project, template) | Modal | md |
 | Quick preview (attachment, estimate) | Modal | lg |
@@ -67,9 +74,13 @@ Rule of thumb: a short, self-contained action with roughly 6 fields or fewer ope
 | Contact record | Page | — |
 | New / edit Project · Project detail (tabs) | Page | — |
 | Estimate / Invoice builder | Page | — |
-| Opportunity detail | Page | — |
-| Appointment full detail | Page | — |
-| Email composer · expanded conversation | Page | — |
+| Opportunity detail | Page `/crm/pipeline/:id` | — |
+| Delete appointment | Modal (`ConfirmDialog`) | sm |
+| Appointment full detail | Page `/crm/agenda/:id` | — |
+| Lead detail · Edit lead | Page `/crm/leads/:id` · `/edit` | — |
+| WhatsApp reply / internal note | Inline composer in the thread pane | — |
+| Email quick reply | Inline panel in the reading pane | — |
+| Email composer · expanded conversation | Page `/crm/communications/email/compose` · `/:channel/:id` | — |
 | Campaign / sequence | Page | — |
 | Settings sections | Page (tabs) | — |
 

@@ -12,7 +12,9 @@ Every table also gets `org_id` (multi-organization) plus `created_at` / `updated
 | **contacts** | id, type (`client` \| `partner` \| `referrer` \| `architect` \| `contractor`), first_name, last_name, name, email, phone, company, specialty, neighborhood, address, source, tags[], owner_id |
 | **partners** | contacts where type ∈ (partner, contractor); plus project_partners(project_id, contact_id, role) |
 | **leads** | id, first_name, last_name, name, email, phone, start_when (`asap` \| `1-3m` \| `3-6m` \| `6m+` \| `unsure`), description, source, referred_by_id → contacts, budget, service_type, neighborhood, score 0–100, status (`new` \| `contacted` \| `qualified` \| `converted` \| `disqualified`), assignee_id |
-| **prospects** | id, list_id, segment (architect, property_manager, hoa_board, builder, developer, brokerage, agent), company, contact fields, status, sequence_id, last_touch_at |
+| **prospect_lists** | id, name, segment, description |
+| **prospects** | id, list_id, segment (architect, propertyManager, hoaBoard, builder, developer, brokerage, agent), company, name, role, email, phone, neighborhood, status (`new` \| `contacted` \| `replied` \| `meeting` \| `converted` \| `notInterested`), score, sequence_id, step, last_touch_at, next_touch_at, owner_id |
+| **sequences** | id, name, channel; sequence_steps(id, sequence_id, day, channel, subject, body) |
 | **opportunities** | id, title, lead_id, contact_id, stage (`new` \| `contacted` \| `consultation` \| `proposal` \| `negotiation` \| `won` \| `lost`), value, probability, next_action, next_action_at, stage_entered_at, owner_id, closed_at |
 | **pipeline_stages** | id, key, label, order, probability |
 | **projects** | id, name, client_id, status (`planning` \| `design` \| `permits` \| `construction` \| `finishing` \| `completed` \| `onHold`), address, neighborhood, start_date, end_date, budget, spent (derived from expenses), progress 0–1, contract_value, manager_id |
@@ -24,12 +26,13 @@ Every table also gets `org_id` (multi-organization) plus `created_at` / `updated
 | **payments** | id, invoice_id, amount, method, received_at, reference |
 | **expenses** | id, type (`expense` \| `po`), project_id (null = overhead), vendor_id → contacts, category, amount, date, status (`pending` \| `approved` \| `rejected`), receipt_url |
 | **approvals** | id, kind (`estimate` \| `po` \| `selection` \| `changeOrder`), ref_id, project_id, amount, requested_at, decided_at, decided_by |
-| **communications** (conversations) | id, channel (`whatsapp` \| `email`), contact_id, project_id, subject, last_message, last_message_at, last_direction (`in` \| `out`), unread, assignee_id, labels[] |
-| **messages** | id, conversation_id, direction, body, attachments[], status (sent/delivered/read), is_internal_note, sent_at, author_id |
+| **communications** (conversations) | id, channel (`whatsapp` \| `email`), contact_id, project_id, subject, labels[], folder (`inbox` \| `sent` \| `drafts` \| `archive` \| `trash`; email only), starred, last_message, last_message_at, last_direction (`in` \| `out`), last_inbound_at (→ WhatsApp 24h window), unread, assignee_id, to/cc/bcc |
+| **messages** | id, conversation_id, channel, direction (`in` \| `out`), body, attachments[] {name,size,type,url}, status (`sent` \| `delivered` \| `read`), is_note, sent_at, author_id |
+| **templates** | id, channel, name, subject, body, approved (WhatsApp) |
 | **appointments** | id, type (`consultation` \| `siteVisit` \| `showroom` \| `virtual` \| `install`), title, start, duration_min, location, contact_id, project_id, assignee_id |
 | **notes** | id, body, project_id, contact_id, author_id |
 | **ai_runs** | id, module, params(json), status, started_at, finished_at, results(json) |
-| **campaigns** | id, platform (`meta` \| `google`), name, status, spend, leads, cpl, roas, period |
+| **campaigns** | outreach: id, name, list_id, sequence_id, status (`active` \| `paused` \| `draft`), started_at · ads (AI module, later): id, platform (`meta` \| `google`), name, status, spend, leads, cpl, roas, period |
 
 ## Dashboard view
 `dashboardService.getSummary({ range })` returns `{ kpis, charts: { monthly, funnel, leadsBySource, projectsByStatus }, lists: { appointments, tasks, unanswered, budgetRisk, approvals }, health }`.

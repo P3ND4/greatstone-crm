@@ -35,6 +35,15 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - The sidebar collapsed state is kept in `localStorage`, as a per-user convenience only.
 - Dark theme tokens exist (`[data-theme="dark"]`) but are not exposed in the UI yet. The brief marks this as low priority.
 
+## CRM module
+- **Lists**: q, filters, sort, page and view (table/cards) all live in the URL (`useListState`), so Back and shared links restore the exact view. Rows open the record **page**, and the row "⋯" menu holds secondary actions.
+- **Wide tables**: the header is sticky under the topbar. Instead of scrolling horizontally on desktop, low-priority columns hide below set widths (`hide: 'md'|'lg'|'xl'|'xxl'` on the column).
+- **WhatsApp**: the 24-hour customer-service window is computed from the last inbound message. When it is closed the composer warns and only allows approved templates (WhatsApp Business rule). Internal notes are stored as messages with `isNote`, styled differently and never sent.
+- **Email**: one shape shared with WhatsApp (`conversations` + `messages`, `channel` field). Folders and labels are fields on the conversation. The rich text editor is a light `contentEditable` with the same props a TipTap/Lexical editor would take later.
+- **Pipeline / Agenda drag & drop**: `@dnd-kit/core` with Pointer and Keyboard sensors, so it works with mouse, touch and keyboard (Space, arrows, Space).
+- **Agenda colors by type** are tokens (`--evt-*`) and always come with a text label (legend + chip text), never color alone.
+- **Prospecting** metrics are computed from prospect statuses: reply rate = (replied + meeting + converted) ÷ contacted. "Convert to lead" creates a lead and opens it.
+
 ## Data
 - Mock data is generated **deterministically, relative to today**, so the demo always looks current. All people are fictional: phones `(305) 555-01xx`, emails `@example.com`.
 - Revenue = payments received (`paid_at`) inside the range. Outstanding = sent + partial + overdue (total − paid).
