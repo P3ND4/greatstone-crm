@@ -6,6 +6,7 @@
  */
 import * as db from '../data/mock/core.js';
 import { users } from '../data/mock/users.js';
+import * as pros from '../data/mock/prospecting.js';
 
 const LATENCY = [180, 420];
 const tables = {
@@ -20,6 +21,11 @@ const tables = {
   tasks: db.tasks,
   conversations: db.conversations,
   approvals: db.approvals,
+  messages: db.messages,
+  prospects: pros.prospects,
+  prospectLists: pros.prospectLists,
+  sequences: pros.sequences,
+  campaigns: pros.campaigns,
   notes: [],
   users,
 };

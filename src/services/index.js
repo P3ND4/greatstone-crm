@@ -17,3 +17,6 @@ export const usersService = createCrudService('users', { searchFields: ['name', 
 export { dashboardService } from './dashboardService.js';
 export { searchService } from './searchService.js';
 export { lookupService } from './lookupService.js';
+export { communicationsService } from './communicationsService.js';
+export { prospectingService } from './prospectingService.js';
+export { crmService } from './crmService.js';

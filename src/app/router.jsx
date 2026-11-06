@@ -2,6 +2,8 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import AppLayout from '../components/layout/AppLayout.jsx';
 import DashboardPage from '../pages/dashboard/DashboardPage.jsx';
 import LeadFormPage from '../pages/crm/leads/LeadFormPage.jsx';
+import LeadsPage from '../pages/crm/leads/LeadsPage.jsx';
+import LeadDetailPage from '../pages/crm/leads/LeadDetailPage.jsx';
 import ModulePlaceholder from '../pages/system/ModulePlaceholder.jsx';
 import NotFoundPage from '../pages/system/NotFoundPage.jsx';
 
@@ -22,9 +24,10 @@ export const router = createBrowserRouter([
       { path: 'crm/agenda', element: ph('crm', 'nav.agenda') },
       { path: 'crm/contacts', element: ph('crm', 'nav.contacts') },
       { path: 'crm/contacts/:id', element: ph('crm', 'nav.contacts') },
-      { path: 'crm/leads', element: ph('crm', 'nav.leads', { to: '/crm/leads/new', labelKey: 'leads.new' }) },
+      { path: 'crm/leads', element: <LeadsPage /> },
       { path: 'crm/leads/new', element: <LeadFormPage /> },
-      { path: 'crm/leads/:id', element: ph('crm', 'nav.leads') },
+      { path: 'crm/leads/:id', element: <LeadDetailPage /> },
+      { path: 'crm/leads/:id/edit', element: <LeadFormPage /> },
       { path: 'crm/prospecting', element: ph('crm', 'nav.prospecting') },
       { path: 'crm/pipeline', element: ph('crm', 'nav.pipeline') },
 

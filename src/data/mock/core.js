@@ -268,35 +268,78 @@ export const tasks = Array.from({ length: 30 }, (_, i) => {
   };
 });
 
-/* ------------------------------------------------------------------ conversations (shared shape for whatsapp + email) */
-const SNIPPETS = {
-  whatsapp: [
-    'Hi! Can we move Thursday’s visit to the afternoon?', 'Love the second tile option 😍', 'Is the contractor coming tomorrow?',
-    'Just sent the HOA form, can you check it?', 'What time is the countertop install?', 'Could you send the invoice again?',
-  ],
-  email: [
-    'Re: Revised estimate for the kitchen', 'Building management — alteration agreement', 'Question about the lighting fixtures',
-    'Photos from this weekend', 'Re: Deposit confirmation', 'Referral — friend looking for a designer',
-  ],
-};
-export const conversations = Array.from({ length: 22 }, (_, i) => {
-  const channel = i % 2 === 0 ? 'whatsapp' : 'email';
+/* ------------------------------------------------------------------ conversations + messages (same shape for whatsapp + email) */
+const WA_SCRIPTS = [
+  [['in', 'Hi Tessa! Can we move Thursday’s site visit to the afternoon?'], ['out', 'Of course — would 2:30 PM work for you?'], ['in', 'Perfect, see you then 🙏'], ['note', 'Client prefers afternoons, building access until 5 PM.'], ['in', 'Also, is the plumber coming the same day?']],
+  [['out', 'Here are the two tile options we discussed.', 'Tile_options_v2.pdf'], ['in', 'Love the second one 😍'], ['in', 'Is it in stock or is there a lead time?'], ['out', 'Lead time is ~3 weeks, I’ll confirm with the supplier today.'], ['in', 'Great, thanks!']],
+  [['in', 'Just sent the HOA alteration form, can you check it?', 'HOA_form_signed.pdf'], ['out', 'Received — reviewing now.'], ['note', 'Missing insurance certificate from GC. Requested.'], ['out', 'All good except the insurance certificate, we’re requesting it from the contractor.'], ['in', 'Ok, let me know if you need anything else from me']],
+  [['in', 'What time is the countertop install tomorrow?'], ['out', 'The crew arrives at 9 AM, should be done by 1 PM.'], ['in', 'Will they need parking?'], ['out', 'Yes, 1 spot for the truck. Could you register it with the front desk?'], ['in', 'Done ✅'], ['in', 'Can you send me photos once it’s in?']],
+  [['out', 'Hi! Following up on the estimate we sent last week.'], ['in', 'Hi! We’re reviewing it, a few questions about the vanity'], ['in', 'Can we see options under $3k?'], ['out', 'Absolutely, I’ll prepare 3 alternatives.', 'Vanity_options.jpg'], ['in', 'Thank you!! The middle one looks great']],
+  [['in', 'Could you send the invoice again? I can’t find the email'], ['out', 'Sure, here it is.', 'INV-1046.pdf'], ['in', 'Got it, paying today 👍']],
+];
+const EMAIL_SCRIPTS = [
+  { subject: 'Revised estimate for the kitchen', label: 'Clients', msgs: [['out', 'Hi,\n\nAttached is the revised estimate with the quartz upgrade and the under-cabinet lighting.\n\nBest,\nTessa', 'EST-322_revised.pdf'], ['in', 'Thanks Tessa — the total works for us. Could we split the deposit in two payments?'], ['out', 'Yes, 30% now and 20% at demo is fine. I’ll update the schedule.'], ['in', 'Perfect. Please send the updated schedule and we’ll sign.']] },
+  { subject: 'Building management — alteration agreement', label: 'Permits', msgs: [['in', 'Good morning,\n\nPlease find the alteration agreement for unit 1803. We need the contractor license and COI before approval.', 'Alteration_Agreement.pdf'], ['out', 'Thank you, we’ll send both documents by Friday.'], ['in', 'Noted. Work hours are Mon–Fri 8:30–4:30, no work on weekends.']] },
+  { subject: 'Question about the lighting fixtures', label: 'Clients', msgs: [['in', 'Hi! Are the pendants over the island dimmable? We want a softer light at night.'], ['out', 'Yes — they are on a 0–10V dimmer. We can also add a scene for evenings.'], ['in', 'Amazing, let’s do that.']] },
+  { subject: 'Lead time — custom vanity', label: 'Vendors', msgs: [['out', 'Hi team, can you confirm lead time for the 72" walnut vanity (order #4471)?'], ['in', 'Hi Tessa, current lead time is 5–6 weeks from approved shop drawings.', 'Shop_drawing_4471.pdf'], ['out', 'Approved, please proceed.']] },
+  { subject: 'Deposit confirmation', label: 'Billing', msgs: [['in', 'Hi, we just sent the deposit by wire. Please confirm when received.'], ['out', 'Received today — thank you! Receipt attached.', 'Receipt_deposit.pdf']] },
+  { subject: 'Referral — friend looking for a designer', label: 'Clients', msgs: [['in', 'Hi Tessa,\n\nMy neighbor in Key Biscayne is renovating two bathrooms and asked for your contact. Is it ok if I share it?'], ['out', 'Thank you so much! Of course — please share my email and phone.'], ['in', 'Done, her name is Mariana. She’ll reach out this week.']] },
+  { subject: 'Photos from this weekend', label: 'Clients', msgs: [['in', 'Sending a few photos of the living room with the new rug. What do you think about the coffee table?', 'IMG_2041.jpg'], ['out', 'It looks beautiful! I’d go one size smaller on the coffee table — I’ll send two options.']] },
+  { subject: 'Countertop template date', label: 'Vendors', msgs: [['in', 'We can template on Tuesday at 10 AM. Please confirm cabinets will be fully installed.'], ['out', 'Confirmed — cabinets will be leveled and secured by Monday.']] },
+];
+const EMAIL_FOLDERS = [['inbox', 70], ['archive', 12], ['sent', 8], ['drafts', 4], ['trash', 3]];
+
+export const conversations = [];
+export const messages = [];
+let msgN = 1;
+for (let i = 0; i < 30; i += 1) {
+  const channel = i % 5 < 3 ? 'whatsapp' : 'email';
   const contact = r.pick([...clients, ...clients, ...partners]);
-  const lastAt = subDays(TODAY, -0).getTime() - r.int(10, 60 * 72) * 60 * 1000;
-  const unanswered = i % 3 === 0 || i < 4;
-  return {
-    id: `cv_${i + 1}`,
+  const script = channel === 'whatsapp' ? WA_SCRIPTS[i % WA_SCRIPTS.length] : EMAIL_SCRIPTS[i % EMAIL_SCRIPTS.length];
+  const steps = channel === 'whatsapp' ? script : script.msgs;
+  const unanswered = (i % 3 === 0 || i < 5) && steps.some(([d]) => d === 'in');
+  // Trim script so the last real message is inbound for unanswered threads, outbound otherwise.
+  let thread = [...steps];
+  const lastReal = (arr) => [...arr].reverse().find(([d]) => d !== 'note');
+  while (thread.length > 1 && lastReal(thread)?.[0] !== (unanswered ? 'in' : 'out')) thread = thread.slice(0, -1);
+  const lastAt = new Date(Date.now() - (i < 4 ? r.int(8, 600) : r.int(30, 60 * 24 * 9)) * 60 * 1000);
+  const cid = `cv_${i + 1}`;
+  let t = lastAt.getTime();
+  const built = thread.map(([dir, body, attachment], k) => {
+    const at = new Date(t - (thread.length - 1 - k) * r.int(6, 180) * 60 * 1000);
+    return {
+      id: `m_${msgN++}`, conversationId: cid, channel,
+      direction: dir === 'note' ? 'out' : dir, isNote: dir === 'note', body,
+      attachments: attachment ? [{ name: attachment, size: `${r.int(120, 2400)} KB`, type: attachment.split('.').pop() }] : [],
+      sentAt: at.toISOString(),
+      status: dir === 'out' ? 'read' : null,
+      authorId: dir === 'in' ? null : r.pick(userIds),
+    };
+  });
+  // most recent outbound message gets a less-final status sometimes
+  const lastOut = [...built].reverse().find((m) => m.direction === 'out' && !m.isNote);
+  if (lastOut) lastOut.status = r.weighted([['read', 5], ['delivered', 3], ['sent', 1]]);
+  messages.push(...built);
+  const last = lastReal(thread);
+  const lastInbound = [...built].reverse().find((m) => m.direction === 'in');
+  conversations.push({
+    id: cid,
     channel,
     contactId: contact.id,
     projectId: r.next() > 0.4 ? r.pick(projects).id : null,
-    subject: channel === 'email' ? r.pick(SNIPPETS.email) : null,
-    lastMessage: r.pick(SNIPPETS[channel]),
-    lastMessageAt: new Date(lastAt).toISOString(),
-    lastDirection: unanswered ? 'in' : r.pick(['in', 'out', 'out']),
+    subject: channel === 'email' ? script.subject : null,
+    labels: channel === 'email' ? [script.label] : [],
+    folder: channel === 'email' ? (i < 10 ? 'inbox' : r.weighted(EMAIL_FOLDERS)) : null,
+    starred: channel === 'email' && r.next() > 0.7,
+    lastMessage: last[1].split('\n').find(Boolean),
+    lastMessageAt: built[built.length - 1].sentAt,
+    lastDirection: last[0],
+    lastInboundAt: lastInbound?.sentAt ?? null,
     unread: unanswered ? r.int(1, 3) : 0,
     assigneeId: r.pick(userIds),
-  };
-}).sort((a, b) => b.lastMessageAt.localeCompare(a.lastMessageAt));
+  });
+}
+conversations.sort((a, b) => b.lastMessageAt.localeCompare(a.lastMessageAt));
 
 /* ------------------------------------------------------------------ approvals */
 export const approvals = [

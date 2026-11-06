@@ -1,6 +1,7 @@
-import { useNavigate } from 'react-router-dom';
-import { FormPage } from '../../../components/shells/index.js';
-import { Field, Input, Select, Textarea, useToast } from '../../../components/ui/index.js';
+import { useNavigate, useParams } from 'react-router-dom';
+import { FormPage, PageShell } from '../../../components/shells/index.js';
+import { Card, DataState, Field, Input, Select, Skeleton, Textarea, useToast } from '../../../components/ui/index.js';
+import useResource from '../../../hooks/useResource.js';
 import { useT } from '../../../i18n/index.jsx';
 import useForm, { isEmail, isPhone } from '../../../hooks/useForm.js';
 import { leadsService, lookupService } from '../../../services/index.js';
@@ -14,15 +15,37 @@ const NEIGHBORHOODS = ['Coconut Grove', 'Brickell', 'Coral Gables', 'Miami Beach
  * New Lead — full form on its own route (> 6 fields, sections) → PAGE pattern.
  * Base fields mirror the client's website quote form: first/last name, email, phone, start, description.
  */
-export default function LeadFormPage() {
+const EMPTY = {
+  firstName: '', lastName: '', email: '', phone: '', startWhen: '', description: '',
+  source: 'referral', referredById: '', budget: '', serviceType: 'design', neighborhood: '', score: 50, assigneeId: 'u_1',
+};
+
+/** Route entry: /crm/leads/new (create) and /crm/leads/:id/edit (edit, loads the lead first). */
+export default function LeadFormRoute() {
+  const t = useT();
+  const { id } = useParams();
+  const { data, loading, error, refetch } = useResource(() => (id ? leadsService.get(id) : Promise.resolve(null)), [id]);
+  if (id && (loading || error)) {
+    return (
+      <PageShell fallback="/crm/leads" breadcrumbs={[{ label: t('leads.title'), to: '/crm/leads' }, { label: t('common.edit') }]}>
+        <Card><DataState error={error} onRetry={refetch} loading={loading} skeleton={<div className="stack"><Skeleton height={28} width="40%" /><Skeleton height={200} /></div>} /></Card>
+      </PageShell>
+    );
+  }
+  const initial = data
+    ? Object.fromEntries(Object.keys(EMPTY).map((k) => [k, data[k] ?? EMPTY[k]]))
+    : EMPTY;
+  if (initial.budget == null) initial.budget = '';
+  return <LeadFormPage key={id || 'new'} lead={data} initial={{ ...initial, budget: initial.budget === '' ? '' : String(initial.budget), referredById: initial.referredById || '' }} />;
+}
+
+function LeadFormPage({ lead, initial }) {
   const t = useT();
   const toast = useToast();
   const navigate = useNavigate();
+  const editing = Boolean(lead);
   const form = useForm(
-    {
-      firstName: '', lastName: '', email: '', phone: '', startWhen: '', description: '',
-      source: 'referral', referredById: '', budget: '', serviceType: 'design', neighborhood: '', score: 50, assigneeId: 'u_1',
-    },
+    initial,
     {
       validate: (v) => ({
         firstName: !v.firstName.trim() && t('validation.required'),
@@ -34,15 +57,22 @@ export default function LeadFormPage() {
         budget: v.budget !== '' && (Number.isNaN(Number(v.budget)) || Number(v.budget) < 0) && t('validation.number'),
       }),
       onSubmit: async (v) => {
-        const lead = await leadsService.create({
+        const payload = {
           ...v,
           name: `${v.firstName.trim()} ${v.lastName.trim()}`,
           budget: v.budget === '' ? null : Number(v.budget),
           score: Number(v.score),
-          status: 'new',
-        });
-        toast.show(t('leads.created'));
-        navigate('/crm/leads', { replace: true, state: { highlight: lead.id } });
+          referredById: v.referredById || null,
+        };
+        if (editing) {
+          await leadsService.update(lead.id, payload);
+          toast.show(t('leads.updated'));
+          navigate(`/crm/leads/${lead.id}`, { replace: true });
+        } else {
+          const created = await leadsService.create({ ...payload, status: 'new' });
+          toast.show(t('leads.created'));
+          navigate('/crm/leads', { replace: true, state: { highlight: created.id } });
+        }
       },
     },
   );
@@ -51,14 +81,18 @@ export default function LeadFormPage() {
 
   return (
     <FormPage
-      fallback="/crm/leads"
-      breadcrumbs={[{ label: t('nav.crm'), to: '/crm/leads' }, { label: t('leads.title'), to: '/crm/leads' }, { label: t('leads.new') }]}
-      title={t('leads.new')}
+      fallback={editing ? `/crm/leads/${lead.id}` : '/crm/leads'}
+      breadcrumbs={[
+        { label: t('nav.crm'), to: '/crm/leads' },
+        { label: t('leads.title'), to: '/crm/leads' },
+        ...(editing ? [{ label: lead.name, to: `/crm/leads/${lead.id}` }, { label: t('common.edit') }] : [{ label: t('leads.new') }]),
+      ]}
+      title={editing ? `${t('common.edit')}: ${lead.name}` : t('leads.new')}
       subtitle={t('leads.newSubtitle')}
       dirty={form.dirty}
       saving={form.saving}
       onSubmit={form.submit}
-      submitLabel={t('common.create')}
+      submitLabel={editing ? t('common.save') : t('common.create')}
     >
       <div className="form-section">
         <h3 className="form-section__title">{t('leads.sections.contact')}</h3>
