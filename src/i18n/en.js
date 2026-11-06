@@ -186,6 +186,18 @@ const en = {
     moveTo: 'Move to stage',
     lead: 'Lead',
   },
+  agenda: {
+    subtitle: 'Consultations, site visits, showroom appointments and installs.',
+    prev: 'Previous',
+    next: 'Next',
+    more: '+{n} more',
+    views: { month: 'Month', week: 'Week', day: 'Day', list: 'List' },
+    rescheduled: '“{title}” moved to {when}',
+    details: 'Details',
+    deleted: 'Appointment deleted',
+    deleteTitle: 'Delete appointment?',
+    deleteBody: 'This removes it from the agenda for everyone. This can’t be undone.',
+  },
   states: {
     emptyTitle: 'Nothing here yet',
     emptyBody: 'When there’s data it will appear here.',
@@ -403,6 +415,9 @@ const en = {
     duration: 'Duration',
     location: 'Location',
     created: 'Appointment scheduled',
+    updated: 'Appointment updated',
+    editTitle: 'Edit appointment',
+    contact: 'Contact',
   },
   note: {
     newTitle: 'New note',

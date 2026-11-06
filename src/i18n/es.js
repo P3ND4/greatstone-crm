@@ -185,6 +185,18 @@ const es = {
     moveTo: 'Mover a etapa',
     lead: 'Lead',
   },
+  agenda: {
+    subtitle: 'Consultas, visitas de obra, citas en showroom e instalaciones.',
+    prev: 'Anterior',
+    next: 'Siguiente',
+    more: '+{n} más',
+    views: { month: 'Mes', week: 'Semana', day: 'Día', list: 'Lista' },
+    rescheduled: '«{title}» movida a {when}',
+    details: 'Detalles',
+    deleted: 'Cita eliminada',
+    deleteTitle: '¿Eliminar la cita?',
+    deleteBody: 'Se eliminará de la agenda de todo el equipo. No se puede deshacer.',
+  },
   states: {
     emptyTitle: 'Aún no hay nada',
     emptyBody: 'Cuando haya datos aparecerán aquí.',
@@ -402,6 +414,9 @@ const es = {
     duration: 'Duración',
     location: 'Lugar',
     created: 'Cita programada',
+    updated: 'Cita actualizada',
+    editTitle: 'Editar cita',
+    contact: 'Contacto',
   },
   note: {
     newTitle: 'Nueva nota',

@@ -8,6 +8,8 @@ import ContactsPage from '../pages/crm/contacts/ContactsPage.jsx';
 import ContactDetailPage from '../pages/crm/contacts/ContactDetailPage.jsx';
 import PipelinePage from '../pages/crm/pipeline/PipelinePage.jsx';
 import OpportunityPage from '../pages/crm/pipeline/OpportunityPage.jsx';
+import AgendaPage from '../pages/crm/agenda/AgendaPage.jsx';
+import AppointmentPage from '../pages/crm/agenda/AppointmentPage.jsx';
 import ModulePlaceholder from '../pages/system/ModulePlaceholder.jsx';
 import NotFoundPage from '../pages/system/NotFoundPage.jsx';
 
@@ -25,7 +27,8 @@ export const router = createBrowserRouter([
       { path: 'crm/communications', element: <Navigate to="/crm/communications/whatsapp" replace /> },
       { path: 'crm/communications/whatsapp', element: ph('crm', 'nav.communications') },
       { path: 'crm/communications/email', element: ph('crm', 'nav.communications') },
-      { path: 'crm/agenda', element: ph('crm', 'nav.agenda') },
+      { path: 'crm/agenda', element: <AgendaPage /> },
+      { path: 'crm/agenda/:id', element: <AppointmentPage /> },
       { path: 'crm/contacts', element: <ContactsPage /> },
       { path: 'crm/contacts/:id', element: <ContactDetailPage /> },
       { path: 'crm/leads', element: <LeadsPage /> },
