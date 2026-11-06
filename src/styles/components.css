@@ -390,3 +390,6 @@ kbd {
 @media (max-width: 1023px) { .col-hide-lg { display: none; } }
 @media (max-width: 1279px) { .col-hide-xl { display: none; } }
 @media (max-width: 1535px) { .col-hide-xxl { display: none; } }
+.table th.num, .chart-table th.num { text-align: right; }
+.card__body > .table-wrap:first-child .table th:first-child { border-top-left-radius: calc(var(--radius-lg) - 1px); }
+.card__body > .table-wrap:first-child .table th:last-child { border-top-right-radius: calc(var(--radius-lg) - 1px); }

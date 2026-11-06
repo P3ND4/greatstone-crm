@@ -34,6 +34,7 @@ export default function Topbar({ onOpenNav, onOpenSearch, collapsed, onExpand, u
               <button role="menuitem" type="button" className="menu__item" onClick={() => { close(); quick.open('task'); }}><CheckSquare />{t('quick.task')}</button>
               <button role="menuitem" type="button" className="menu__item" onClick={() => { close(); quick.open('appointment'); }}><CalendarPlus />{t('quick.appointment')}</button>
               <button role="menuitem" type="button" className="menu__item" onClick={() => { close(); quick.open('note'); }}><StickyNote />{t('quick.note')}</button>
+              <button role="menuitem" type="button" className="menu__item" onClick={() => { close(); quick.open('contact'); }}><User />{t('quick.contact')}</button>
               <div className="menu__sep" />
               <Link role="menuitem" className="menu__item" to="/crm/leads/new" onClick={close}><UserPlus />{t('quick.lead')}</Link>
               <Link role="menuitem" className="menu__item" to="/projects" onClick={close}><Building2 />{t('quick.project')}</Link>

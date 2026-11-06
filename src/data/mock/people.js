@@ -1,10 +1,9 @@
 // Fictional people & places. All names, phones (555-01xx) and emails (example.*) are invented.
 import { createRandom } from '../../lib/random.js';
 
-export const NEIGHBORHOODS = [
-  'Coconut Grove', 'Brickell', 'Coral Gables', 'Miami Beach', 'Key Biscayne',
-  'Edgewater', 'Pinecrest', 'Bal Harbour', 'Sunny Isles', 'Design District',
-];
+import { NEIGHBORHOODS } from '../constants.js';
+
+export { NEIGHBORHOODS };
 
 export const STREETS = [
   'S Bayshore Dr', 'Brickell Ave', 'Alhambra Cir', 'Collins Ave', 'Crandon Blvd',
