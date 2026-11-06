@@ -11,7 +11,7 @@ export default function useHotkey(combo, handler, { enabled = true, allowInInput
     const needMod = parts.includes('mod');
     const needShift = parts.includes('shift');
     const onKey = (e) => {
-      if (!allowInInputs && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+      if (!allowInInputs && (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable)) return;
       const mod = e.metaKey || e.ctrlKey;
       if (needMod !== mod || needShift !== e.shiftKey) return;
       if (e.key.toLowerCase() !== key) return;

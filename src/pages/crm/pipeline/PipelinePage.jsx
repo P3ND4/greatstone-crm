@@ -9,7 +9,6 @@ import useUrlState from '../../../hooks/useUrlState.js';
 import { useT } from '../../../i18n/index.jsx';
 import { date, money, moneyCompact, percent } from '../../../lib/format.js';
 import { crmService, lookupService } from '../../../services/index.js';
-import { SubNav } from '../../system/ModulePlaceholder.jsx';
 
 export const STAGES = ['new', 'contacted', 'consultation', 'proposal', 'negotiation', 'won', 'lost'];
 
@@ -85,7 +84,6 @@ export default function PipelinePage() {
           <FilterSelect label={t('list.owner')} value={owner} onChange={setOwner} options={lookupService.users().map((u) => ({ value: u.id, label: u.name }))} />
         </div>
       </div>
-      <SubNav section="crm" />
       {error ? <Card><DataState error={error} onRetry={refetch} /></Card> : (
         <>
           <div className="summary-strip">

@@ -7,6 +7,7 @@ import { QuickActionsProvider } from '../quick/QuickActionsProvider.jsx';
 import CommandPalette from './CommandPalette.jsx';
 import Sidebar from './Sidebar.jsx';
 import Topbar from './Topbar.jsx';
+import { useActiveModule } from './ModuleNav.jsx';
 import cx from '../../lib/cx.js';
 
 const COLLAPSE_KEY = 'gs.sidebarCollapsed';
@@ -21,29 +22,32 @@ export default function AppLayout() {
   useEffect(() => { setNavOpen(false); }, [location.pathname]);
   useEffect(() => { try { localStorage.setItem(COLLAPSE_KEY, collapsed ? '1' : '0'); } catch { /* ignore */ } }, [collapsed]);
   useHotkey('mod+k', () => setSearchOpen((o) => !o));
+  // Ctrl/⌘+B toggles the sidebar — ignored while typing (inputs, text areas, rich text).
+  useHotkey('mod+b', () => setCollapsed((c) => !c), { allowInInputs: false });
 
   const { data: unreadData } = useResource(() => conversationsService.list({ filter: (c) => c.unread > 0, pageSize: 50 }), []);
   const unread = (unreadData?.items || []).map((c) => ({ ...c, contactName: lookupService.contact(c.contactId)?.name }));
   const closeSearch = useCallback(() => setSearchOpen(false), []);
+  const counts = { unread: unread.reduce((a, c) => a + c.unread, 0) };
+  const hasSubmodules = Boolean(useActiveModule()?.children);
 
   return (
     <QuickActionsProvider>
-      <div className={cx('app', collapsed && 'is-collapsed')}>
+      <div className={cx('app', collapsed && 'is-collapsed', hasSubmodules && 'has-subbar')}>
         <a className="sr-only" href="#main">Skip to content</a>
         <Sidebar
           open={navOpen}
           collapsed={collapsed}
           onClose={() => setNavOpen(false)}
-          onToggleCollapse={() => setCollapsed(true)}
-          counts={{ unread: unread.reduce((a, c) => a + c.unread, 0) }}
+          onToggleCollapse={() => setCollapsed((c) => !c)}
+          counts={counts}
         />
         <div className="main">
           <Topbar
             onOpenNav={() => setNavOpen(true)}
             onOpenSearch={() => setSearchOpen(true)}
-            collapsed={collapsed}
-            onExpand={() => setCollapsed(false)}
             unread={unread}
+            counts={counts}
           />
           <main id="main" className="content" tabIndex={-1}>
             <Outlet />

@@ -9,7 +9,6 @@ import useResource from '../../../hooks/useResource.js';
 import { useT } from '../../../i18n/index.jsx';
 import { date, money } from '../../../lib/format.js';
 import { leadsService, lookupService } from '../../../services/index.js';
-import { SubNav } from '../../system/ModulePlaceholder.jsx';
 
 export const LEAD_STATUSES = ['new', 'contacted', 'qualified', 'converted', 'disqualified'];
 const SOURCES = ['referral', 'instagram', 'website', 'google', 'houzz', 'facebook', 'partner', 'event'];
@@ -61,7 +60,6 @@ export default function LeadsPage() {
           <Button variant="primary" icon={Plus} to="/crm/leads/new">{t('leads.new')}</Button>
         </div>
       </div>
-      <SubNav section="crm" />
       <Card flush className="list-card">
         <ListToolbar
           search={<SearchInput value={list.q} onChange={list.setQ} placeholder={t('leads.search')} />}

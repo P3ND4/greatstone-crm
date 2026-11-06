@@ -15,7 +15,6 @@ import { useT } from '../../../i18n/index.jsx';
 import { time } from '../../../lib/format.js';
 import { appointmentsService, lookupService } from '../../../services/index.js';
 import cx from '../../../lib/cx.js';
-import { SubNav } from '../../system/ModulePlaceholder.jsx';
 
 export const APPT_TYPES = ['consultation', 'siteVisit', 'showroom', 'virtual', 'install'];
 const VIEWS = ['month', 'week', 'day', 'list'];
@@ -179,7 +178,6 @@ export default function AgendaPage() {
           <Button variant="primary" icon={Plus} onClick={() => create(cursor)}>{t('quick.appointment')}</Button>
         </div>
       </div>
-      <SubNav section="crm" />
 
       <Card flush className="list-card">
         <div className="toolbar cal-toolbar">

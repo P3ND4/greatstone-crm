@@ -30,7 +30,6 @@ export default function ModulePlaceholder({ section, titleKey, action }) {
         </div>
         {action && <div className="page-head__actions"><Button variant="primary" icon={Plus} to={action.to}>{t(action.labelKey)}</Button></div>}
       </div>
-      {section && <SubNav section={section} />}
       <Card>
         <EmptyState icon={Construction} title={t('common.comingSoonTitle', { name })} body={`${t('common.comingSoon')} (${pathname})`} />
       </Card>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { ChevronRight, ChevronsUpDown, PanelLeftClose, X } from 'lucide-react';
+import { ChevronRight, ChevronsUpDown, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import { NAV, NAV_FOOTER } from '../../app/navigation.js';
 import { useT } from '../../i18n/index.jsx';
 import { IconButton } from '../ui/Button.jsx';
@@ -57,7 +57,6 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse, co
           <NavLink to="/" className="wordmark" aria-label="Greatstone CRM — Dashboard" onClick={onClose}>
             G<span className="wm-rest" style={{ color: 'inherit' }}>reatstone</span><span>.</span><small>CRM</small>
           </NavLink>
-          <IconButton className="hide-mobile" icon={PanelLeftClose} label={t('nav.collapse')} onClick={onToggleCollapse} style={{ color: 'var(--brand-muted)' }} />
           <IconButton className="show-mobile" icon={X} label={t('nav.closeMenu')} onClick={onClose} style={{ color: 'var(--brand-muted)' }} />
         </div>
         <button type="button" className="org-switch" title={t('topbar.switchOrg')}>
@@ -73,6 +72,18 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse, co
         </nav>
         <div className="sidebar__foot">
           {NAV_FOOTER.map((item) => <NavItem key={item.id} item={item} collapsed={collapsed} counts={counts} onNavigate={onClose} />)}
+          {/* Desktop only: one toggle that both collapses and expands (always visible in both states). */}
+          <button
+            type="button"
+            className="nav__link sidebar__toggle"
+            onClick={onToggleCollapse}
+            aria-expanded={!collapsed}
+            aria-label={collapsed ? t('nav.expand') : t('nav.collapse')}
+            title={`${collapsed ? t('nav.expand') : t('nav.collapse')} (Ctrl/⌘ + B)`}
+          >
+            {collapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
+            <span className="nav__label">{t('nav.collapse')}</span>
+          </button>
         </div>
       </aside>
     </>

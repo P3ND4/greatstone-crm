@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { Mail, MessageCircle } from 'lucide-react';
 import { useT } from '../../i18n/index.jsx';
-import { SubNav } from '../../pages/system/ModulePlaceholder.jsx';
 
 /** Shared header for both channels: title + WhatsApp / Email switch (sub-routes). */
 export default function ChannelHeader({ actions, unread = {} }) {
@@ -21,7 +20,6 @@ export default function ChannelHeader({ actions, unread = {} }) {
           {actions}
         </div>
       </div>
-      <SubNav section="crm" />
     </>
   );
 }

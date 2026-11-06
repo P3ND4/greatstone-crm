@@ -35,6 +35,17 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - The sidebar collapsed state is kept in `localStorage`, as a per-user convenience only.
 - Dark theme tokens exist (`[data-theme="dark"]`) but are not exposed in the UI yet. The brief marks this as low priority.
 
+## Navigation (request from Marcos)
+- **Collapsible sidebar** + **two-row topbar** that repeats the same modules: row 1 holds the modules (Dashboard, CRM, Projects, Finance, AI, Settings) plus search, + New, notifications and the user menu; row 2 holds the submodules of the active module and is hidden when the module has none. Both come from one config (`src/app/navigation.js`), so they never drift apart.
+- Sidebar toggle: a "Collapse / Expand sidebar" button at the bottom of the sidebar, visible in both states, plus **Ctrl/⌘ + B** (ignored while typing). The state is remembered per browser. Below 1024px the sidebar becomes a drawer (☰).
+- The sticky header height is a CSS variable (`--topbar-h` = row + subbar), so sticky table headers and page-form headers always sit right under it.
+- Below 1280px, inactive modules in row 1 show only their icon (the label stays in the tooltip and for screen readers). Both rows scroll sideways on small screens and never overflow the page.
+
+## Responsive
+- Mobile-first CSS with breakpoints 480 / 640 / 768 / 1024 / 1280 / 1440. Content max width is 1760px, so wide screens use the extra space.
+- Audited automatically at **320, 375, 414, 600, 768, 1024, 1280, 1536, 1920 and 2560px** on 30 routes: no horizontal page overflow and no console errors or warnings.
+- Tables: low-priority columns hide progressively. Below 1280px a table scrolls inside its own box, never the page. On phones, filters sit in one horizontally scrollable row.
+
 ## CRM module
 - **Lists**: q, filters, sort, page and view (table/cards) all live in the URL (`useListState`), so Back and shared links restore the exact view. Rows open the record **page**, and the row "⋯" menu holds secondary actions.
 - **Wide tables**: the header is sticky under the topbar. Instead of scrolling horizontally on desktop, low-priority columns hide below set widths (`hide: 'md'|'lg'|'xl'|'xxl'` on the column).

@@ -9,6 +9,8 @@ const en = {
   },
   nav: {
     main: 'Main navigation',
+    modules: 'Modules',
+    submodules: '{name} sections',
     dashboard: 'Dashboard',
     crm: 'CRM',
     communications: 'Communications',

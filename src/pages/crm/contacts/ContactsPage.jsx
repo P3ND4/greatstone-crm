@@ -9,7 +9,6 @@ import useResource from '../../../hooks/useResource.js';
 import { useT } from '../../../i18n/index.jsx';
 import { contactsService, lookupService } from '../../../services/index.js';
 import { NEIGHBORHOODS } from '../../../data/constants.js';
-import { SubNav } from '../../system/ModulePlaceholder.jsx';
 
 /** Tab → contact types. Partners tab groups vendors/partners and contractors. */
 const TABS = { all: null, client: ['client'], partner: ['partner', 'contractor'], referrer: ['referrer'], architect: ['architect'] };
@@ -60,7 +59,6 @@ export default function ContactsPage() {
           <Button variant="primary" icon={Plus} onClick={() => quick.open('contact', { type: TABS[tab]?.[0] ?? 'client', onSaved: refetch })}>{t('contacts.new')}</Button>
         </div>
       </div>
-      <SubNav section="crm" />
       <Tabs
         label={t('contacts.title')}
         value={tab}

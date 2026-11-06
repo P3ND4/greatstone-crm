@@ -79,8 +79,10 @@
   /* ---- Layout ---- */
   --sidebar-w: 248px;
   --sidebar-w-collapsed: 68px;
-  --topbar-h: 60px;
-  --content-max: 1440px;
+  --topbar-row-h: 60px;
+  --subbar-h: 44px;
+  --topbar-h: 60px; /* overridden on .app: row + subbar when the module has submodules */
+  --content-max: 1760px; /* wide screens use the space (tables, kanban, calendar) */
 
   /* ---- Modal sizes (fixed per form type) ---- */
   --modal-sm: 480px;

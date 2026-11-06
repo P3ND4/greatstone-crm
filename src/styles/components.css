@@ -382,7 +382,7 @@ kbd {
 .timeline__dot svg { width: 12px; height: 12px; }
 .tab-panel { padding-top: var(--sp-4); }
 .list-card > .card__body { padding: 0; }
-@media (min-width: 1024px) { .table-wrap--sticky { overflow: visible; } }
+@media (min-width: 1280px) { .table-wrap--sticky { overflow: visible; } }
 
 .table th:first-child, .table td:first-child { padding-left: var(--sp-4); }
 .table th:last-child, .table td:last-child { padding-right: var(--sp-4); }
@@ -511,7 +511,7 @@ kbd {
 .channel-switch .nav__badge { margin-left: 2px; }
 
 .comms, .mail {
-  display: grid; height: calc(100vh - var(--topbar-h) - 250px); min-height: 520px;
+  display: grid; height: calc(100dvh - var(--topbar-h) - 190px); min-height: 480px;
   background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-1); overflow: hidden;
 }
 .comms { grid-template-columns: minmax(0, 1fr); }
@@ -675,3 +675,15 @@ label.icon-btn { cursor: pointer; }
 .mini-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-2); margin: 0; padding: var(--sp-2) 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 .mini-stats dt { font-size: 11px; color: var(--text-muted); }
 .mini-stats dd { margin: 0; font-weight: var(--fw-semibold); font-feature-settings: 'tnum' 1; }
+
+/* Below 1280px tables scroll inside their own box, so the sticky header sticks to that box. */
+@media (max-width: 1279px) { .table th { top: 0; } }
+/* Phones: filters become one horizontally scrollable row instead of stacking. */
+@media (max-width: 639px) {
+  .toolbar__search { flex-basis: 100%; max-width: none; }
+  .toolbar__filters { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; flex: 1 1 0; min-width: 0; }
+  .toolbar__filters::-webkit-scrollbar { display: none; }
+  .toolbar__filters .select--sm { max-width: 170px; }
+}
+.filter { position: relative; display: inline-flex; flex: none; }
+.toolbar__filters { position: relative; }

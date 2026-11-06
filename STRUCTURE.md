@@ -21,7 +21,7 @@ greatstone-crm/
    │  │                 Card, Badge, Avatar, Tabs, SegmentedControl, Table, Pagination, Menu,
    │  │                 Toast, EmptyState, Skeleton, DataState, Kpi, Kanban, RichTextEditor
    │  ├─ shells/        FormShell · ModalShell · PageShell · FormPage · BackButton · ConfirmDialog
-   │  ├─ layout/        AppLayout · Sidebar · Topbar · CommandPalette
+   │  ├─ layout/        AppLayout · Sidebar (collapsible) · Topbar (2 rows) · ModuleNav (modules + submodules rows) · CommandPalette
    │  ├─ quick/         QuickActionsProvider + Task / Appointment / Note / Contact modals
    │  ├─ list/          ListToolbar · SearchInput · FilterSelect · ViewToggle
    │  ├─ crm/           shared cells (PersonCell, Score, StatusBadge, RowMenu, UserChip)

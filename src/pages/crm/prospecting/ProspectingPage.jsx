@@ -10,7 +10,6 @@ import useResource from '../../../hooks/useResource.js';
 import { useT } from '../../../i18n/index.jsx';
 import { date, number, percent } from '../../../lib/format.js';
 import { lookupService, prospectingService } from '../../../services/index.js';
-import { SubNav } from '../../system/ModulePlaceholder.jsx';
 
 const SEGMENTS = ['architect', 'propertyManager', 'hoaBoard', 'builder', 'developer', 'brokerage', 'agent'];
 const STATUSES = ['new', 'contacted', 'replied', 'meeting', 'converted', 'notInterested'];
@@ -210,7 +209,6 @@ export default function ProspectingPage() {
           <Button variant="primary" icon={Megaphone} onClick={() => list.setFilter('tab', 'campaigns')}>{t('prospecting.tabs.campaigns')}</Button>
         </div>
       </div>
-      <SubNav section="crm" />
       <div className="summary-strip summary-strip--5">
         <Kpi loading={loading} icon={Users} label={t('prospecting.prospects')} value={number(o?.total)} />
         <Kpi loading={loading} icon={Send} label={t('prospecting.contacted')} value={number(o?.contacted)} />

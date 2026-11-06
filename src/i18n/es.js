@@ -8,6 +8,8 @@ const es = {
   },
   nav: {
     main: 'Navegación principal',
+    modules: 'Módulos',
+    submodules: 'Secciones de {name}',
     dashboard: 'Panel',
     crm: 'CRM',
     communications: 'Comunicaciones',
