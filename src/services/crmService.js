@@ -70,6 +70,7 @@ export const crmService = {
       stageEnteredAt: new Date().toISOString(),
       probability: { new: 0.1, contacted: 0.2, consultation: 0.35, proposal: 0.5, negotiation: 0.7, won: 1, lost: 0 }[stage],
       closedAt: ['won', 'lost'].includes(stage) ? new Date().toISOString() : null,
+      nextAction: ['won', 'lost'].includes(stage) ? null : o.nextAction,
     });
     return delay(o);
   },

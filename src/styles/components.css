@@ -393,3 +393,42 @@ kbd {
 .table th.num, .chart-table th.num { text-align: right; }
 .card__body > .table-wrap:first-child .table th:first-child { border-top-left-radius: calc(var(--radius-lg) - 1px); }
 .card__body > .table-wrap:first-child .table th:last-child { border-top-right-radius: calc(var(--radius-lg) - 1px); }
+
+/* ---------- Kanban ---------- */
+.kanban { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(264px, 1fr); gap: var(--sp-3); overflow-x: auto; padding-bottom: var(--sp-3); align-items: start; scroll-snap-type: x proximity; }
+.kanban__col { display: flex; flex-direction: column; min-height: 320px; max-height: calc(100vh - 290px); background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); scroll-snap-align: start; transition: background var(--transition), border-color var(--transition); }
+.kanban__col.is-over { background: var(--accent-soft); border-color: var(--accent); }
+.kanban__col--success { background: color-mix(in srgb, var(--success-soft) 60%, var(--surface-2)); }
+.kanban__col--muted { opacity: .92; }
+.kanban__head { padding: var(--sp-3) var(--sp-3) var(--sp-2); border-bottom: 1px solid var(--border); }
+.kanban__title { font-size: var(--fs-13); font-weight: var(--fw-semibold); text-transform: uppercase; letter-spacing: var(--tracking-caps); display: flex; align-items: center; gap: 8px; }
+.kanban__count { min-width: 22px; height: 20px; padding: 0 6px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); font-size: 11px; display: inline-grid; place-items: center; color: var(--text-muted); letter-spacing: 0; }
+.kanban__meta { font-size: var(--fs-12); color: var(--text-muted); margin-top: 2px; font-feature-settings: 'tnum' 1; }
+.kanban__list { flex: 1; overflow-y: auto; padding: var(--sp-2); display: flex; flex-direction: column; gap: var(--sp-2); min-height: 80px; }
+.kanban__empty { text-align: center; color: var(--text-subtle); font-size: var(--fs-12); padding: var(--sp-5) var(--sp-2); border: 1px dashed var(--border-strong); border-radius: var(--radius); }
+.kanban__item { touch-action: manipulation; border-radius: var(--radius); }
+.kanban__item:focus-visible { box-shadow: var(--focus-ring); }
+.kanban__item.is-dragging { opacity: .35; }
+.kanban__item.is-overlay { box-shadow: var(--shadow-3); transform: rotate(1.5deg); cursor: grabbing; }
+.deal { display: flex; flex-direction: column; gap: 8px; padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); cursor: grab; box-shadow: var(--shadow-1); }
+.deal:hover { border-color: var(--border-strong); }
+.deal__title { font-weight: var(--fw-semibold); font-size: var(--fs-14); overflow-wrap: anywhere; }
+.deal__sub { font-size: var(--fs-12); color: var(--text-muted); }
+.deal__value { font-weight: var(--fw-semibold); font-feature-settings: 'tnum' 1; }
+.deal__next { display: flex; align-items: center; gap: 6px; font-size: var(--fs-12); color: var(--text-muted); min-width: 0; }
+.deal__next svg { width: 13px; height: 13px; flex: none; }
+.deal__next.is-late { color: var(--danger); }
+.deal__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: var(--fs-12); color: var(--text-subtle); }
+.deal__open { all: unset; cursor: pointer; color: var(--accent-strong); font-size: var(--fs-12); font-weight: var(--fw-medium); border-radius: 4px; }
+.deal__open:focus-visible { box-shadow: var(--focus-ring); }
+
+.summary-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-3); margin-bottom: var(--sp-4); }
+@media (min-width: 1024px) { .summary-strip { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.stepper { display: flex; gap: 4px; overflow-x: auto; }
+.stepper__step { flex: 1 1 0; min-width: 90px; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-12); color: var(--text-subtle); }
+.stepper__bar { height: 6px; border-radius: 3px; background: var(--surface-3); }
+.stepper__step.is-done .stepper__bar { background: var(--chart-1); }
+.stepper__step.is-current { color: var(--text); font-weight: var(--fw-semibold); }
+.stepper__step.is-current .stepper__bar { background: var(--accent-strong); }
+.stepper__step.is-lost .stepper__bar { background: var(--danger); }

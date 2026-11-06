@@ -6,6 +6,8 @@ import LeadsPage from '../pages/crm/leads/LeadsPage.jsx';
 import LeadDetailPage from '../pages/crm/leads/LeadDetailPage.jsx';
 import ContactsPage from '../pages/crm/contacts/ContactsPage.jsx';
 import ContactDetailPage from '../pages/crm/contacts/ContactDetailPage.jsx';
+import PipelinePage from '../pages/crm/pipeline/PipelinePage.jsx';
+import OpportunityPage from '../pages/crm/pipeline/OpportunityPage.jsx';
 import ModulePlaceholder from '../pages/system/ModulePlaceholder.jsx';
 import NotFoundPage from '../pages/system/NotFoundPage.jsx';
 
@@ -31,7 +33,8 @@ export const router = createBrowserRouter([
       { path: 'crm/leads/:id', element: <LeadDetailPage /> },
       { path: 'crm/leads/:id/edit', element: <LeadFormPage /> },
       { path: 'crm/prospecting', element: ph('crm', 'nav.prospecting') },
-      { path: 'crm/pipeline', element: ph('crm', 'nav.pipeline') },
+      { path: 'crm/pipeline', element: <PipelinePage /> },
+      { path: 'crm/pipeline/:id', element: <OpportunityPage /> },
 
       { path: 'projects', element: ph(null, 'nav.projects') },
       { path: 'projects/:id', element: ph(null, 'nav.projects') },
