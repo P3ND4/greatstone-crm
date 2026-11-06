@@ -7,6 +7,7 @@ export const lookupService = {
   user: (id) => byId('users', id),
   contact: (id) => byId('contacts', id),
   project: (id) => byId('projects', id),
+  conversation: (id) => byId('conversations', id),
   users: () => table('users'),
   projectOptions: () => table('projects').map((p) => ({ value: p.id, label: p.name })),
   contactOptions: (types) => table('contacts')
