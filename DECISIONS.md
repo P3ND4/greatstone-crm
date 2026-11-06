@@ -78,6 +78,13 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - **Reports.** Income = payments received in the range. Profitability is on an earned basis: billed − cost to date, with collected shown alongside as cash. Receivables aging buckets: not yet due, 1–30, 31–60, 61–90 and 90+ days. Accounts payable = expenses pending approval.
 - The demo company details on documents are placeholders (example.com / 555 numbers) until the client's real letterhead data is confirmed.
 
+## AI module (demo)
+- **No AI model or external API is called.** `services/aiService.js` returns deterministic, explainable heuristics over the CRM mock data, in the shape a real model or agent would return: keyword sentiment, topics, objections and opportunities; response times measured from message timestamps; seasonality, channel conversion and lifetime value (LTV) from leads and invoices. Each function is the swap point for a real endpoint (e.g. a Supabase Edge Function calling an LLM).
+- Every AI screen shows a **"Demo data"** badge. Platform and ad-account connections are simulated: no credentials are requested or stored.
+- Each module uses the same `AiModuleShell`: Results · Configure · Run history, plus **Run now** with simulated progress. The view lives in the URL (`?view=`).
+- The assistant is intent matching (English and Spanish) over CRM data. Answers include deep links and suggested actions (open a filtered list, create an appointment…). It is available as a floating, non-blocking side panel on every screen and as a full page.
+- Global AI preferences (model, tone, data access) will live in Settings, as the brief requires.
+
 ## Deployment
 - Railway + **Railpack**: Vite is auto-detected and served as a static SPA by Caddy. The custom `Caddyfile` keeps Railpack's defaults (JSON logs, trusted Railway proxy, `/health`, compression) and adds caching rules and security headers.
 - The CSP is strict (`'self'` only) because phase 1 makes no external calls. `style-src` allows `'unsafe-inline'` because React inline `style` attributes are used. It was verified on all 26 routes with no CSP violations.

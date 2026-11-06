@@ -65,7 +65,7 @@ export function SubmoduleRow({ counts = {} }) {
       {active.children.map((c) => {
         const Icon = c.icon;
         return (
-          <NavLink key={c.id} to={c.to} className="subbar__link">
+          <NavLink key={c.id} to={c.to} end={c.end} className="subbar__link">
             {Icon && <Icon aria-hidden="true" />}
             <span>{t(c.labelKey)}</span>
             {c.badge && counts[c.badge] > 0 && <span className="nav__badge">{counts[c.badge]}</span>}

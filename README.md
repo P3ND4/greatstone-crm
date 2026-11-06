@@ -28,7 +28,7 @@ Requires Node 18+ (tested with Node 22).
 | 3 | CRM — Communications (WhatsApp + Email), Agenda, Contacts, Leads, Prospecting, Pipeline | ✅ |
 | 4 | Projects | ✅ |
 | 5 | Finance — Estimates, Invoices, Expenses & POs, Payments & Reports | ✅ |
-| 6 | AI | ⏳ |
+| 6 | AI — 7 modules (demo) + floating assistant | ✅ |
 | 7 | Settings | ⏳ |
 | 8 | Polish, a11y pass, final screenshots | ⏳ |
 
@@ -53,6 +53,7 @@ Modules that are not built yet show a placeholder, so every route can already be
   - Status flow: send → accept/decline → convert to invoice → record partial or full payments → reminders.
   - Expenses & POs with receipts and single or bulk approval.
   - Reports: income vs expenses, receivables aging, profitability by project and the annual summary.
+- **AI (demo, no model connected)**: a hub plus communication analysis (sentiment, topics, objections, response times, opportunities, at-risk), prospecting analysis (segments, best messages, next best action), Lead Finder (criteria, simulated platform connections, scheduled runs, results → Leads/Prospecting), pattern detection (seasonality, channels, LTV, best contact hours), email mining (referrals, cold threads, re-engagement), Campaigns & Ads (simulated Meta/Google connection, CPL, ROAS, audiences). Each module has **Run now**, Configure and Run history. The **AI assistant** is available as a floating button on every screen and as a full page.
 
 ## Deployment
 

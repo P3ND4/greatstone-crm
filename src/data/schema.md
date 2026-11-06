@@ -38,7 +38,12 @@ Every table also gets `org_id` (multi-organization) plus `created_at` / `updated
 | **templates** | id, channel, name, subject, body, approved (WhatsApp) |
 | **appointments** | id, type (`consultation` \| `siteVisit` \| `showroom` \| `virtual` \| `install`), title, start, duration_min, location, contact_id, project_id, assignee_id |
 | **notes** | id, body, project_id, contact_id, author_id |
-| **ai_runs** | id, module, params(json), status, started_at, finished_at, results(json) |
+| **ai_runs** | id, module (`communications` \| `prospecting` \| `leadFinder` \| `patterns` \| `emailMining` \| `campaigns`), trigger (`manual` \| `scheduled`), status, started_at, duration_sec, items, params(json), results(json), note |
+| **ai_lead_results** | id, run_id, name, persona, source (platform), signal, neighborhood, est_budget, score, status (`new` \| `added` \| `dismissed`), found_at |
+| **ai_platforms** | id, org_id, platform, connected, settings(json) — credentials stored server-side only |
+| **ai_config** | org_id, module, config(json) (e.g. lead finder zones, project types, budget range, keywords, schedule) |
+| **ad_accounts** | id, platform (`meta` \| `google`), connected, account_name |
+| **ad_campaigns** | id, ad_account_id, name, status, objective, spend, impressions, clicks, leads, won, revenue, period |
 | **campaigns** | outreach: id, name, list_id, sequence_id, status (`active` \| `paused` \| `draft`), started_at · ads (AI module, later): id, platform (`meta` \| `google`), name, status, spend, leads, cpl, roas, period |
 
 ## Dashboard view

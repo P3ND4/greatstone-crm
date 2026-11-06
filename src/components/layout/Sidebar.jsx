@@ -38,7 +38,7 @@ function NavItem({ item, collapsed, counts, onNavigate }) {
       {open && !collapsed && (
         <div className="nav__sub" id={subId}>
           {item.children.map((c) => (
-            <NavLink key={c.id} to={c.to} className="nav__link" onClick={onNavigate}>
+            <NavLink key={c.id} to={c.to} end={c.end} className="nav__link" onClick={onNavigate}>
               <span className="nav__label">{t(c.labelKey)}</span>
               {c.badge && counts[c.badge] > 0 && <span className="nav__badge" aria-label={`${counts[c.badge]} unread`}>{counts[c.badge]}</span>}
             </NavLink>

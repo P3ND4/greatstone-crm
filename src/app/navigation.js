@@ -1,5 +1,6 @@
 // Single source for primary navigation (sidebar, command palette, breadcrumbs).
 import {
+  Bot, ChartSpline, LayoutGrid, MailSearch, Megaphone, MessageSquareText, Radar,
   BarChart3, Building2, CalendarDays, Contact, FileText, LayoutDashboard, MessagesSquare,
   Receipt, Settings, ShoppingCart, Sparkles, SquareKanban, Target, UserPlus, Users, Wallet,
 } from 'lucide-react';
@@ -27,7 +28,19 @@ export const NAV = [
       { id: 'reports', labelKey: 'nav.reports', to: '/finance/reports', icon: BarChart3 },
     ],
   },
-  { id: 'ai', labelKey: 'nav.ai', to: '/ai', icon: Sparkles },
+  {
+    id: 'ai', labelKey: 'nav.ai', to: '/ai', icon: Sparkles,
+    children: [
+      { id: 'ai-hub', labelKey: 'ai.nav.hub', to: '/ai', icon: LayoutGrid, end: true },
+      { id: 'ai-comms', labelKey: 'ai.nav.communications', to: '/ai/communications', icon: MessageSquareText },
+      { id: 'ai-prospecting', labelKey: 'ai.nav.prospecting', to: '/ai/prospecting', icon: Target },
+      { id: 'ai-finder', labelKey: 'ai.nav.leadFinder', to: '/ai/lead-finder', icon: Radar },
+      { id: 'ai-patterns', labelKey: 'ai.nav.patterns', to: '/ai/patterns', icon: ChartSpline },
+      { id: 'ai-mining', labelKey: 'ai.nav.emailMining', to: '/ai/email-mining', icon: MailSearch },
+      { id: 'ai-campaigns', labelKey: 'ai.nav.campaigns', to: '/ai/campaigns', icon: Megaphone },
+      { id: 'ai-assistant', labelKey: 'ai.nav.assistant', to: '/ai/assistant', icon: Bot },
+    ],
+  },
 ];
 
 export const NAV_FOOTER = [

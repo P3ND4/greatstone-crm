@@ -153,9 +153,9 @@
 @media (min-width: 1024px) { .sidebar__toggle { display: flex !important; } }
 
 /* ---------- Content ---------- */
-.content { width: 100%; max-width: var(--content-max); margin: 0 auto; padding: var(--sp-5) var(--sp-4) var(--sp-12); flex: 1; min-width: 0; }
-@media (min-width: 768px) { .content { padding: var(--sp-6) var(--sp-6) var(--sp-12); } }
-@media (min-width: 1280px) { .content { padding: var(--sp-8) var(--sp-8) var(--sp-12); } }
+.content { width: 100%; max-width: var(--content-max); margin: 0 auto; padding: var(--sp-5) var(--sp-4) 96px; flex: 1; min-width: 0; } /* bottom room for the floating assistant */
+@media (min-width: 768px) { .content { padding: var(--sp-6) var(--sp-6) 96px; } }
+@media (min-width: 1280px) { .content { padding: var(--sp-8) var(--sp-8) 96px; } }
 
 .page-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--sp-3) var(--sp-4); margin-bottom: var(--sp-6); }
 .page-head__eyebrow { font-size: var(--fs-12); text-transform: uppercase; letter-spacing: .12em; color: var(--accent-strong); font-weight: var(--fw-semibold); margin-bottom: 6px; }

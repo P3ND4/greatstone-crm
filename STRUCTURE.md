@@ -25,17 +25,18 @@ greatstone-crm/
    │  ├─ quick/         QuickActionsProvider + Task / Appointment / Note / Contact modals
    │  ├─ list/          ListToolbar · SearchInput · FilterSelect · ViewToggle
    │  ├─ crm/           shared cells (PersonCell, Score, StatusBadge, RowMenu, UserChip)
+   │  ├─ ai/            AiModuleShell (run / configure / history) · AssistantChat · AssistantLauncher (floating)
    │  ├─ finance/       DocPreview (paper + print) · LineEditor · TotalsBox
    │  ├─ comms/         ChannelHeader · ConversationList · Bubbles · WaComposer · ContactPanel
    │  └─ charts/        ChartCard (with table view) · RevenueExpensesChart · HBarChart
    ├─ hooks/            useResource · useUrlState · useListState · useForm · useHotkey · useFocusTrap · useScrollLock · useCssVars
-   ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard · crm · communications · prospecting · search · lookup
+   ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard · crm · communications · prospecting · projects · finance · ai · search · lookup
    ├─ data/
-   │  ├─ mock/          core.js · people.js · users.js · prospecting.js · projectDetails.js · finance.js   (never imported by components)
+   │  ├─ mock/          core.js · people.js · users.js · prospecting.js · projectDetails.js · finance.js · ai.js   (never imported by components)
    │  ├─ constants.js   static option lists (neighborhoods, services, sources)
    │  └─ schema.md      entities → DB model
    ├─ lib/              format (USD, dates) · money (exact cents) · random (seeded) · cx
-   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · projects/ (+ tabs/) · finance/ · system/ (placeholder, 404)
+   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · projects/ (+ tabs/) · finance/ · ai/ · system/ (placeholder, 404)
 ```
 
 ## Routes
@@ -59,7 +60,9 @@ greatstone-crm/
 | `/finance/invoices?status=&project=` · `/new` · `/:id` · `/:id/edit` | Invoices list / builder / detail + payments | ✅ |
 | `/finance/expenses?type=&status=&category=&project=` | Expenses & purchase orders | ✅ |
 | `/finance/reports?range=` | Payments & reports | ✅ |
-| `/ai` | AI hub | placeholder |
+| `/ai` | AI hub | ✅ |
+| `/ai/communications` · `/prospecting` · `/lead-finder` · `/patterns` · `/email-mining` · `/campaigns` (`?view=results\|config\|history`) | AI modules | ✅ |
+| `/ai/assistant` | AI assistant (full page; also floating panel everywhere) | ✅ |
 | `/settings` | Settings | placeholder |
 
 ## Action → Modal or Page
@@ -94,6 +97,8 @@ Rule of thumb: a short, self-contained action with roughly 6 fields or fewer ope
 | Email quick reply | Inline panel in the reading pane | — |
 | Email composer · expanded conversation | Page `/crm/communications/email/compose` · `/:channel/:id` | — |
 | Campaign / sequence | Page | — |
+| AI assistant (floating) | Side panel (non-blocking) | 420px |
+| AI module configuration | Configure view inside the module page | — |
 | Settings sections | Page (tabs) | — |
 
 **Shared anatomy** (`FormShell`): fixed header (title + ✕ or Back) · body that scrolls vertically only · fixed footer (Cancel / Save + save state).

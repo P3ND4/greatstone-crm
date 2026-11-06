@@ -23,6 +23,14 @@ import DocDetailPage from '../pages/finance/DocDetailPage.jsx';
 import DocBuilderPage from '../pages/finance/DocBuilderPage.jsx';
 import ExpensesPage from '../pages/finance/ExpensesPage.jsx';
 import ReportsPage from '../pages/finance/ReportsPage.jsx';
+import AiHubPage from '../pages/ai/AiHubPage.jsx';
+import CommAnalysisPage from '../pages/ai/CommAnalysisPage.jsx';
+import ProspectingAnalysisPage from '../pages/ai/ProspectingAnalysisPage.jsx';
+import LeadFinderPage from '../pages/ai/LeadFinderPage.jsx';
+import PatternsPage from '../pages/ai/PatternsPage.jsx';
+import EmailMiningPage from '../pages/ai/EmailMiningPage.jsx';
+import CampaignsPage from '../pages/ai/CampaignsPage.jsx';
+import AssistantPage from '../pages/ai/AssistantPage.jsx';
 import ModulePlaceholder from '../pages/system/ModulePlaceholder.jsx';
 import NotFoundPage from '../pages/system/NotFoundPage.jsx';
 
@@ -71,7 +79,14 @@ export const router = createBrowserRouter([
       { path: 'finance/expenses', element: <ExpensesPage /> },
       { path: 'finance/reports', element: <ReportsPage /> },
 
-      { path: 'ai', element: ph(null, 'nav.ai') },
+      { path: 'ai', element: <AiHubPage /> },
+      { path: 'ai/communications', element: <CommAnalysisPage /> },
+      { path: 'ai/prospecting', element: <ProspectingAnalysisPage /> },
+      { path: 'ai/lead-finder', element: <LeadFinderPage /> },
+      { path: 'ai/patterns', element: <PatternsPage /> },
+      { path: 'ai/email-mining', element: <EmailMiningPage /> },
+      { path: 'ai/campaigns', element: <CampaignsPage /> },
+      { path: 'ai/assistant', element: <AssistantPage /> },
       { path: 'settings', element: ph(null, 'nav.settings') },
 
       { path: '*', element: <NotFoundPage /> },

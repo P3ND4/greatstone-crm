@@ -5,6 +5,7 @@ import useResource from '../../hooks/useResource.js';
 import { conversationsService, lookupService } from '../../services/index.js';
 import { QuickActionsProvider } from '../quick/QuickActionsProvider.jsx';
 import CommandPalette from './CommandPalette.jsx';
+import AssistantLauncher from '../ai/AssistantLauncher.jsx';
 import Sidebar from './Sidebar.jsx';
 import Topbar from './Topbar.jsx';
 import { useActiveModule } from './ModuleNav.jsx';
@@ -55,6 +56,7 @@ export default function AppLayout() {
           </main>
         </div>
         <CommandPalette open={searchOpen} onClose={closeSearch} />
+        <AssistantLauncher />
         <ScrollRestoration />
       </div>
     </QuickActionsProvider>

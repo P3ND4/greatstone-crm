@@ -8,6 +8,7 @@ import * as db from '../data/mock/core.js';
 import { users } from '../data/mock/users.js';
 import * as pros from '../data/mock/prospecting.js';
 import * as fin from '../data/mock/finance.js';
+import * as ai from '../data/mock/ai.js';
 
 const LATENCY = [180, 420];
 const tables = {
@@ -29,6 +30,11 @@ const tables = {
   campaigns: pros.campaigns,
   payments: fin.payments,
   catalog: fin.catalog,
+  aiRuns: ai.aiRuns,
+  aiPlatforms: ai.platforms,
+  leadFinderResults: ai.leadFinderResults,
+  adAccounts: ai.adAccounts,
+  adCampaigns: ai.adCampaigns,
   notes: [],
   users,
 };
