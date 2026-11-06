@@ -50,6 +50,12 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - "Budget risk" = active project where budget used − progress > 10 points.
 - Services simulate 180–420 ms of latency, so skeletons and loading states are exercised.
 
+## Deployment
+- Railway + **Railpack**: Vite is auto-detected and served as a static SPA by Caddy. The custom `Caddyfile` keeps Railpack's defaults (JSON logs, trusted Railway proxy, `/health`, compression) and adds caching rules and security headers.
+- The CSP is strict (`'self'` only) because phase 1 makes no external calls. `style-src` allows `'unsafe-inline'` because React inline `style` attributes are used. It was verified on all 26 routes with no CSP violations.
+- `X-Robots-Tag: noindex` keeps the client demo out of search engines. Remove it at launch.
+- No `railway.json`: Railway's Config as Code is deprecated for new services, so the healthcheck path is configured in the dashboard (see DEPLOY.md).
+
 ## Assumptions
 - Single organization ("Greatstone Design"). The org switcher is present but only lists one org.
 - Roles: admin, designer, accounting, viewer. The demo user is admin.

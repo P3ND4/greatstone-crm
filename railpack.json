@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schema.railpack.com",
+  "packages": {
+    "node": "22"
+  },
+  "deploy": {
+    "variables": {
+      "TZ": "America/New_York",
+      "LANG": "en_US.UTF-8"
+    }
+  }
+}

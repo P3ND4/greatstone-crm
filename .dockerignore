@@ -1,0 +1,9 @@
+# Keep the Railpack/Docker build context small
+node_modules
+dist
+.git
+*.tar.gz
+docs/screenshots
+*.log
+.env*
+.DS_Store

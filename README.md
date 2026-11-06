@@ -47,9 +47,10 @@ Modules that are not built yet show a placeholder, so every route can already be
 - **Communications → WhatsApp**: 24h-window indicator, internal notes, quick templates, and a linked contact/project panel. **Email**: folders, labels, bulk actions, a reading pane with quick reply, and the full composer page.
 - **Prospecting**: prospect lists and campaigns with reply metrics, plus "Convert to lead".
 
-## Deployment (later)
+## Deployment
 
-GitHub → Vercel. `vercel.json` already rewrites every route to `index.html` (SPA).
+- **Railway (Railpack)**: ready. See [`DEPLOY.md`](DEPLOY.md). It uses `railpack.json` + `Caddyfile`, a static SPA served by Caddy with `/health`.
+- **Vercel**: `vercel.json` already rewrites every route to `index.html` (SPA).
 
 ## Docs
 

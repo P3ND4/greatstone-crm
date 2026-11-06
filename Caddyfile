@@ -1,0 +1,58 @@
+# Greatstone CRM — Caddy config used by Railpack on Railway (replaces Railpack's default SPA template).
+# {{.DIST_DIR}} and {{.IndexFallback}} are filled in by Railpack at build time.
+
+{
+	admin off
+	persist_config off
+	auto_https off # Railway terminates TLS at its edge
+
+	log {
+		format json
+	}
+
+	servers {
+		trusted_proxies static private_ranges 100.0.0.0/8 # trust Railway's proxy
+	}
+}
+
+:{$PORT:80} {
+	log {
+		format json
+	}
+
+	# Railway healthcheck (set "Healthcheck Path" = /health in the service settings)
+	respond /health 200
+
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		# Phase 1 is a private demo: keep it out of search engines.
+		X-Robots-Tag "noindex, nofollow"
+		# Everything is self-hosted (fonts included). When Supabase/APIs are connected,
+		# add their origins to connect-src (and img-src for storage).
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+		-Server
+	}
+
+	# Vite fingerprints everything in /assets → cache for a year.
+	@hashed path /assets/*
+	header @hashed Cache-Control "public, max-age=31536000, immutable"
+
+	# Everything else (index.html for every client-side route) is revalidated so new deploys show up immediately.
+	@notHashed not path /assets/*
+	header @notHashed Cache-Control "no-cache"
+
+	root * {{.DIST_DIR}}
+
+	encode zstd gzip
+
+	# SPA: serve the file if it exists, otherwise index.html (client-side routes like /crm/leads/l_3).
+	try_files {path} {path}/index.html /index.html
+
+	file_server {
+		hide .git .env*
+	}
+}
