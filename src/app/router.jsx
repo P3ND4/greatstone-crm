@@ -15,6 +15,9 @@ import EmailPage from '../pages/crm/communications/EmailPage.jsx';
 import ComposePage from '../pages/crm/communications/ComposePage.jsx';
 import ConversationPage from '../pages/crm/communications/ConversationPage.jsx';
 import ProspectingPage from '../pages/crm/prospecting/ProspectingPage.jsx';
+import ProjectsPage from '../pages/projects/ProjectsPage.jsx';
+import ProjectDetailPage from '../pages/projects/ProjectDetailPage.jsx';
+import ProjectFormPage from '../pages/projects/ProjectFormPage.jsx';
 import ModulePlaceholder from '../pages/system/ModulePlaceholder.jsx';
 import NotFoundPage from '../pages/system/NotFoundPage.jsx';
 
@@ -46,8 +49,10 @@ export const router = createBrowserRouter([
       { path: 'crm/pipeline', element: <PipelinePage /> },
       { path: 'crm/pipeline/:id', element: <OpportunityPage /> },
 
-      { path: 'projects', element: ph(null, 'nav.projects') },
-      { path: 'projects/:id', element: ph(null, 'nav.projects') },
+      { path: 'projects', element: <ProjectsPage /> },
+      { path: 'projects/new', element: <ProjectFormPage /> },
+      { path: 'projects/:id', element: <ProjectDetailPage /> },
+      { path: 'projects/:id/edit', element: <ProjectFormPage /> },
 
       { path: 'finance', element: <Navigate to="/finance/estimates" replace /> },
       { path: 'finance/estimates', element: ph('finance', 'nav.estimates') },

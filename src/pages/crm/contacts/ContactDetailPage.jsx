@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Building2, CalendarPlus, CheckSquare, Mail, MapPin, MessageCircle, Pencil, Phone, Receipt, UserPlus } from 'lucide-react';
-import { CONTACT_TYPE_TONE } from '../../../components/crm/bits.jsx';
+import { CONTACT_TYPE_TONE, INVOICE_TONE, PROJECT_TONE } from '../../../components/crm/bits.jsx';
 import { useQuickActions } from '../../../components/quick/QuickActionsProvider.jsx';
 import { PageShell } from '../../../components/shells/index.js';
 import { Avatar, Badge, Button, Card, DataState, EmptyState, Skeleton, Table, Tabs } from '../../../components/ui/index.js';
@@ -10,8 +10,6 @@ import { useT } from '../../../i18n/index.jsx';
 import { ago, date, dayLabel, money, percent, time } from '../../../lib/format.js';
 import { crmService } from '../../../services/index.js';
 
-export const INVOICE_TONE = { draft: 'neutral', sent: 'info', partial: 'warning', paid: 'success', overdue: 'danger' };
-export const PROJECT_TONE = { planning: 'neutral', design: 'info', permits: 'warning', construction: 'accent', finishing: 'accent', completed: 'success', onHold: 'neutral' };
 
 export default function ContactDetailPage() {
   const t = useT();

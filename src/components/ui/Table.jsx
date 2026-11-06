@@ -3,7 +3,7 @@ import cx from '../../lib/cx.js';
 import Skeleton from './Skeleton.jsx';
 
 /**
- * Table — columns: [{ key, header, render?, align?, sortable?, width?, hide?: 'md'|'lg'|'xl'|'xxl' (hidden below that width) }]
+ * Table — columns: [{ key, header, render?, align?, sortable?, width?, hide?: 'md'|'lg'|'xl'|'xxl'|'3xl' (hidden below that width) }]
  * Sort is controlled ("field:asc|desc") so it can live in the URL. Header row is sticky.
  * Always paginate upstream (never render hundreds of rows).
  */

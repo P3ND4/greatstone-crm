@@ -26,7 +26,7 @@ Requires Node 18+ (tested with Node 22).
 | 1 | Structure, tokens, layout, router, base components, hybrid Modal/Page shells | ✅ |
 | 2 | Dashboard | ✅ |
 | 3 | CRM — Communications (WhatsApp + Email), Agenda, Contacts, Leads, Prospecting, Pipeline | ✅ |
-| 4 | Projects | ⏳ |
+| 4 | Projects | ✅ |
 | 5 | Finance | ⏳ |
 | 6 | AI | ⏳ |
 | 7 | Settings | ⏳ |
@@ -46,6 +46,7 @@ Modules that are not built yet show a placeholder, so every route can already be
 - **Agenda**: month / week / day / list views. Drag an appointment to another day or hour to reschedule it. Click an empty slot to create an appointment there.
 - **Communications → WhatsApp**: 24h-window indicator, internal notes, quick templates, and a linked contact/project panel. **Email**: folders, labels, bulk actions, a reading pane with quick reply, and the full composer page.
 - **Prospecting**: prospect lists and campaigns with reply metrics, plus "Convert to lead".
+- **Projects**: table ↔ cards view with progress, budget used and projected margin. The project page has 11 tabs (overview, rooms & scope, tasks, Gantt timeline, selections & materials, budget & expenses, documents, photos, communications, estimates & invoices, notes), plus New/Edit project as a page and Record payment as a modal.
 
 ## Deployment
 

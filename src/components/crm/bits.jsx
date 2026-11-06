@@ -9,6 +9,9 @@ import { IconButton } from '../ui/Button.jsx';
 
 export const LEAD_STATUS_TONE = { new: 'info', contacted: 'accent', qualified: 'warning', converted: 'success', disqualified: 'neutral' };
 export const CONTACT_TYPE_TONE = { client: 'accent', partner: 'info', referrer: 'success', architect: 'warning', contractor: 'neutral' };
+export const INVOICE_TONE = { draft: 'neutral', sent: 'info', partial: 'warning', paid: 'success', overdue: 'danger' };
+export const ESTIMATE_TONE = { draft: 'neutral', sent: 'info', viewed: 'accent', accepted: 'success', declined: 'danger', expired: 'neutral' };
+export const PROJECT_TONE = { planning: 'neutral', design: 'info', permits: 'warning', construction: 'accent', finishing: 'accent', completed: 'success', onHold: 'neutral' };
 export const PROSPECT_STATUS_TONE = { new: 'neutral', contacted: 'info', replied: 'accent', meeting: 'warning', converted: 'success', notInterested: 'neutral' };
 
 export function PersonCell({ name, sub, to, dark }) {

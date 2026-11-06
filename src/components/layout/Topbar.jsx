@@ -44,7 +44,7 @@ export default function Topbar({ onOpenNav, onOpenSearch, unread = [], counts })
                 <button role="menuitem" type="button" className="menu__item" onClick={() => { close(); quick.open('contact'); }}><User />{t('quick.contact')}</button>
                 <div className="menu__sep" />
                 <Link role="menuitem" className="menu__item" to="/crm/leads/new" onClick={close}><UserPlus />{t('quick.lead')}</Link>
-                <Link role="menuitem" className="menu__item" to="/projects" onClick={close}><Building2 />{t('quick.project')}</Link>
+                <Link role="menuitem" className="menu__item" to="/projects/new" onClick={close}><Building2 />{t('quick.project')}</Link>
                 <Link role="menuitem" className="menu__item" to="/finance/estimates" onClick={close}><FileText />{t('quick.estimate')}</Link>
                 <Link role="menuitem" className="menu__item" to="/finance/invoices" onClick={close}><Receipt />{t('quick.invoice')}</Link>
               </>

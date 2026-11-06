@@ -17,10 +17,15 @@ Every table also gets `org_id` (multi-organization) plus `created_at` / `updated
 | **sequences** | id, name, channel; sequence_steps(id, sequence_id, day, channel, subject, body) |
 | **opportunities** | id, title, lead_id, contact_id, stage (`new` \| `contacted` \| `consultation` \| `proposal` \| `negotiation` \| `won` \| `lost`), value, probability, next_action, next_action_at, stage_entered_at, owner_id, closed_at |
 | **pipeline_stages** | id, key, label, order, probability |
-| **projects** | id, name, client_id, status (`planning` \| `design` \| `permits` \| `construction` \| `finishing` \| `completed` \| `onHold`), address, neighborhood, start_date, end_date, budget, spent (derived from expenses), progress 0–1, contract_value, manager_id |
-| **rooms** | id, project_id, name, area_sqft, scope |
+| **projects** | id, name, description, partner_ids (→ project_partners), client_id, status (`planning` \| `design` \| `permits` \| `construction` \| `finishing` \| `completed` \| `onHold`), address, neighborhood, start_date, end_date, budget, spent (derived from expenses), progress 0–1, contract_value, manager_id |
+| **rooms** | id, project_id, name, area_sqft, scope[] (items), status (`design` \| `inProgress` \| `done`) |
+| **project_phases** | id, project_id, key (discovery, design, approvals, procurement, construction, install, punchlist), start, end, progress 0–1 |
+| **budget_lines** | id, project_id, category (design, labor, materials, furniture, subcontractors, permits, freight), budget; actual = sum(expenses by category) |
+| **documents** | id, project_id, type (`plans` \| `renders` \| `contracts` \| `permits`), name, size, url, status (`approved` \| `pending` \| `submitted` \| `signed`), uploaded_at, uploaded_by |
+| **photos** | id, project_id, room_id, kind (`before` \| `progress` \| `after`), caption, url, taken_at |
+| **project_notes** | id, project_id, body, author_id, created_at |
 | **tasks** | id, title, due_at, priority (`low` \| `medium` \| `high`), done, project_id, assignee_id, notes |
-| **selections** | id, project_id, room_id, category, item, vendor_id, unit_cost, qty, status (proposed/approved/ordered/delivered), approved_at |
+| **selections** | id, project_id, room_id, category, item, unit, qty, unit_cost, vendor_id, lead_time_weeks, status (`proposed` \| `approved` \| `ordered` \| `delivered` \| `installed`), approved_at |
 | **estimates** | id, number, project_id, client_id, status (`draft` \| `sent` \| `viewed` \| `accepted` \| `declined` \| `expired`), created_at, expires_at, total, terms; estimate_lines(id, estimate_id, description, qty, unit_price, tax_rate, discount) |
 | **invoices** | id, number, project_id, client_id, status (`draft` \| `sent` \| `partial` \| `paid` \| `overdue`), issued_at, due_at, total, paid, paid_at; invoice_lines (same as estimate_lines) |
 | **payments** | id, invoice_id, amount, method, received_at, reference |

@@ -61,6 +61,14 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - "Budget risk" = active project where budget used − progress > 10 points.
 - Services simulate 180–420 ms of latency, so skeletons and loading states are exercised.
 
+## Projects module
+- **Projected margin** = (contract value − estimated cost at completion) ÷ contract value. Estimated cost = `max(budget, spent ÷ progress)` once progress ≥ 10%, otherwise the budget. Shown as red under 10%, amber under 18% and green otherwise, always with the number.
+- **At budget risk** = budget used − progress > 10 points. The same rule is used on the Dashboard.
+- Budget is split by category (design fees, labor, materials, furniture, subcontractors, permits, freight) as budget vs actual with the variance.
+- The **Gantt** is plain HTML/CSS with no library: one bar per phase with its completed share and a "today" line. It scrolls inside its own box on phones.
+- **Photos** in the demo are colored placeholder tiles, so no real or third-party images are used. Uploads are mocked (the file name is added). Real storage (Supabase Storage) plugs into `projectsService.addDocuments`.
+- Each project tab is its own component in `pages/projects/tabs/`. The active tab lives in the URL (`?tab=`), so Back returns to it.
+
 ## Deployment
 - Railway + **Railpack**: Vite is auto-detected and served as a static SPA by Caddy. The custom `Caddyfile` keeps Railpack's defaults (JSON logs, trusted Railway proxy, `/health`, compression) and adds caching rules and security headers.
 - The CSP is strict (`'self'` only) because phase 1 makes no external calls. `style-src` allows `'unsafe-inline'` because React inline `style` attributes are used. It was verified on all 26 routes with no CSP violations.

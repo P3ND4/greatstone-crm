@@ -30,11 +30,11 @@ greatstone-crm/
    ├─ hooks/            useResource · useUrlState · useListState · useForm · useHotkey · useFocusTrap · useScrollLock · useCssVars
    ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard · crm · communications · prospecting · search · lookup
    ├─ data/
-   │  ├─ mock/          core.js · people.js · users.js · prospecting.js   (never imported by components)
+   │  ├─ mock/          core.js · people.js · users.js · prospecting.js · projectDetails.js   (never imported by components)
    │  ├─ constants.js   static option lists (neighborhoods, services, sources)
    │  └─ schema.md      entities → DB model
    ├─ lib/              format (USD, dates) · random (seeded) · cx
-   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · system/ (placeholder, 404)
+   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · projects/ (+ tabs/) · system/ (placeholder, 404)
 ```
 
 ## Routes
@@ -51,7 +51,9 @@ greatstone-crm/
 | `/crm/leads?status=&source=&service=&assignee=&view=` · `/new` · `/:id` · `/:id/edit` | Leads / new / lead page / edit | ✅ |
 | `/crm/prospecting?tab=&list=&segment=&status=` | Prospects · lists · campaigns · sequences | ✅ |
 | `/crm/pipeline?owner=&q=` · `/crm/pipeline/:id` | Kanban / opportunity page | ✅ |
-| `/projects` · `/projects/:id` | Projects / project detail | placeholder |
+| `/projects?status=&manager=&hood=&view=` | Projects list (table / cards) | ✅ |
+| `/projects/new` · `/projects/:id/edit` | New / edit project (page) | ✅ |
+| `/projects/:id?tab=` | Project detail (11 tabs) | ✅ |
 | `/finance/estimates` · `/invoices` · `/expenses` · `/reports` | Finance | placeholder |
 | `/ai` | AI hub | placeholder |
 | `/settings` | Settings | placeholder |
@@ -67,7 +69,10 @@ Rule of thumb: a short, self-contained action with roughly 6 fields or fewer ope
 | New / edit note | Modal | sm |
 | New / edit appointment (quick) | Modal | md |
 | Quick add / edit contact | Modal | md |
-| Record payment | Modal | sm |
+| Record payment (`PaymentModal`) | Modal | sm |
+| Document preview · photo lightbox | Modal | lg |
+| Change selection status | Inline select in the table | — |
+| Project note | Inline form in the Notes tab | — |
 | Pickers (contact, project, template) | Modal | md |
 | Quick preview (attachment, estimate) | Modal | lg |
 | New / edit **Lead** (full) | **Page** `/crm/leads/new` | — |

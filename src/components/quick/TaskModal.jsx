@@ -6,7 +6,7 @@ import { ModalShell, FormShell } from '../shells/index.js';
 import { DatePicker, Field, Input, Select, Textarea, useToast } from '../ui/index.js';
 
 /** Quick task — modal (≤ 6 fields). Size: sm. */
-export default function TaskModal({ open, onClose, projectId = '' }) {
+export default function TaskModal({ open, onClose, projectId = '', onSaved }) {
   const t = useT();
   const toast = useToast();
   const form = useForm(
@@ -16,6 +16,7 @@ export default function TaskModal({ open, onClose, projectId = '' }) {
       onSubmit: async (v) => {
         await tasksService.create({ ...v, dueAt: new Date(`${v.dueAt}T12:00:00`).toISOString(), done: false });
         toast.show(t('task.created'));
+        onSaved?.();
         onClose();
       },
     },

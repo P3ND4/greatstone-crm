@@ -3,10 +3,11 @@ import TaskModal from './TaskModal.jsx';
 import AppointmentModal from './AppointmentModal.jsx';
 import NoteModal from './NoteModal.jsx';
 import ContactModal from './ContactModal.jsx';
+import PaymentModal from './PaymentModal.jsx';
 
 /** Opens quick-create modals from anywhere (topbar "+ New", command palette, lists). */
 const QuickActionsContext = createContext(null);
-const MODALS = { task: TaskModal, appointment: AppointmentModal, note: NoteModal, contact: ContactModal };
+const MODALS = { task: TaskModal, appointment: AppointmentModal, note: NoteModal, contact: ContactModal, payment: PaymentModal };
 
 export function QuickActionsProvider({ children }) {
   const [active, setActive] = useState(null); // { type, props }
