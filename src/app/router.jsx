@@ -18,6 +18,11 @@ import ProspectingPage from '../pages/crm/prospecting/ProspectingPage.jsx';
 import ProjectsPage from '../pages/projects/ProjectsPage.jsx';
 import ProjectDetailPage from '../pages/projects/ProjectDetailPage.jsx';
 import ProjectFormPage from '../pages/projects/ProjectFormPage.jsx';
+import DocsListPage from '../pages/finance/DocsListPage.jsx';
+import DocDetailPage from '../pages/finance/DocDetailPage.jsx';
+import DocBuilderPage from '../pages/finance/DocBuilderPage.jsx';
+import ExpensesPage from '../pages/finance/ExpensesPage.jsx';
+import ReportsPage from '../pages/finance/ReportsPage.jsx';
 import ModulePlaceholder from '../pages/system/ModulePlaceholder.jsx';
 import NotFoundPage from '../pages/system/NotFoundPage.jsx';
 
@@ -55,11 +60,16 @@ export const router = createBrowserRouter([
       { path: 'projects/:id/edit', element: <ProjectFormPage /> },
 
       { path: 'finance', element: <Navigate to="/finance/estimates" replace /> },
-      { path: 'finance/estimates', element: ph('finance', 'nav.estimates') },
-      { path: 'finance/invoices', element: ph('finance', 'nav.invoices') },
-      { path: 'finance/invoices/:id', element: ph('finance', 'nav.invoices') },
-      { path: 'finance/expenses', element: ph('finance', 'nav.expenses') },
-      { path: 'finance/reports', element: ph('finance', 'nav.reports') },
+      { path: 'finance/estimates', element: <DocsListPage key="est" kind="estimate" /> },
+      { path: 'finance/estimates/new', element: <DocBuilderPage key="est-new" kind="estimate" /> },
+      { path: 'finance/estimates/:id', element: <DocDetailPage key="est-d" kind="estimate" /> },
+      { path: 'finance/estimates/:id/edit', element: <DocBuilderPage key="est-e" kind="estimate" /> },
+      { path: 'finance/invoices', element: <DocsListPage key="inv" kind="invoice" /> },
+      { path: 'finance/invoices/new', element: <DocBuilderPage key="inv-new" kind="invoice" /> },
+      { path: 'finance/invoices/:id', element: <DocDetailPage key="inv-d" kind="invoice" /> },
+      { path: 'finance/invoices/:id/edit', element: <DocBuilderPage key="inv-e" kind="invoice" /> },
+      { path: 'finance/expenses', element: <ExpensesPage /> },
+      { path: 'finance/reports', element: <ReportsPage /> },
 
       { path: 'ai', element: ph(null, 'nav.ai') },
       { path: 'settings', element: ph(null, 'nav.settings') },

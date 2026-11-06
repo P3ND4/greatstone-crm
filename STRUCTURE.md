@@ -25,16 +25,17 @@ greatstone-crm/
    │  ├─ quick/         QuickActionsProvider + Task / Appointment / Note / Contact modals
    │  ├─ list/          ListToolbar · SearchInput · FilterSelect · ViewToggle
    │  ├─ crm/           shared cells (PersonCell, Score, StatusBadge, RowMenu, UserChip)
+   │  ├─ finance/       DocPreview (paper + print) · LineEditor · TotalsBox
    │  ├─ comms/         ChannelHeader · ConversationList · Bubbles · WaComposer · ContactPanel
    │  └─ charts/        ChartCard (with table view) · RevenueExpensesChart · HBarChart
    ├─ hooks/            useResource · useUrlState · useListState · useForm · useHotkey · useFocusTrap · useScrollLock · useCssVars
    ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard · crm · communications · prospecting · search · lookup
    ├─ data/
-   │  ├─ mock/          core.js · people.js · users.js · prospecting.js · projectDetails.js   (never imported by components)
+   │  ├─ mock/          core.js · people.js · users.js · prospecting.js · projectDetails.js · finance.js   (never imported by components)
    │  ├─ constants.js   static option lists (neighborhoods, services, sources)
    │  └─ schema.md      entities → DB model
-   ├─ lib/              format (USD, dates) · random (seeded) · cx
-   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · projects/ (+ tabs/) · system/ (placeholder, 404)
+   ├─ lib/              format (USD, dates) · money (exact cents) · random (seeded) · cx
+   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · projects/ (+ tabs/) · finance/ · system/ (placeholder, 404)
 ```
 
 ## Routes
@@ -54,7 +55,10 @@ greatstone-crm/
 | `/projects?status=&manager=&hood=&view=` | Projects list (table / cards) | ✅ |
 | `/projects/new` · `/projects/:id/edit` | New / edit project (page) | ✅ |
 | `/projects/:id?tab=` | Project detail (11 tabs) | ✅ |
-| `/finance/estimates` · `/invoices` · `/expenses` · `/reports` | Finance | placeholder |
+| `/finance/estimates?status=&project=` · `/new` · `/:id` · `/:id/edit` | Estimates list / builder / detail with PDF preview | ✅ |
+| `/finance/invoices?status=&project=` · `/new` · `/:id` · `/:id/edit` | Invoices list / builder / detail + payments | ✅ |
+| `/finance/expenses?type=&status=&category=&project=` | Expenses & purchase orders | ✅ |
+| `/finance/reports?range=` | Payments & reports | ✅ |
 | `/ai` | AI hub | placeholder |
 | `/settings` | Settings | placeholder |
 
@@ -78,7 +82,10 @@ Rule of thumb: a short, self-contained action with roughly 6 fields or fewer ope
 | New / edit **Lead** (full) | **Page** `/crm/leads/new` | — |
 | Contact record | Page | — |
 | New / edit Project · Project detail (tabs) | Page | — |
-| Estimate / Invoice builder | Page | — |
+| Estimate / Invoice builder (line items, live totals, preview) | Page `/finance/{estimates,invoices}/new` · `/:id/edit` | — |
+| New expense / purchase order (`ExpenseModal`) | Modal | md |
+| Receipt preview | Modal | md |
+| Approve / reject expense | Inline (row or bulk) | — |
 | Opportunity detail | Page `/crm/pipeline/:id` | — |
 | Delete appointment | Modal (`ConfirmDialog`) | sm |
 | Appointment full detail | Page `/crm/agenda/:id` | — |

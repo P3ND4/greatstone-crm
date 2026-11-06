@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { useT } from '../../i18n/index.jsx';
 import useForm from '../../hooks/useForm.js';
-import { invoicesService } from '../../services/index.js';
+import { financeService } from '../../services/index.js';
 import { money } from '../../lib/format.js';
 import { ModalShell, FormShell } from '../shells/index.js';
 import { DatePicker, Field, Input, Select, useToast } from '../ui/index.js';
@@ -24,9 +24,7 @@ export default function PaymentModal({ open, onClose, invoice, onSaved }) {
         };
       },
       onSubmit: async (v) => {
-        const paid = Math.round((invoice.paid + Number(v.amount)) * 100) / 100;
-        const status = paid >= invoice.total - 0.001 ? 'paid' : 'partial';
-        const saved = await invoicesService.update(invoice.id, { paid, status, paidAt: status === 'paid' ? new Date(`${v.date}T12:00:00`).toISOString() : invoice.paidAt });
+        const saved = await financeService.recordPayment(invoice.id, v);
         toast.show(t('payment.recorded', { amount: money(Number(v.amount)), number: invoice.number }));
         onSaved?.(saved);
         onClose();

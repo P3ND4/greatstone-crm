@@ -69,6 +69,15 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - **Photos** in the demo are colored placeholder tiles, so no real or third-party images are used. Uploads are mocked (the file name is added). Real storage (Supabase Storage) plugs into `projectsService.addDocuments`.
 - Each project tab is its own component in `pages/projects/tabs/`. The active tab lives in the URL (`?tab=`), so Back returns to it.
 
+## Finance module
+- **Money math in integer cents** (`src/lib/money.js`). Each line is base (qty × price), minus discount %, plus tax if the line is taxable, rounded half-up **once per line**. Totals are the sum of the lines, so nothing is silently rounded. The UI always recomputes totals from the lines and never trusts a stored total. Checked by hand: 3 × $19.99 taxable + $0.10 taxable = **$64.28**.
+- **Sales tax 7%** (Florida 6% + Miami-Dade 1% surtax), applied per line (services usually non-taxable, materials and furniture taxable). It is a setting (`financeSettings.taxRate`) and will move to Settings. Confirm with the client's accountant.
+- **Status flow.** Estimate: draft → sent → (viewed) → accepted / declined; expired is derived from the date. Invoice: draft → sent → partial → paid; overdue is derived when the due date has passed with a balance. "Convert to invoice" copies the lines into a new draft invoice linked to the estimate.
+- **Payments** are their own records (amount, date, method, reference). A payment can't exceed the balance.
+- **"Download PDF"** uses the browser's print to PDF with print-only CSS (letter size, only the document). A server-side PDF can replace it later without UI changes.
+- **Reports.** Income = payments received in the range. Profitability is on an earned basis: billed − cost to date, with collected shown alongside as cash. Receivables aging buckets: not yet due, 1–30, 31–60, 61–90 and 90+ days. Accounts payable = expenses pending approval.
+- The demo company details on documents are placeholders (example.com / 555 numbers) until the client's real letterhead data is confirmed.
+
 ## Deployment
 - Railway + **Railpack**: Vite is auto-detected and served as a static SPA by Caddy. The custom `Caddyfile` keeps Railpack's defaults (JSON logs, trusted Railway proxy, `/health`, compression) and adds caching rules and security headers.
 - The CSP is strict (`'self'` only) because phase 1 makes no external calls. `style-src` allows `'unsafe-inline'` because React inline `style` attributes are used. It was verified on all 26 routes with no CSP violations.

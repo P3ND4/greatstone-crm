@@ -20,3 +20,4 @@ export { communicationsService } from './communicationsService.js';
 export { prospectingService } from './prospectingService.js';
 export { crmService } from './crmService.js';
 export { projectsService } from './projectsService.js';
+export { financeService, estimatesApi, invoicesApi } from './financeService.js';

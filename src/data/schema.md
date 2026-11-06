@@ -26,10 +26,12 @@ Every table also gets `org_id` (multi-organization) plus `created_at` / `updated
 | **project_notes** | id, project_id, body, author_id, created_at |
 | **tasks** | id, title, due_at, priority (`low` \| `medium` \| `high`), done, project_id, assignee_id, notes |
 | **selections** | id, project_id, room_id, category, item, unit, qty, unit_cost, vendor_id, lead_time_weeks, status (`proposed` \| `approved` \| `ordered` \| `delivered` \| `installed`), approved_at |
-| **estimates** | id, number, project_id, client_id, status (`draft` \| `sent` \| `viewed` \| `accepted` \| `declined` \| `expired`), created_at, expires_at, total, terms; estimate_lines(id, estimate_id, description, qty, unit_price, tax_rate, discount) |
-| **invoices** | id, number, project_id, client_id, status (`draft` \| `sent` \| `partial` \| `paid` \| `overdue`), issued_at, due_at, total, paid, paid_at; invoice_lines (same as estimate_lines) |
-| **payments** | id, invoice_id, amount, method, received_at, reference |
-| **expenses** | id, type (`expense` \| `po`), project_id (null = overhead), vendor_id → contacts, category, amount, date, status (`pending` \| `approved` \| `rejected`), receipt_url |
+| **estimates** | id, number, project_id, client_id, status (`draft` \| `sent` \| `viewed` \| `accepted` \| `declined`; `expired` derived), created_at, expires_at, terms, notes, total (cached; recomputed from lines); estimate_lines(id, estimate_id, position, catalog_id, description, unit, qty, unit_price, discount_pct, taxable) |
+| **invoices** | id, number, project_id, client_id, estimate_id, status (`draft` \| `sent` \| `partial` \| `paid`; `overdue` derived), issued_at, due_at, terms, notes, total (cached), paid (sum of payments), paid_at, reminders_sent, last_reminder_at; invoice_lines (same as estimate_lines) |
+| **payments** | id, invoice_id, amount, date, method (`wire` \| `ach` \| `check` \| `card` \| `zelle`), reference |
+| **catalog_items** | id, kind (`service` \| `product`), name, unit, price, taxable |
+| **finance_settings** | org_id, tax_rate, tax_label, invoice_due_days, estimate_valid_days, default_terms, default_notes, company letterhead fields |
+| **expenses** | id, type (`expense` \| `po`), project_id (null = overhead), vendor_id → contacts, category, amount, date, status (`pending` \| `approved` \| `rejected`), receipt_url, approved_by |
 | **approvals** | id, kind (`estimate` \| `po` \| `selection` \| `changeOrder`), ref_id, project_id, amount, requested_at, decided_at, decided_by |
 | **communications** (conversations) | id, channel (`whatsapp` \| `email`), contact_id, project_id, subject, labels[], folder (`inbox` \| `sent` \| `drafts` \| `archive` \| `trash`; email only), starred, last_message, last_message_at, last_direction (`in` \| `out`), last_inbound_at (→ WhatsApp 24h window), unread, assignee_id, to/cc/bcc |
 | **messages** | id, conversation_id, channel, direction (`in` \| `out`), body, attachments[] {name,size,type,url}, status (`sent` \| `delivered` \| `read`), is_note, sent_at, author_id |

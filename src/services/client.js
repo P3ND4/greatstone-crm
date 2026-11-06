@@ -7,6 +7,7 @@
 import * as db from '../data/mock/core.js';
 import { users } from '../data/mock/users.js';
 import * as pros from '../data/mock/prospecting.js';
+import * as fin from '../data/mock/finance.js';
 
 const LATENCY = [180, 420];
 const tables = {
@@ -26,9 +27,13 @@ const tables = {
   prospectLists: pros.prospectLists,
   sequences: pros.sequences,
   campaigns: pros.campaigns,
+  payments: fin.payments,
+  catalog: fin.catalog,
   notes: [],
   users,
 };
+
+export const settings = { finance: fin.financeSettings };
 
 export function delay(value) {
   const ms = LATENCY[0] + Math.random() * (LATENCY[1] - LATENCY[0]);

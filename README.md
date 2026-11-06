@@ -27,7 +27,7 @@ Requires Node 18+ (tested with Node 22).
 | 2 | Dashboard | ✅ |
 | 3 | CRM — Communications (WhatsApp + Email), Agenda, Contacts, Leads, Prospecting, Pipeline | ✅ |
 | 4 | Projects | ✅ |
-| 5 | Finance | ⏳ |
+| 5 | Finance — Estimates, Invoices, Expenses & POs, Payments & Reports | ✅ |
 | 6 | AI | ⏳ |
 | 7 | Settings | ⏳ |
 | 8 | Polish, a11y pass, final screenshots | ⏳ |
@@ -47,6 +47,12 @@ Modules that are not built yet show a placeholder, so every route can already be
 - **Communications → WhatsApp**: 24h-window indicator, internal notes, quick templates, and a linked contact/project panel. **Email**: folders, labels, bulk actions, a reading pane with quick reply, and the full composer page.
 - **Prospecting**: prospect lists and campaigns with reply metrics, plus "Convert to lead".
 - **Projects**: table ↔ cards view with progress, budget used and projected margin. The project page has 11 tabs (overview, rooms & scope, tasks, Gantt timeline, selections & materials, budget & expenses, documents, photos, communications, estimates & invoices, notes), plus New/Edit project as a page and Record payment as a modal.
+- **Finance**:
+  - Estimate and invoice builder with catalog items, qty, price, discount and 7% sales tax; totals update live, with an Edit ↔ Preview switch.
+  - PDF-like preview with "Download PDF" (prints only the document).
+  - Status flow: send → accept/decline → convert to invoice → record partial or full payments → reminders.
+  - Expenses & POs with receipts and single or bulk approval.
+  - Reports: income vs expenses, receivables aging, profitability by project and the annual summary.
 
 ## Deployment
 
