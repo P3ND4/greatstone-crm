@@ -14,7 +14,12 @@
   transform: translateX(-100%); transition: transform var(--transition), width var(--transition);
 }
 .sidebar.is-open { transform: none; box-shadow: var(--shadow-3); }
-.sidebar-scrim { position: fixed; inset: 0; z-index: calc(var(--z-sidebar) - 1); background: rgba(23, 18, 0, .45); }
+.sidebar-scrim { position: fixed; inset: 0; z-index: calc(var(--z-sidebar) - 1); background: rgba(23, 18, 0, .45); animation: fade 140ms ease-out; }
+/* Mobile drawer sits ABOVE the sticky topbar (and its scrim covers the topbar too). */
+@media (max-width: 1023px) {
+  .sidebar { z-index: calc(var(--z-topbar) + 20); }
+  .sidebar-scrim { z-index: calc(var(--z-topbar) + 10); }
+}
 
 .sidebar__brand { display: flex; align-items: center; justify-content: space-between; gap: var(--sp-2); height: var(--topbar-row-h); padding: 0 var(--sp-4) 0 var(--sp-5); flex: none; }
 .wordmark { font-family: var(--font-display); font-weight: var(--fw-semibold); font-size: 21px; letter-spacing: -0.01em; color: var(--brand-contrast); white-space: nowrap; text-decoration: none; }

@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import useFocusTrap from '../../hooks/useFocusTrap.js';
+import useScrollLock from '../../hooks/useScrollLock.js';
 import { NavLink, useLocation } from 'react-router-dom';
 import { ChevronRight, ChevronsUpDown, PanelLeftClose, PanelLeftOpen, X } from 'lucide-react';
 import { NAV, NAV_FOOTER } from '../../app/navigation.js';
@@ -49,10 +51,20 @@ function NavItem({ item, collapsed, counts, onNavigate }) {
 
 export default function Sidebar({ open, collapsed, onClose, onToggleCollapse, counts = {} }) {
   const t = useT();
+  const ref = useRef(null);
+  // Mobile drawer behaves like a dialog: focus trapped inside, background scroll locked, Esc closes.
+  useFocusTrap(ref, open);
+  useScrollLock(open);
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onClose]);
   return (
     <>
       {open && <div className="sidebar-scrim" onClick={onClose} aria-hidden="true" />}
-      <aside className={cx('sidebar', open && 'is-open')} aria-label={t('nav.main')}>
+      <aside ref={ref} className={cx('sidebar', open && 'is-open')} aria-label={t('nav.main')} {...(open ? { role: 'dialog', 'aria-modal': 'true' } : {})}>
         <div className="sidebar__brand">
           <NavLink to="/" className="wordmark" aria-label="Greatstone CRM — Dashboard" onClick={onClose}>
             G<span className="wm-rest" style={{ color: 'inherit' }}>reatstone</span><span>.</span><small>CRM</small>

@@ -28,6 +28,7 @@ export default function AppLayout() {
   const { data: unreadData } = useResource(() => conversationsService.list({ filter: (c) => c.unread > 0, pageSize: 50 }), []);
   const unread = (unreadData?.items || []).map((c) => ({ ...c, contactName: lookupService.contact(c.contactId)?.name }));
   const closeSearch = useCallback(() => setSearchOpen(false), []);
+  const closeNav = useCallback(() => setNavOpen(false), []);
   const counts = { unread: unread.reduce((a, c) => a + c.unread, 0) };
   const hasSubmodules = Boolean(useActiveModule()?.children);
 
@@ -38,7 +39,7 @@ export default function AppLayout() {
         <Sidebar
           open={navOpen}
           collapsed={collapsed}
-          onClose={() => setNavOpen(false)}
+          onClose={closeNav}
           onToggleCollapse={() => setCollapsed((c) => !c)}
           counts={counts}
         />
