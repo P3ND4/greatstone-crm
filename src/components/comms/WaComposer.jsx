@@ -39,7 +39,7 @@ export default function WaComposer({ windowOpen, firstName, onSend }) {
           label={t('comms.templates')}
           trigger={(p) => <IconButton icon={Zap} label={t('comms.templates')} {...p} />}
         >
-          {(close) => TEMPLATES.whatsapp.map((tpl) => (
+          {(close) => TEMPLATES.whatsapp.filter((x) => x.status === 'approved').map((tpl) => (
             <button key={tpl.id} role="menuitem" type="button" className="menu__item" onClick={() => { useTemplate(tpl); close(); }}>
               <span style={{ minWidth: 0 }}><strong style={{ display: 'block', fontWeight: 500 }}>{tpl.name}</strong><span className="muted truncate" style={{ display: 'block', fontSize: 12, maxWidth: 260 }}>{tpl.body}</span></span>
             </button>

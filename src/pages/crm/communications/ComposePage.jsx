@@ -7,7 +7,7 @@ import RichTextEditor from '../../../components/ui/RichTextEditor.jsx';
 import useForm, { isEmail } from '../../../hooks/useForm.js';
 import { useT } from '../../../i18n/index.jsx';
 import { communicationsService, lookupService } from '../../../services/index.js';
-import { SIGNATURE, TEMPLATES } from '../../../services/communicationsService.js';
+import { signature, TEMPLATES } from '../../../services/communicationsService.js';
 
 const splitEmails = (v) => v.split(/[,;]\s*/).map((x) => x.trim()).filter(Boolean);
 const htmlToText = (html) => {
@@ -49,7 +49,7 @@ export default function ComposePage() {
         body: !htmlToText(v.body) && t('validation.required'),
       }),
       onSubmit: async (v) => {
-        const body = htmlToText(v.body) + (v.signature ? SIGNATURE : '');
+        const body = htmlToText(v.body) + (v.signature ? signature() : '');
         if (replyTo) await communicationsService.send(replyTo.id, { body });
         else await communicationsService.compose({ ...v, body });
         toast.show(t('comms.emailSent'));
@@ -114,7 +114,7 @@ export default function ComposePage() {
           <input type="checkbox" className="checkbox" checked={form.values.signature} onChange={(e) => form.set('signature', e.target.checked)} />
           {t('comms.includeSignature')}
         </label>
-        {form.values.signature && <p className="prose subtle" style={{ fontSize: 13, borderLeft: '2px solid var(--border)', paddingLeft: 12 }}>{SIGNATURE.trim()}</p>}
+        {form.values.signature && <p className="prose subtle" style={{ fontSize: 13, borderLeft: '2px solid var(--border)', paddingLeft: 12 }}>{signature().trim()}</p>}
         <div className="field-grid field-grid--2">
           <Field label={t('comms.attachments')} optional>
             <label className="btn btn--sm" style={{ alignSelf: 'flex-start' }}>

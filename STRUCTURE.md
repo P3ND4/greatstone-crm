@@ -6,10 +6,12 @@ greatstone-crm/
 ├─ docs/brief/          original prompt (PDF + text)
 ├─ docs/screenshots/
 └─ src/
-   ├─ main.jsx          providers (i18n, toasts) + router
+   ├─ main.jsx          providers (i18n, session, toasts) + router
    ├─ app/
    │  ├─ router.jsx     route map
-   │  └─ navigation.js  sidebar / palette nav config
+   │  ├─ navigation.js  sidebar / palette nav config
+   │  ├─ SessionProvider.jsx  signed-in user (mock), "view as" role, module access, theme, brand accent
+   │  └─ theme.js       brand accent presets
    ├─ styles/
    │  ├─ tokens.css     ← all design tokens (brand lives here)
    │  ├─ base.css       reset, typography, helpers (mobile-first)
@@ -19,9 +21,9 @@ greatstone-crm/
    ├─ components/
    │  ├─ ui/            Button, IconButton, Field, Input, Select, Textarea (auto-grow), DatePicker,
    │  │                 Card, Badge, Avatar, Tabs, SegmentedControl, Table, Pagination, Menu,
-   │  │                 Toast, EmptyState, Skeleton, DataState, Kpi, Kanban, RichTextEditor
+   │  │                 Toast, EmptyState, Skeleton, DataState, Kpi, Kanban, RichTextEditor, Switch
    │  ├─ shells/        FormShell · ModalShell · PageShell · FormPage · BackButton · ConfirmDialog
-   │  ├─ layout/        AppLayout · Sidebar (collapsible) · Topbar (2 rows) · ModuleNav (modules + submodules rows) · CommandPalette
+   │  ├─ layout/        AppLayout · Sidebar (collapsible) · Topbar (2 rows) · ModuleNav (modules + submodules rows) · CommandPalette · Access (NoAccess page, view-as banner)
    │  ├─ quick/         QuickActionsProvider + Task / Appointment / Note / Contact modals
    │  ├─ list/          ListToolbar · SearchInput · FilterSelect · ViewToggle
    │  ├─ crm/           shared cells (PersonCell, Score, StatusBadge, RowMenu, UserChip)
@@ -30,13 +32,13 @@ greatstone-crm/
    │  ├─ comms/         ChannelHeader · ConversationList · Bubbles · WaComposer · ContactPanel
    │  └─ charts/        ChartCard (with table view) · RevenueExpensesChart · HBarChart
    ├─ hooks/            useResource · useUrlState · useListState · useForm · useHotkey · useFocusTrap · useScrollLock · useCssVars
-   ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard · crm · communications · prospecting · projects · finance · ai · search · lookup
+   ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard · crm · communications · prospecting · projects · finance · ai · settings · search · lookup
    ├─ data/
-   │  ├─ mock/          core.js · people.js · users.js · prospecting.js · projectDetails.js · finance.js · ai.js   (never imported by components)
+   │  ├─ mock/          core.js · people.js · users.js · prospecting.js · projectDetails.js · finance.js · ai.js · settings.js   (never imported by components)
    │  ├─ constants.js   static option lists (neighborhoods, services, sources)
    │  └─ schema.md      entities → DB model
-   ├─ lib/              format (USD, dates) · money (exact cents) · random (seeded) · cx
-   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · projects/ (+ tabs/) · finance/ · ai/ · system/ (placeholder, 404)
+   ├─ lib/              format (USD, dates) · money (exact cents) · color (accent shades, contrast) · random (seeded) · cx
+   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · projects/ (+ tabs/) · finance/ · ai/ · settings/ (one file per section + shared SettingsForm/SaveBar) · system/ (404)
 ```
 
 ## Routes
@@ -63,7 +65,16 @@ greatstone-crm/
 | `/ai` | AI hub | ✅ |
 | `/ai/communications` · `/prospecting` · `/lead-finder` · `/patterns` · `/email-mining` · `/campaigns` (`?view=results\|config\|history`) | AI modules | ✅ |
 | `/ai/assistant` | AI assistant (full page; also floating panel everywhere) | ✅ |
-| `/settings` | Settings | placeholder |
+| `/settings` → `/settings/profile` | My profile & preferences (language, theme) | ✅ |
+| `/settings/organization` | Company letterhead, logo, brand color, regional | ✅ |
+| `/settings/users` | Team, invitations, permission matrix, view as role | ✅ |
+| `/settings/channels` | WhatsApp Business, email (signature), calendar | ✅ |
+| `/settings/templates?channel=` | WhatsApp / email templates | ✅ |
+| `/settings/catalog?q=&kind=&sort=` | Services & products for the builder | ✅ |
+| `/settings/billing` | Sales tax, terms, payment methods, reminders | ✅ |
+| `/settings/integrations` | Ad accounts, lead sources, planned (phase 2) | ✅ |
+| `/settings/ai` | Assistant, tone, data access, review, usage | ✅ |
+| `/settings/notifications` | Events × channels, digest, quiet hours | ✅ |
 
 ## Action → Modal or Page
 
@@ -104,3 +115,9 @@ Rule of thumb: a short, self-contained action with roughly 6 fields or fewer ope
 **Shared anatomy** (`FormShell`): fixed header (title + ✕ or Back) · body that scrolls vertically only · fixed footer (Cancel / Save + save state).
 Field grids collapse from 2 columns to 1 below 640px. Textareas auto-grow and then scroll internally.
 Validation is inline, focus goes to the first invalid field, **Esc** closes (it asks first if there are changes), **Ctrl/⌘+Enter** saves, focus is trapped, and background scroll is locked.
+| Settings sections (profile, organization, billing, channels, AI, notifications) | Page with sticky Save bar (`SettingsForm`) | — |
+| Invite user | Modal | sm |
+| New / edit catalog item | Modal | md |
+| New / edit template (with live preview) | Modal | lg |
+| Change a user's role · permission level | Inline select | — |
+| Revoke invitation · delete template / catalog item | Modal (`ConfirmDialog`) | sm |

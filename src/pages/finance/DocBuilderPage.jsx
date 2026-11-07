@@ -95,8 +95,9 @@ function DocBuilder({ kind, doc, editing }) {
     },
   );
   const { values, errors, bind } = form;
-  const totals = useMemo(() => documentTotals(values.lines, s.taxRate), [values.lines, s.taxRate]);
-  const preview = { ...doc, kind, client: lookupService.contact(values.clientId), project: lookupService.project(values.projectId), lines: values.lines, totals, terms: values.terms, notes: values.notes,
+  const rate = doc.taxRate ?? s.taxRate;
+  const totals = useMemo(() => documentTotals(values.lines, rate), [values.lines, rate]);
+  const preview = { ...doc, kind, client: lookupService.contact(values.clientId), project: lookupService.project(values.projectId), lines: values.lines, taxRate: rate, totals, terms: values.terms, notes: values.notes,
     ...(isInvoice ? { issuedAt: fromDate(values.date || toDate(new Date().toISOString())), dueAt: values.until && fromDate(values.until), paid: doc.paid || 0 } : { createdAt: values.date && fromDate(values.date), expiresAt: values.until && fromDate(values.until) }) };
 
   const onProject = (e) => {
@@ -144,8 +145,8 @@ function DocBuilder({ kind, doc, editing }) {
           <div className="form-section">
             <h3 className="form-section__title">{t('finance.sections.lines')}</h3>
             {errors.lines && <p className="field__error" role="alert">{errors.lines}</p>}
-            <LineEditor lines={values.lines} errors={lineErrors} onChange={(lines) => form.set('lines', lines)} />
-            <div className="builder-totals"><TotalsBox totals={totals} paid={isInvoice && doc.paid ? doc.paid : null} /></div>
+            <LineEditor lines={values.lines} taxRate={rate} errors={lineErrors} onChange={(lines) => form.set('lines', lines)} />
+            <div className="builder-totals"><TotalsBox totals={totals} rate={rate} paid={isInvoice && doc.paid ? doc.paid : null} /></div>
           </div>
 
           <div className="form-section">

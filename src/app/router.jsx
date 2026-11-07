@@ -31,12 +31,10 @@ import PatternsPage from '../pages/ai/PatternsPage.jsx';
 import EmailMiningPage from '../pages/ai/EmailMiningPage.jsx';
 import CampaignsPage from '../pages/ai/CampaignsPage.jsx';
 import AssistantPage from '../pages/ai/AssistantPage.jsx';
-import ModulePlaceholder from '../pages/system/ModulePlaceholder.jsx';
+import SettingsPage from '../pages/settings/SettingsPage.jsx';
 import NotFoundPage from '../pages/system/NotFoundPage.jsx';
 
-const ph = (section, titleKey, action) => <ModulePlaceholder section={section} titleKey={titleKey} action={action} />;
-
-/** Route map — see STRUCTURE.md. Placeholder routes are replaced module by module. */
+/** Route map — see STRUCTURE.md. */
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -87,7 +85,8 @@ export const router = createBrowserRouter([
       { path: 'ai/email-mining', element: <EmailMiningPage /> },
       { path: 'ai/campaigns', element: <CampaignsPage /> },
       { path: 'ai/assistant', element: <AssistantPage /> },
-      { path: 'settings', element: ph(null, 'nav.settings') },
+      { path: 'settings', element: <Navigate to="/settings/profile" replace /> },
+      { path: 'settings/:section', element: <SettingsPage /> },
 
       { path: '*', element: <NotFoundPage /> },
     ],

@@ -71,7 +71,7 @@ export default function DocDetailPage({ kind }) {
               <DocPreview doc={d} />
               <aside className="stack no-print">
                 <Card title={t('finance.summary')}>
-                  <TotalsBox totals={d.totals} paid={isInvoice ? d.paid : null} />
+                  <TotalsBox totals={d.totals} rate={d.taxRate} paid={isInvoice ? d.paid : null} />
                   <dl className="dl" style={{ marginTop: 16 }}>
                     <div><dt>{isInvoice ? t('contacts.issued') : t('finance.date')}</dt><dd>{date(isInvoice ? d.issuedAt : d.createdAt)}</dd></div>
                     <div><dt>{isInvoice ? t('contacts.due') : t('finance.validUntil')}</dt><dd>{date(isInvoice ? d.dueAt : d.expiresAt)}</dd></div>

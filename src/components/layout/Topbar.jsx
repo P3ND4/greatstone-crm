@@ -1,12 +1,13 @@
-import { Bell, CalendarPlus, CheckSquare, ChevronDown, FileText, LogOut, Menu as MenuIcon, Plus, Receipt, Search, SlidersHorizontal, StickyNote, User, UserPlus, Building2, Languages } from 'lucide-react';
+import { Eye, Bell, CalendarPlus, CheckSquare, ChevronDown, FileText, LogOut, Menu as MenuIcon, Plus, Receipt, Search, SlidersHorizontal, StickyNote, User, UserPlus, Building2, Languages } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../../i18n/index.jsx';
-import { lookupService } from '../../services/index.js';
 import { useQuickActions } from '../quick/QuickActionsProvider.jsx';
 import Avatar from '../ui/Avatar.jsx';
 import Button, { IconButton } from '../ui/Button.jsx';
 import Menu from '../ui/Menu.jsx';
 import { ModuleRow, SubmoduleRow } from './ModuleNav.jsx';
+import { useSession } from '../../app/SessionProvider.jsx';
+import { SETTINGS_META } from '../../services/index.js';
 
 /**
  * Two-row topbar.
@@ -17,7 +18,7 @@ import { ModuleRow, SubmoduleRow } from './ModuleNav.jsx';
 export default function Topbar({ onOpenNav, onOpenSearch, unread = [], counts }) {
   const { t, locale, setLocale } = useI18n();
   const quick = useQuickActions();
-  const me = lookupService.user('u_1');
+  const { user: me, role, realRole, setViewAs } = useSession();
   const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
 
   return (
@@ -82,11 +83,19 @@ export default function Topbar({ onOpenNav, onOpenSearch, unread = [], counts })
             {(close) => (
               <>
                 <div className="menu__label">{me?.name} · {me?.title}</div>
-                <Link role="menuitem" className="menu__item" to="/settings" onClick={close}><User />{t('topbar.profile')}</Link>
-                <Link role="menuitem" className="menu__item" to="/settings" onClick={close}><SlidersHorizontal />{t('topbar.preferences')}</Link>
+                <Link role="menuitem" className="menu__item" to="/settings/profile" onClick={close}><User />{t('topbar.profile')}</Link>
+                <Link role="menuitem" className="menu__item" to="/settings/organization" onClick={close}><SlidersHorizontal />{t('topbar.preferences')}</Link>
                 <button role="menuitem" type="button" className="menu__item" onClick={() => { setLocale(locale === 'en' ? 'es' : 'en'); close(); }}>
                   <Languages />{locale === 'en' ? 'Español' : 'English'}
                 </button>
+                <div className="menu__sep" />
+                <div className="menu__label">{t('settings.viewAs.menu')}</div>
+                {SETTINGS_META.roles.map((r) => (
+                  <button key={r} role="menuitemradio" aria-checked={role === r} type="button" className="menu__item" onClick={() => { setViewAs(r); close(); }}>
+                    <Eye aria-hidden="true" style={{ opacity: role === r ? 1 : 0 }} />
+                    {t(`roles.${r}`)}{r === realRole && <span className="subtle" style={{ marginLeft: 'auto', fontSize: 12 }}>{t('settings.viewAs.you')}</span>}
+                  </button>
+                ))}
                 <div className="menu__sep" />
                 <button role="menuitem" type="button" className="menu__item" onClick={close}><LogOut />{t('topbar.signOut')}</button>
               </>

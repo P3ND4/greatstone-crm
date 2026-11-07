@@ -22,3 +22,4 @@ export { crmService } from './crmService.js';
 export { projectsService } from './projectsService.js';
 export { financeService, estimatesApi, invoicesApi } from './financeService.js';
 export { aiService } from './aiService.js';
+export { settingsService, settingsSnapshot, SETTINGS_META } from './settingsService.js';

@@ -9,6 +9,7 @@ import { users } from '../data/mock/users.js';
 import * as pros from '../data/mock/prospecting.js';
 import * as fin from '../data/mock/finance.js';
 import * as ai from '../data/mock/ai.js';
+import * as st from '../data/mock/settings.js';
 
 const LATENCY = [180, 420];
 const tables = {
@@ -37,9 +38,19 @@ const tables = {
   adCampaigns: ai.adCampaigns,
   notes: [],
   users,
+  invites: st.invites,
 };
 
-export const settings = { finance: fin.financeSettings };
+/** Mutable settings objects (edited in Settings, read by services). */
+export const settings = {
+  finance: fin.financeSettings,
+  organization: st.organization,
+  permissions: st.permissions,
+  channels: st.channels,
+  templates: st.templates,
+  notifications: st.notifications,
+  ai: st.aiPreferences,
+};
 
 export function delay(value) {
   const ms = LATENCY[0] + Math.random() * (LATENCY[1] - LATENCY[0]);

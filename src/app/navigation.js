@@ -1,5 +1,6 @@
 // Single source for primary navigation (sidebar, command palette, breadcrumbs).
 import {
+  BellRing, Blocks, BrainCircuit, Building, Cable, CircleUser, MessageSquareQuote, Package, Percent, ShieldCheck,
   Bot, ChartSpline, LayoutGrid, MailSearch, Megaphone, MessageSquareText, Radar,
   BarChart3, Building2, CalendarDays, Contact, FileText, LayoutDashboard, MessagesSquare,
   Receipt, Settings, ShoppingCart, Sparkles, SquareKanban, Target, UserPlus, Users, Wallet,
@@ -44,7 +45,21 @@ export const NAV = [
 ];
 
 export const NAV_FOOTER = [
-  { id: 'settings', labelKey: 'nav.settings', to: '/settings', icon: Settings },
+  {
+    id: 'settings', labelKey: 'nav.settings', to: '/settings', icon: Settings,
+    children: [
+      { id: 'set-profile', labelKey: 'settings.nav.profile', to: '/settings/profile', icon: CircleUser },
+      { id: 'set-organization', labelKey: 'settings.nav.organization', to: '/settings/organization', icon: Building },
+      { id: 'set-users', labelKey: 'settings.nav.users', to: '/settings/users', icon: ShieldCheck },
+      { id: 'set-channels', labelKey: 'settings.nav.channels', to: '/settings/channels', icon: Cable },
+      { id: 'set-templates', labelKey: 'settings.nav.templates', to: '/settings/templates', icon: MessageSquareQuote },
+      { id: 'set-catalog', labelKey: 'settings.nav.catalog', to: '/settings/catalog', icon: Package },
+      { id: 'set-billing', labelKey: 'settings.nav.billing', to: '/settings/billing', icon: Percent },
+      { id: 'set-integrations', labelKey: 'settings.nav.integrations', to: '/settings/integrations', icon: Blocks },
+      { id: 'set-ai', labelKey: 'settings.nav.ai', to: '/settings/ai', icon: BrainCircuit },
+      { id: 'set-notifications', labelKey: 'settings.nav.notifications', to: '/settings/notifications', icon: BellRing },
+    ],
+  },
 ];
 
 /** Flat list of every navigable page (for the command palette). */

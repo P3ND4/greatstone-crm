@@ -36,7 +36,7 @@
 .org-switch__plan { font-size: 11px; color: var(--brand-muted); }
 .org-switch svg { width: 16px; height: 16px; color: var(--brand-muted); flex: none; }
 
-.nav { flex: 1; overflow-y: auto; padding: var(--sp-2) var(--sp-3) var(--sp-4); scrollbar-width: thin; scrollbar-color: var(--brand-3) transparent; }
+.nav { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: var(--sp-2) var(--sp-3) var(--sp-4); scrollbar-width: thin; scrollbar-color: var(--brand-3) transparent; }
 .nav__group + .nav__group { margin-top: var(--sp-1); }
 .nav__link {
   display: flex; align-items: center; gap: var(--sp-3); min-height: 38px; padding: 0 var(--sp-3);
@@ -55,6 +55,8 @@
 .nav__sub .nav__link.active { background: var(--brand-2); color: var(--brand-contrast); box-shadow: inset 2px 0 0 var(--accent); }
 .nav__badge { margin-left: auto; min-width: 20px; height: 18px; padding: 0 6px; border-radius: 9px; background: var(--accent); color: #fff; font-size: 11px; font-weight: var(--fw-semibold); display: grid; place-items: center; }
 
+.nav__bottom { margin-top: auto; padding-top: var(--sp-3); }
+.nav > .nav__link + .nav__group, .nav > .nav__group + .nav__link { margin-top: var(--sp-1); }
 .sidebar__foot { padding: var(--sp-3); border-top: 1px solid var(--brand-3); flex: none; }
 .sidebar__foot .nav__link { color: var(--brand-muted); }
 

@@ -28,13 +28,17 @@ function liveStatus(kind, d) {
   return d.status;
 }
 
+/** Each document keeps the tax rate it was created with (changing it in Settings only affects new ones). */
+const rateOf = (d) => d?.taxRate ?? settings.finance.taxRate;
+
 function enrich(kind, d) {
-  const t = documentTotals(d.lines || [], settings.finance.taxRate);
+  const t = documentTotals(d.lines || [], rateOf(d));
   const status = liveStatus(kind, d);
   return {
     ...d,
     kind,
     status,
+    taxRate: rateOf(d),
     totals: t,
     balance: kind === 'invoice' ? Math.round((t.total - (d.paid || 0)) * 100) / 100 : null,
     client: byId('contacts', d.clientId),
@@ -106,17 +110,18 @@ function docsApi(kind) {
         ...(kind === 'invoice'
           ? { issuedAt: today.toISOString(), dueAt: addDays(today, settings.finance.invoiceDueDays).toISOString(), paid: 0 }
           : { createdAt: today.toISOString(), expiresAt: addDays(today, settings.finance.estimateValidDays).toISOString() }),
-        lines: [], terms: settings.finance.defaultTerms, notes: settings.finance.defaultNotes,
+        lines: [], taxRate: settings.finance.taxRate, terms: settings.finance.defaultTerms, notes: settings.finance.defaultNotes,
       };
     },
     async save(data) {
-      const total = documentTotals(data.lines, settings.finance.taxRate).total;
+      const taxRate = data.id ? rateOf(byId(name, data.id)) : rateOf(data);
+      const total = documentTotals(data.lines, taxRate).total;
       if (data.id) {
         const d = byId(name, data.id);
-        Object.assign(d, data, { total });
+        Object.assign(d, data, { total, taxRate });
         return delay(enrich(kind, d));
       }
-      const row = { ...data, id: `${kind === 'invoice' ? 'inv' : 'est'}_${(seq += 1)}`, number: data.number || nextNumber(kind), total, paid: data.paid || 0 };
+      const row = { ...data, id: `${kind === 'invoice' ? 'inv' : 'est'}_${(seq += 1)}`, number: data.number || nextNumber(kind), taxRate, total, paid: data.paid || 0 };
       table(name).unshift(row);
       return delay(enrich(kind, row));
     },
@@ -146,12 +151,12 @@ export const financeService = {
     const e = byId('estimates', estimateId);
     e.status = 'accepted';
     const draft = invoicesApi.draft({ projectId: e.projectId, clientId: e.clientId });
-    return invoicesApi.save({ ...draft, estimateId, lines: e.lines.map((l, k) => ({ ...l, id: `ln_${Date.now()}_${k}` })), terms: e.terms, notes: e.notes });
+    return invoicesApi.save({ ...draft, taxRate: rateOf(e), estimateId, lines: e.lines.map((l, k) => ({ ...l, id: `ln_${Date.now()}_${k}` })), terms: e.terms, notes: e.notes });
   },
 
   async recordPayment(invoiceId, { amount, date, method, reference }) {
     const inv = byId('invoices', invoiceId);
-    const total = documentTotals(inv.lines, settings.finance.taxRate).total;
+    const total = documentTotals(inv.lines, rateOf(inv)).total;
     const paid = Math.round((inv.paid + Number(amount)) * 100) / 100;
     const iso = new Date(`${date}T12:00:00`).toISOString();
     Object.assign(inv, { paid, status: paid >= total - 0.001 ? 'paid' : 'partial', paidAt: paid >= total - 0.001 ? iso : inv.paidAt });

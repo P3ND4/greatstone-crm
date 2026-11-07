@@ -6,15 +6,18 @@ import useFocusTrap from '../../hooks/useFocusTrap.js';
 import { useT } from '../../i18n/index.jsx';
 import Button, { IconButton } from '../ui/Button.jsx';
 import AssistantChat from './AssistantChat.jsx';
+import { useSession } from '../../app/SessionProvider.jsx';
 
-/** Floating AI assistant (bottom-right) → side panel. Hidden on the full assistant page. */
+/** Floating AI assistant (bottom-right) → side panel. */
 export default function AssistantLauncher() {
   const t = useT();
   const { pathname } = useLocation();
+  const { assistantEnabled, access } = useSession();
   const [open, setOpen] = useState(false);
   const panel = useRef(null);
   useFocusTrap(panel, open);
-  if (pathname.startsWith('/ai/assistant')) return null;
+  // Hidden on the full assistant page, when turned off in Settings → AI, or when the role has no AI access.
+  if (pathname.startsWith('/ai/assistant') || !assistantEnabled || access('ai') === 'none') return null;
   return (
     <>
       {!open && (

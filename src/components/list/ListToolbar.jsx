@@ -17,7 +17,7 @@ export function SearchInput({ value, onChange, placeholder, label }) {
     <div className="input-group toolbar__search">
       <span className="input-group__icon"><Search aria-hidden="true" /></span>
       <input
-        className="input"
+        className="input input--icon"
         type="search"
         value={draft}
         onChange={(e) => setDraft(e.target.value)}

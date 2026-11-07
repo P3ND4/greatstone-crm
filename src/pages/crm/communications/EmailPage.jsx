@@ -12,7 +12,7 @@ import useResource from '../../../hooks/useResource.js';
 import { useT } from '../../../i18n/index.jsx';
 import { date, time } from '../../../lib/format.js';
 import { communicationsService, lookupService } from '../../../services/index.js';
-import { SIGNATURE } from '../../../services/communicationsService.js';
+import { signature } from '../../../services/communicationsService.js';
 import cx from '../../../lib/cx.js';
 
 const FOLDERS = [['inbox', Inbox], ['starred', Star], ['sent', Send], ['drafts', File], ['archive', Archive], ['trash', Trash2]];
@@ -39,7 +39,7 @@ export function EmailThread({ id, expanded, onChanged }) {
   const sendReply = async (e) => {
     e.preventDefault();
     if (!reply.trim()) return;
-    const msg = await communicationsService.send(id, { body: reply.trim() + SIGNATURE });
+    const msg = await communicationsService.send(id, { body: reply.trim() + signature() });
     setMsgs((m) => [...m, msg]);
     setReply('');
     toast.show(t('comms.replySent'));

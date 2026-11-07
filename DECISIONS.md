@@ -71,7 +71,7 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 
 ## Finance module
 - **Money math in integer cents** (`src/lib/money.js`). Each line is base (qty × price), minus discount %, plus tax if the line is taxable, rounded half-up **once per line**. Totals are the sum of the lines, so nothing is silently rounded. The UI always recomputes totals from the lines and never trusts a stored total. Checked by hand: 3 × $19.99 taxable + $0.10 taxable = **$64.28**.
-- **Sales tax 7%** (Florida 6% + Miami-Dade 1% surtax), applied per line (services usually non-taxable, materials and furniture taxable). It is a setting (`financeSettings.taxRate`) and will move to Settings. Confirm with the client's accountant.
+- **Sales tax 7%** (Florida 6% + Miami-Dade 1% surtax), applied per line (services usually non-taxable, materials and furniture taxable). It is edited in **Settings → Taxes & billing**. Each estimate/invoice stores the rate it was created with (`tax_rate`), so a new rate only affects new documents and historical totals never change. Confirm the rate with the client's accountant.
 - **Status flow.** Estimate: draft → sent → (viewed) → accepted / declined; expired is derived from the date. Invoice: draft → sent → partial → paid; overdue is derived when the due date has passed with a balance. "Convert to invoice" copies the lines into a new draft invoice linked to the estimate.
 - **Payments** are their own records (amount, date, method, reference). A payment can't exceed the balance.
 - **"Download PDF"** uses the browser's print to PDF with print-only CSS (letter size, only the document). A server-side PDF can replace it later without UI changes.
@@ -83,7 +83,29 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - Every AI screen shows a **"Demo data"** badge. Platform and ad-account connections are simulated: no credentials are requested or stored.
 - Each module uses the same `AiModuleShell`: Results · Configure · Run history, plus **Run now** with simulated progress. The view lives in the URL (`?view=`).
 - The assistant is intent matching (English and Spanish) over CRM data. Answers include deep links and suggested actions (open a filtered list, create an appointment…). It is available as a floating, non-blocking side panel on every screen and as a full page.
-- Global AI preferences (model, tone, data access) will live in Settings, as the brief requires.
+- Global AI preferences (assistant on/off, tone, reply language, data access, human review, schedule) live in **Settings → AI**. Turning the assistant off hides the floating button for everyone.
+
+## Settings module
+- **One page per section** (`/settings/:section`), listed in topbar row 2 and the sidebar like any other module. Sections with many fields are pages, short create/edit actions (invite user, catalog item, template) are modals — same rule as the rest of the app.
+- **Save pattern.** Editable sections use one `SettingsForm`: nothing is saved until **Save changes** in a sticky bar that only appears when there are changes; *Discard* restores the last saved values; leaving with unsaved changes asks first. List-type actions (role change, connect/disconnect, add catalog item, approve template) apply immediately with a toast, because they are single, reversible actions.
+- **Permissions.** Matrix of module × role with three levels: *no access*, *view*, *full*. Admin is always full. Default matrix:
+
+  | Module | Admin | Designer | Accounting | Viewer |
+  |---|---|---|---|---|
+  | Dashboard | full | full | full | view |
+  | CRM | full | full | view | view |
+  | Projects | full | full | view | view |
+  | Finance | full | view | full | none |
+  | AI | full | full | view | none |
+  | Settings | full | view | view | none |
+
+  In phase 1 the UI enforces *no access* (module page replaced by a "No access" state, AI assistant hidden) and *view* for Settings (read-only form). Hiding create/edit buttons per role in every module, and the real enforcement, come with the backend (Supabase RLS reading the same matrix). The navigation keeps showing every module so the team learns where things are; blocked ones explain why.
+- **"View as role"** is a demo/QA tool: it changes the role for this browser tab only (sessionStorage) and shows a banner with a way back. With real auth it becomes an admin-only "preview as" feature.
+- **Brand color.** Six presets that pass WCAG AA with white text, plus a custom hex with a live contrast check. Hover/strong/soft shades are derived (`src/lib/color.js`) and written as the same CSS variables as `tokens.css`; in dark theme the color is lightened until it keeps 4.5:1. The default olive is never overridden.
+- **Theme.** Light / dark / match system per user, remembered on the device. Dark uses the token overrides already in `tokens.css`.
+- **Templates.** WhatsApp templates follow Meta's rule: new or edited templates are "In review" and only approved ones appear in the composer (approval is simulated with *Mark approved (demo)*). Variables: `{first}`, `{date}`, `{number}`, `{project}`.
+- **Integrations.** No credentials are entered or stored anywhere in the demo. Supabase, QuickBooks, Stripe and DocuSign are listed as *Phase 2* so the backend can be designed with them in mind.
+- Settings live in memory like all mock data: a page reload restores the defaults (theme and sidebar state are the only things remembered per browser).
 
 ## Deployment
 - Railway + **Railpack**: Vite is auto-detected and served as a static SPA by Caddy. The custom `Caddyfile` keeps Railpack's defaults (JSON logs, trusted Railway proxy, `/health`, compression) and adds caching rules and security headers.
@@ -93,6 +115,6 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 
 ## Assumptions
 - Single organization ("Greatstone Design"). The org switcher is present but only lists one org.
-- Roles: admin, designer, accounting, viewer. The demo user is admin.
+- Roles: admin, designer, accounting, viewer. The demo user (Tessa Monroe) is admin; Mia Delgado is a viewer so every role has a person.
 - The UI language is English. `es.js` mirrors every key and is switchable from the user menu.
 - React 18.3 + React Router 6.30 + Vite 6 are used as stable, widely supported versions.

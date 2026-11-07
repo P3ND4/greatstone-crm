@@ -81,9 +81,12 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse, co
         </button>
         <nav className="nav" aria-label={t('nav.main')}>
           {NAV.map((item) => <NavItem key={item.id} item={item} collapsed={collapsed} counts={counts} onNavigate={onClose} />)}
+          {/* Settings sits at the bottom of the same scroll area, so its sections never squeeze the main modules. */}
+          <div className="nav__bottom">
+            {NAV_FOOTER.map((item) => <NavItem key={item.id} item={item} collapsed={collapsed} counts={counts} onNavigate={onClose} />)}
+          </div>
         </nav>
         <div className="sidebar__foot">
-          {NAV_FOOTER.map((item) => <NavItem key={item.id} item={item} collapsed={collapsed} counts={counts} onNavigate={onClose} />)}
           {/* Desktop only: one toggle that both collapses and expands (always visible in both states). */}
           <button
             type="button"

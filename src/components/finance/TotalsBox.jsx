@@ -1,11 +1,9 @@
 import { useT } from '../../i18n/index.jsx';
 import { money } from '../../lib/format.js';
-import { financeService } from '../../services/index.js';
 
 /** Subtotal · discount · tax · total (· paid · balance). Exact cents, tabular figures. */
-export default function TotalsBox({ totals, paid }) {
+export default function TotalsBox({ totals, paid, rate }) {
   const t = useT();
-  const rate = financeService.settings().taxRate;
   return (
     <dl className="totals">
       <div><dt>{t('finance.subtotal')}</dt><dd>{money(totals.subtotal)}</dd></div>

@@ -16,3 +16,4 @@ export { default as DataState } from './DataState.jsx';
 export { default as Menu } from './Menu.jsx';
 export { ToastProvider, useToast } from './Toast.jsx';
 export { default as Kpi } from './Kpi.jsx';
+export { default as Switch } from './Switch.jsx';

@@ -2,7 +2,7 @@
  * Conversations + messages for BOTH channels (whatsapp | email) with one shape,
  * so the WhatsApp Cloud API and Gmail/IMAP can be plugged in behind the same calls.
  */
-import { delay, table } from './client.js';
+import { delay, settings, table } from './client.js';
 
 const contactOf = (id) => table('contacts').find((c) => c.id === id) || null;
 const projectOf = (id) => table('projects').find((p) => p.id === id) || null;
@@ -82,16 +82,8 @@ export const communicationsService = {
   },
 };
 
-export const TEMPLATES = {
-  whatsapp: [
-    { id: 'wt_1', name: 'Visit confirmation', body: 'Hi {first}! Confirming our visit on {date}. Please let the front desk know we’re coming 😊' },
-    { id: 'wt_2', name: 'Follow-up estimate', body: 'Hi {first}, just checking in on the estimate — happy to walk you through it whenever works for you.' },
-    { id: 'wt_3', name: 'Install reminder', body: 'Reminder: the crew arrives tomorrow at 9 AM. Please reserve one parking spot for the truck.' },
-  ],
-  email: [
-    { id: 'et_1', name: 'Estimate sent', subject: 'Your estimate from Greatstone Design', body: 'Hi {first},\n\nAttached is the estimate we discussed. Let me know if you have any questions — I’m happy to review it together.\n\nWarmly,' },
-    { id: 'et_2', name: 'Welcome / next steps', subject: 'Welcome to Greatstone Design', body: 'Hi {first},\n\nThank you for trusting us with your home. Here are the next steps for your project:\n\n1. Site measure\n2. Concept & mood board\n3. Estimate & schedule\n\nWarmly,' },
-  ],
-};
+/** Message templates live in Settings → Templates (same objects, edited in place). */
+export const TEMPLATES = settings.templates;
 
-export const SIGNATURE = '\n\n—\nTessa Monroe · Greatstone Design\n(305) 555-0100 · Miami, FL';
+/** Email signature from Settings → Channels (prefixed with a blank line, ready to append). */
+export const signature = () => `\n\n${settings.channels.email.signature.trim()}`;

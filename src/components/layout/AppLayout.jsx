@@ -10,6 +10,8 @@ import Sidebar from './Sidebar.jsx';
 import Topbar from './Topbar.jsx';
 import { useActiveModule } from './ModuleNav.jsx';
 import cx from '../../lib/cx.js';
+import { NoAccess, ViewAsBanner } from './Access.jsx';
+import { useSession } from '../../app/SessionProvider.jsx';
 
 const COLLAPSE_KEY = 'gs.sidebarCollapsed';
 const readCollapsed = () => { try { return localStorage.getItem(COLLAPSE_KEY) === '1'; } catch { return false; } };
@@ -31,7 +33,11 @@ export default function AppLayout() {
   const closeSearch = useCallback(() => setSearchOpen(false), []);
   const closeNav = useCallback(() => setNavOpen(false), []);
   const counts = { unread: unread.reduce((a, c) => a + c.unread, 0) };
-  const hasSubmodules = Boolean(useActiveModule()?.children);
+  const activeModule = useActiveModule();
+  const hasSubmodules = Boolean(activeModule?.children);
+  const { access } = useSession();
+  // Module-level permission gate (role preview in Settings → Users & roles).
+  const blocked = access(activeModule?.id ?? (location.pathname === '/' ? 'dashboard' : null)) === 'none';
 
   return (
     <QuickActionsProvider>
@@ -52,7 +58,8 @@ export default function AppLayout() {
             counts={counts}
           />
           <main id="main" className="content" tabIndex={-1}>
-            <Outlet />
+            <ViewAsBanner />
+            {blocked ? <NoAccess module={activeModule} /> : <Outlet />}
           </main>
         </div>
         <CommandPalette open={searchOpen} onClose={closeSearch} />

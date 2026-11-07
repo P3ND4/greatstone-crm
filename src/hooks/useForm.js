@@ -14,6 +14,7 @@ export default function useForm(initialValues, { validate, onSubmit } = {}) {
   const dirty = useMemo(() => JSON.stringify(values) !== JSON.stringify(initial.current), [values]);
 
   const set = useCallback((name, value) => {
+    setSubmitted(false); // editing again after a save (forms that stay open, e.g. Settings)
     setValues((v) => ({ ...v, [name]: value }));
     setErrors((e) => (e[name] ? { ...e, [name]: undefined } : e));
   }, []);
@@ -47,8 +48,10 @@ export default function useForm(initialValues, { validate, onSubmit } = {}) {
   }, [values, validate, onSubmit]);
 
   const reset = useCallback(() => { setValues(initial.current); setErrors({}); }, []);
+  /** Replace values and baseline (e.g. after data reloads). */
+  const replace = useCallback((next) => { initial.current = next; setValues(next); setErrors({}); }, []);
 
-  return { values, errors, set, bind, submit, saving, dirty: dirty && !submitted, reset };
+  return { values, errors, set, bind, submit, saving, dirty: dirty && !submitted, reset, replace };
 }
 
 export const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(v || '').trim());

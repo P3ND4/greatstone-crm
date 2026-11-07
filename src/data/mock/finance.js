@@ -67,6 +67,7 @@ function linesFor(target, docId) {
 estimates.forEach((e) => {
   e.lines = linesFor(e.total, e.id);
   e.total = documentTotals(e.lines, financeSettings.taxRate).total;
+  e.taxRate = financeSettings.taxRate; // snapshot: later changes in Settings only affect new documents
   e.terms = financeSettings.defaultTerms;
   e.notes = financeSettings.defaultNotes;
 });
@@ -91,6 +92,7 @@ invoices.forEach((inv) => {
   inv.lines = linesFor(inv.total, inv.id);
   inv.total = documentTotals(inv.lines, financeSettings.taxRate).total;
   inv.paid = inv.status === 'paid' ? inv.total : Math.round(inv.total * ratio * 100) / 100;
+  inv.taxRate = financeSettings.taxRate;
   inv.terms = financeSettings.defaultTerms;
   inv.notes = financeSettings.defaultNotes;
   inv.remindersSent = inv.status === 'overdue' ? r.int(1, 2) : 0;

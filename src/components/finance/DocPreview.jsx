@@ -11,6 +11,7 @@ import TotalsBox from './TotalsBox.jsx';
 export default function DocPreview({ doc }) {
   const t = useT();
   const s = financeService.settings();
+  const rate = doc.taxRate ?? s.taxRate;
   const isInvoice = doc.kind === 'invoice';
   const issue = isInvoice ? doc.issuedAt : doc.createdAt;
   const until = isInvoice ? doc.dueAt : doc.expiresAt;
@@ -19,7 +20,9 @@ export default function DocPreview({ doc }) {
       {['paid', 'void', 'declined'].includes(doc.status) && <span className={`paper__stamp paper__stamp--${doc.status}`} aria-hidden="true">{t(`${isInvoice ? 'invoiceStatus' : 'estimateStatus'}.${doc.status}`)}</span>}
       <header className="paper__head">
         <div>
-          <p className="paper__brand">Greatstone<span>.</span></p>
+          {s.company.logo
+            ? <img className="paper__logo" src={s.company.logo} alt={s.company.name} />
+            : <p className="paper__brand">{String(s.company.name || 'Greatstone').split(' ')[0]}<span>.</span></p>}
           <p className="paper__muted">{s.company.tagline}</p>
           <p className="paper__muted">{s.company.city} · {s.company.phone}</p>
           <p className="paper__muted">{s.company.email}</p>
@@ -64,7 +67,7 @@ export default function DocPreview({ doc }) {
           <tbody>
             {doc.lines.length === 0 && <tr><td colSpan={4} className="paper__muted">{t('finance.noLines')}</td></tr>}
             {doc.lines.map((l) => {
-              const a = lineAmounts(l, s.taxRate);
+              const a = lineAmounts(l, rate);
               return (
                 <tr key={l.id}>
                   <td>
@@ -83,11 +86,11 @@ export default function DocPreview({ doc }) {
 
       <div className="paper__foot">
         <div className="paper__terms">
-          {doc.lines.some((l) => l.taxable) && <p className="paper__muted">* {t('finance.taxableNote', { rate: `${Math.round(s.taxRate * 1000) / 10}%` })}</p>}
+          {doc.lines.some((l) => l.taxable) && <p className="paper__muted">* {t('finance.taxableNote', { rate: `${Math.round(rate * 1000) / 10}%` })}</p>}
           {doc.terms && <><p className="paper__label">{t('finance.terms')}</p><p className="prose paper__small">{doc.terms}</p></>}
           {doc.notes && <p className="prose paper__small" style={{ marginTop: 8 }}>{doc.notes}</p>}
         </div>
-        <TotalsBox totals={doc.totals} paid={isInvoice ? doc.paid : null} />
+        <TotalsBox totals={doc.totals} rate={rate} paid={isInvoice ? doc.paid : null} />
       </div>
     </article>
   );

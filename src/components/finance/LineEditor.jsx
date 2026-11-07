@@ -13,9 +13,8 @@ export const newLine = () => ({ id: `ln_new_${Date.now()}_${(lineSeq += 1)}`, ca
  * Line-item editor. Desktop: aligned grid row per line. Small screens: each line becomes a stacked card
  * (same inputs, labels visible) — never horizontal scroll. errors: { [lineId]: { description, qty, unitPrice, discountPct } }
  */
-export default function LineEditor({ lines, onChange, errors = {} }) {
+export default function LineEditor({ lines, onChange, errors = {}, taxRate }) {
   const t = useT();
-  const taxRate = financeService.settings().taxRate;
   const catalog = financeService.catalog();
   const update = (id, patch) => onChange(lines.map((l) => (l.id === id ? { ...l, ...patch } : l)));
   const pick = (id, catalogId) => {

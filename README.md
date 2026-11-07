@@ -29,10 +29,10 @@ Requires Node 18+ (tested with Node 22).
 | 4 | Projects | ✅ |
 | 5 | Finance — Estimates, Invoices, Expenses & POs, Payments & Reports | ✅ |
 | 6 | AI — 7 modules (demo) + floating assistant | ✅ |
-| 7 | Settings | ⏳ |
+| 7 | Settings — profile, organization & brand, users & roles, channels, templates, catalog, taxes & billing, integrations, AI, notifications | ✅ |
 | 8 | Polish, a11y pass, final screenshots | ⏳ |
 
-Modules that are not built yet show a placeholder, so every route can already be opened.
+Every module in the brief is built. Step 8 is the final polish pass.
 
 ## Try it
 
@@ -53,6 +53,14 @@ Modules that are not built yet show a placeholder, so every route can already be
   - Status flow: send → accept/decline → convert to invoice → record partial or full payments → reminders.
   - Expenses & POs with receipts and single or bulk approval.
   - Reports: income vs expenses, receivables aging, profitability by project and the annual summary.
+- **Settings** (topbar row 2 / sidebar list the 10 sections):
+  - **Users & roles**: invite (modal), change a role inline, deactivate, revoke invitations, and edit the **permission matrix** (no access / view / full per module and role).
+  - **View as role**: user menu → *View as role (demo)* or Settings → Users & roles. Try **Viewer**: Finance and AI show a *No access* page, the AI button disappears and Settings is blocked; **Designer** sees Settings read-only.
+  - **Taxes & billing**: change the tax rate (e.g. 8.5%) → new estimates use it, existing documents keep the rate they were created with.
+  - **Organization**: company letterhead (printed on estimates/invoices), logo upload, **brand color** with a live preview and a contrast check, applied to the whole app on save.
+  - **My profile**: language and **light / dark / system theme**.
+  - **Templates** (WhatsApp templates go to "In review" and only approved ones appear in the composer), **Catalog** (used by the estimate builder), **Channels** (signature used by the email composer), **AI** (turn the assistant off, tone, data access, human review) and **Notifications** (events × in-app/email/push).
+  - Every editable section has a sticky **Save changes** bar and asks before leaving with unsaved changes.
 - **AI (demo, no model connected)**: a hub plus communication analysis (sentiment, topics, objections, response times, opportunities, at-risk), prospecting analysis (segments, best messages, next best action), Lead Finder (criteria, simulated platform connections, scheduled runs, results → Leads/Prospecting), pattern detection (seasonality, channels, LTV, best contact hours), email mining (referrals, cold threads, re-engagement), Campaigns & Ads (simulated Meta/Google connection, CPL, ROAS, audiences). Each module has **Run now**, Configure and Run history. The **AI assistant** is available as a floating button on every screen and as a full page.
 
 ## Deployment

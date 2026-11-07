@@ -7,8 +7,10 @@ Every table also gets `org_id` (multi-organization) plus `created_at` / `updated
 
 | Entity | Fields used by the UI |
 |---|---|
-| **organizations** | id, name, plan, logo_url, brand_colors |
-| **users** | id, name, email, role (`admin` \| `designer` \| `accounting` \| `viewer`), title, color |
+| **organizations** | id, name, legal_name, tagline, email, phone, website, address, city, state, zip, license, timezone, currency, default_language, accent (hex), logo_url, plan |
+| **users** | id, name, email, phone, role (`admin` \| `designer` \| `accounting` \| `viewer`), title, color, status (`active` \| `inactive`) · theme/language are per-user preferences |
+| **invitations** | id, email, role, sent_at, invited_by, accepted_at |
+| **role_permissions** | org_id, module (`dashboard` \| `crm` \| `projects` \| `finance` \| `ai` \| `settings`), role, level (`none` \| `view` \| `full`) — admin always `full`; mirrored by RLS policies |
 | **contacts** | id, type (`client` \| `partner` \| `referrer` \| `architect` \| `contractor`), first_name, last_name, name, email, phone, company, specialty, neighborhood, address, source, tags[], owner_id |
 | **partners** | contacts where type ∈ (partner, contractor); plus project_partners(project_id, contact_id, role) |
 | **leads** | id, first_name, last_name, name, email, phone, start_when (`asap` \| `1-3m` \| `3-6m` \| `6m+` \| `unsure`), description, source, referred_by_id → contacts, budget, service_type, neighborhood, score 0–100, status (`new` \| `contacted` \| `qualified` \| `converted` \| `disqualified`), assignee_id |
@@ -26,16 +28,19 @@ Every table also gets `org_id` (multi-organization) plus `created_at` / `updated
 | **project_notes** | id, project_id, body, author_id, created_at |
 | **tasks** | id, title, due_at, priority (`low` \| `medium` \| `high`), done, project_id, assignee_id, notes |
 | **selections** | id, project_id, room_id, category, item, unit, qty, unit_cost, vendor_id, lead_time_weeks, status (`proposed` \| `approved` \| `ordered` \| `delivered` \| `installed`), approved_at |
-| **estimates** | id, number, project_id, client_id, status (`draft` \| `sent` \| `viewed` \| `accepted` \| `declined`; `expired` derived), created_at, expires_at, terms, notes, total (cached; recomputed from lines); estimate_lines(id, estimate_id, position, catalog_id, description, unit, qty, unit_price, discount_pct, taxable) |
-| **invoices** | id, number, project_id, client_id, estimate_id, status (`draft` \| `sent` \| `partial` \| `paid`; `overdue` derived), issued_at, due_at, terms, notes, total (cached), paid (sum of payments), paid_at, reminders_sent, last_reminder_at; invoice_lines (same as estimate_lines) |
+| **estimates** | id, number, project_id, client_id, status (`draft` \| `sent` \| `viewed` \| `accepted` \| `declined`; `expired` derived), created_at, expires_at, tax_rate (snapshot at creation), terms, notes, total (cached; recomputed from lines); estimate_lines(id, estimate_id, position, catalog_id, description, unit, qty, unit_price, discount_pct, taxable) |
+| **invoices** | id, number, project_id, client_id, estimate_id, status (`draft` \| `sent` \| `partial` \| `paid`; `overdue` derived), issued_at, due_at, tax_rate (snapshot), terms, notes, total (cached), paid (sum of payments), paid_at, reminders_sent, last_reminder_at; invoice_lines (same as estimate_lines) |
 | **payments** | id, invoice_id, amount, date, method (`wire` \| `ach` \| `check` \| `card` \| `zelle`), reference |
 | **catalog_items** | id, kind (`service` \| `product`), name, unit, price, taxable |
-| **finance_settings** | org_id, tax_rate, tax_label, invoice_due_days, estimate_valid_days, default_terms, default_notes, company letterhead fields |
+| **finance_settings** | org_id, tax_rate, tax_label, invoice_due_days, estimate_valid_days, default_terms, default_notes, payment_methods[], payment_instructions, late_fee_pct, reminder_days[] · letterhead comes from organizations |
 | **expenses** | id, type (`expense` \| `po`), project_id (null = overhead), vendor_id → contacts, category, amount, date, status (`pending` \| `approved` \| `rejected`), receipt_url, approved_by |
 | **approvals** | id, kind (`estimate` \| `po` \| `selection` \| `changeOrder`), ref_id, project_id, amount, requested_at, decided_at, decided_by |
 | **communications** (conversations) | id, channel (`whatsapp` \| `email`), contact_id, project_id, subject, labels[], folder (`inbox` \| `sent` \| `drafts` \| `archive` \| `trash`; email only), starred, last_message, last_message_at, last_direction (`in` \| `out`), last_inbound_at (→ WhatsApp 24h window), unread, assignee_id, to/cc/bcc |
 | **messages** | id, conversation_id, channel, direction (`in` \| `out`), body, attachments[] {name,size,type,url}, status (`sent` \| `delivered` \| `read`), is_note, sent_at, author_id |
-| **templates** | id, channel, name, subject, body, approved (WhatsApp) |
+| **templates** | id, channel (`whatsapp` \| `email`), name, subject (email), body, status (`approved` \| `pending` \| `rejected`; WhatsApp only) |
+| **channel_settings** | org_id, channel (`whatsapp` \| `email` \| `calendar`), connected, account (number / address), settings(json: display name, business hours, away message, sender name, signature, track opens, sync, default duration, buffer) — tokens server-side only |
+| **notification_rules** | user_id, event, in_app, email, push · notification_prefs(user_id, digest, quiet_hours, quiet_from, quiet_to) |
+| **ai_settings** | org_id, assistant_enabled, tone, reply_language, human_review, data_access(json), schedule, monthly_credits |
 | **appointments** | id, type (`consultation` \| `siteVisit` \| `showroom` \| `virtual` \| `install`), title, start, duration_min, location, contact_id, project_id, assignee_id |
 | **notes** | id, body, project_id, contact_id, author_id |
 | **ai_runs** | id, module (`communications` \| `prospecting` \| `leadFinder` \| `patterns` \| `emailMining` \| `campaigns`), trigger (`manual` \| `scheduled`), status, started_at, duration_sec, items, params(json), results(json), note |
