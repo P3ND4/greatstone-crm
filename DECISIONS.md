@@ -107,6 +107,15 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - **Integrations.** No credentials are entered or stored anywhere in the demo. Supabase, QuickBooks, Stripe and DocuSign are listed as *Phase 2* so the backend can be designed with them in mind.
 - Settings live in memory like all mock data: a page reload restores the defaults (theme and sidebar state are the only things remembered per browser).
 
+## PWA (installable app)
+- Built with `vite-plugin-pwa` (Workbox). The service worker **precaches the app shell, every JS/CSS chunk, icons and the Latin font files** (~1.7 MB), so after the first visit the CRM opens instantly and fully offline (phase 1 data is bundled). Other font subsets are cached on first use. `/health` is excluded from the SPA fallback.
+- **Updates are prompted, never forced** (`registerType: 'prompt'`): a card offers *Reload* so nobody loses a half-filled form. Open tabs check for a new deploy every hour.
+- **Manifest**: standalone display, brand colors (`#171200` theme, `#FBFAF2` background), 192/512 icons + a maskable icon with a 20% safe zone, Apple touch icon, shortcuts (New lead, WhatsApp, Agenda, New estimate) and wide/narrow screenshots for the richer install dialog. Icons are generated from the brand wordmark ("G." in Work Sans with the olive-gold dot).
+- **Install button**: the browser's `beforeinstallprompt` is captured early (`src/app/pwa.js`) and exposed as *Install app* in the user menu and in Settings → My profile → This device. iOS has no install API, so it shows the Safari "Add to Home Screen" steps instead.
+- **Notifications**: phase 1 only asks for permission and can show a local test notification. Real push (new lead, new WhatsApp message) needs a push server with VAPID keys — phase 2, on the backend.
+- **Offline data in phase 2**: once Supabase is connected, API calls are network-first; offline writes (e.g. notes from a site visit) would need a queue (Workbox background sync). Not built in phase 1.
+- Caddy serves `sw.js` and the manifest with `no-cache` (so updates are detected) and the CSP allows `worker-src 'self'` and `manifest-src 'self'`.
+
 ## Deployment
 - Railway + **Railpack**: Vite is auto-detected and served as a static SPA by Caddy. The custom `Caddyfile` keeps Railpack's defaults (JSON logs, trusted Railway proxy, `/health`, compression) and adds caching rules and security headers.
 - The CSP is strict (`'self'` only) because phase 1 makes no external calls. `style-src` allows `'unsafe-inline'` because React inline `style` attributes are used. It was verified on all 26 routes with no CSP violations.

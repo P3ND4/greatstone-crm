@@ -1,4 +1,4 @@
-import { Eye, Bell, CalendarPlus, CheckSquare, ChevronDown, FileText, LogOut, Menu as MenuIcon, Plus, Receipt, Search, SlidersHorizontal, StickyNote, User, UserPlus, Building2, Languages } from 'lucide-react';
+import { Download, WifiOff, Eye, Bell, CalendarPlus, CheckSquare, ChevronDown, FileText, LogOut, Menu as MenuIcon, Plus, Receipt, Search, SlidersHorizontal, StickyNote, User, UserPlus, Building2, Languages } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '../../i18n/index.jsx';
 import { useQuickActions } from '../quick/QuickActionsProvider.jsx';
@@ -8,6 +8,7 @@ import Menu from '../ui/Menu.jsx';
 import { ModuleRow, SubmoduleRow } from './ModuleNav.jsx';
 import { useSession } from '../../app/SessionProvider.jsx';
 import { SETTINGS_META } from '../../services/index.js';
+import { usePwa } from '../../app/pwa.js';
 
 /**
  * Two-row topbar.
@@ -19,6 +20,7 @@ export default function Topbar({ onOpenNav, onOpenSearch, unread = [], counts })
   const { t, locale, setLocale } = useI18n();
   const quick = useQuickActions();
   const { user: me, role, realRole, setViewAs } = useSession();
+  const pwa = usePwa();
   const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
 
   return (
@@ -27,6 +29,7 @@ export default function Topbar({ onOpenNav, onOpenSearch, unread = [], counts })
         <IconButton className="topbar__menu" icon={MenuIcon} label={t('nav.openMenu')} onClick={onOpenNav} />
         <ModuleRow />
         <div className="topbar__actions">
+          {!pwa.online && <span className="offline-pill" role="status" title={t('pwa.offlineHint')}><WifiOff aria-hidden="true" /><span className="hide-mobile">{t('pwa.offline')}</span><span className="sr-only">{t('pwa.offlineHint')}</span></span>}
           <button type="button" className="search-trigger" onClick={onOpenSearch} aria-label={`${t('topbar.searchShort')} (${isMac ? '⌘' : 'Ctrl'}+K)`} title={`${t('topbar.searchShort')} (${isMac ? '⌘' : 'Ctrl'}+K)`}>
             <Search aria-hidden="true" />
             <span className="label">{t('topbar.searchShort')}</span>
@@ -85,6 +88,9 @@ export default function Topbar({ onOpenNav, onOpenSearch, unread = [], counts })
                 <div className="menu__label">{me?.name} · {me?.title}</div>
                 <Link role="menuitem" className="menu__item" to="/settings/profile" onClick={close}><User />{t('topbar.profile')}</Link>
                 <Link role="menuitem" className="menu__item" to="/settings/organization" onClick={close}><SlidersHorizontal />{t('topbar.preferences')}</Link>
+                {!pwa.installed && (pwa.canInstall
+                  ? <button role="menuitem" type="button" className="menu__item" onClick={() => { close(); pwa.install(); }}><Download />{t('pwa.install')}</button>
+                  : <Link role="menuitem" className="menu__item" to="/settings/profile#device" onClick={close}><Download />{t('pwa.install')}</Link>)}
                 <button role="menuitem" type="button" className="menu__item" onClick={() => { setLocale(locale === 'en' ? 'es' : 'en'); close(); }}>
                   <Languages />{locale === 'en' ? 'Español' : 'English'}
                 </button>

@@ -1,3 +1,4 @@
+import './app/pwa.js'; // first: catches the install prompt event early
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { DataState, Field, Input, Select, SkeletonList, Switch } from '../../components/ui/index.js';
 import useResource from '../../hooks/useResource.js';
 import { useT } from '../../i18n/index.jsx';
@@ -63,7 +64,7 @@ export default function NotificationsSettings() {
                         </tbody>
                       </table>
                     </div>
-                    <p className="field__hint" style={{ marginTop: 12 }}>{t('settings.notifications.pushNote')}</p>
+                    <p className="field__hint" style={{ marginTop: 12 }}>{t('settings.notifications.pushNote')} <Link to="/settings/profile#device">{t('settings.notifications.setupDevice')}</Link></p>
                   </SettingsSection>
 
                   <SettingsSection title={t('settings.notifications.delivery')} description={t('settings.notifications.deliveryDesc')}>

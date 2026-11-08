@@ -2,7 +2,8 @@
 
 ```
 greatstone-crm/
-├─ index.html · vite.config.js · vercel.json (SPA rewrite)
+├─ index.html · vite.config.js (React + PWA manifest/Workbox) · vercel.json (SPA rewrite)
+├─ public/              favicon.svg · icons/ (PWA + Apple touch icons) · screenshots/ (install dialog)
 ├─ docs/brief/          original prompt (PDF + text)
 ├─ docs/screenshots/
 └─ src/
@@ -10,6 +11,7 @@ greatstone-crm/
    ├─ app/
    │  ├─ router.jsx     route map
    │  ├─ navigation.js  sidebar / palette nav config
+   │  ├─ pwa.js         install prompt, installed/online state, local notifications
    │  ├─ SessionProvider.jsx  signed-in user (mock), "view as" role, module access, theme, brand accent
    │  └─ theme.js       brand accent presets
    ├─ styles/
@@ -23,7 +25,7 @@ greatstone-crm/
    │  │                 Card, Badge, Avatar, Tabs, SegmentedControl, Table, Pagination, Menu,
    │  │                 Toast, EmptyState, Skeleton, DataState, Kpi, Kanban, RichTextEditor, Switch
    │  ├─ shells/        FormShell · ModalShell · PageShell · FormPage · BackButton · ConfirmDialog
-   │  ├─ layout/        AppLayout · Sidebar (collapsible) · Topbar (2 rows) · ModuleNav (modules + submodules rows) · CommandPalette · Access (NoAccess page, view-as banner)
+   │  ├─ layout/        AppLayout · Sidebar (collapsible) · Topbar (2 rows) · ModuleNav (modules + submodules rows) · CommandPalette · Access (NoAccess page, view-as banner) · PwaStatus (service worker: offline ready / new version)
    │  ├─ quick/         QuickActionsProvider + Task / Appointment / Note / Contact modals
    │  ├─ list/          ListToolbar · SearchInput · FilterSelect · ViewToggle
    │  ├─ crm/           shared cells (PersonCell, Score, StatusBadge, RowMenu, UserChip)

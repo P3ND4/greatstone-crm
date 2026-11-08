@@ -1,6 +1,9 @@
-import { Monitor, Moon, Sun } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { Bell, CheckCircle2, Download, Monitor, Moon, Share, SquarePlus, Sun, WifiOff } from 'lucide-react';
+import { notificationPermission, showLocalNotification, usePwa } from '../../app/pwa.js';
 import { useSession } from '../../app/SessionProvider.jsx';
-import { Avatar, Badge, DataState, Field, Input, Select, SkeletonList } from '../../components/ui/index.js';
+import { Avatar, Badge, Button, DataState, Field, Input, Select, SkeletonList, useToast } from '../../components/ui/index.js';
 import { isEmail, isPhone } from '../../hooks/useForm.js';
 import useResource from '../../hooks/useResource.js';
 import { useI18n } from '../../i18n/index.jsx';
@@ -13,6 +16,68 @@ const THEMES = [
   { value: 'dark', icon: Moon },
   { value: 'system', icon: Monitor },
 ];
+
+/** "This device": install as an app, local notifications, offline. Not part of the form (acts immediately). */
+function DeviceSection() {
+  const { t } = useI18n();
+  const toast = useToast();
+  const pwa = usePwa();
+  const { hash } = useLocation();
+  const ref = useRef(null);
+  const [perm, setPerm] = useState(notificationPermission);
+  useEffect(() => { if (hash === '#device') ref.current?.scrollIntoView({ block: 'start' }); }, [hash]);
+
+  const install = async () => {
+    const outcome = await pwa.install();
+    if (outcome === 'accepted') toast.show(t('pwa.installed'));
+  };
+  const enable = async () => {
+    const result = await Notification.requestPermission();
+    setPerm(result);
+    if (result === 'granted') await showLocalNotification('Greatstone CRM', t('pwa.testBody'));
+  };
+  return (
+    <div id="device" ref={ref} className="set-anchor">
+      <SettingsSection title={t('pwa.deviceTitle')} description={t('pwa.deviceDesc')}>
+        <div className="device-row">
+          <span className="device-row__icon" aria-hidden="true"><Download /></span>
+          <div className="grow" style={{ minWidth: 0 }}>
+            <p className="device-row__title">{t('pwa.appTitle')}</p>
+            <p className="device-row__desc">
+              {pwa.installed ? t('pwa.appInstalled') : pwa.canInstall ? t('pwa.appCan') : pwa.isIOS ? t('pwa.appIos') : t('pwa.appManual')}
+            </p>
+            {!pwa.installed && pwa.isIOS && (
+              <ol className="ios-steps">
+                <li><Share aria-hidden="true" />{t('pwa.ios1')}</li>
+                <li><SquarePlus aria-hidden="true" />{t('pwa.ios2')}</li>
+              </ol>
+            )}
+          </div>
+          {pwa.installed
+            ? <Badge tone="success" icon={CheckCircle2}>{t('pwa.installedBadge')}</Badge>
+            : pwa.canInstall && <Button variant="primary" size="sm" icon={Download} onClick={install}>{t('pwa.install')}</Button>}
+        </div>
+        <div className="device-row">
+          <span className="device-row__icon" aria-hidden="true"><Bell /></span>
+          <div className="grow" style={{ minWidth: 0 }}>
+            <p className="device-row__title">{t('pwa.notifTitle')}</p>
+            <p className="device-row__desc">{t(`pwa.notif.${perm}`)}</p>
+          </div>
+          {perm === 'default' && <Button size="sm" icon={Bell} onClick={enable}>{t('pwa.enable')}</Button>}
+          {perm === 'granted' && <Button size="sm" variant="ghost" onClick={() => showLocalNotification('Greatstone CRM', t('pwa.testBody'))}>{t('pwa.test')}</Button>}
+        </div>
+        <div className="device-row">
+          <span className="device-row__icon" aria-hidden="true"><WifiOff /></span>
+          <div className="grow" style={{ minWidth: 0 }}>
+            <p className="device-row__title">{t('pwa.offlineTitle')}</p>
+            <p className="device-row__desc">{t('pwa.offlineDesc')}</p>
+          </div>
+          <Badge tone={pwa.online ? 'success' : 'warning'} dot>{pwa.online ? t('pwa.online') : t('pwa.offline')}</Badge>
+        </div>
+      </SettingsSection>
+    </div>
+  );
+}
 
 /** My profile & preferences (language, theme). Theme is remembered per browser. */
 export default function ProfileSettings() {
@@ -81,6 +146,7 @@ export default function ProfileSettings() {
           </SettingsForm>
         )}
       </DataState>
+      {data && <div style={{ marginTop: 24 }}><DeviceSection /></div>}
     </>
   );
 }

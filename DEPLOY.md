@@ -47,6 +47,10 @@ None are required in phase 1 (mock data only). `PORT` is injected by Railway.
 When the backend is connected later, add the `VITE_*` variables in Railway. Vite reads them **at build time**, so redeploy after changing them.
 Also add the API/Supabase origins to `connect-src` (and to `img-src` for storage) in the `Content-Security-Policy` line of `Caddyfile`.
 
+## PWA
+
+The build outputs `sw.js`, `workbox-*.js` and `manifest.webmanifest` in `dist/`. The `Caddyfile` already serves them correctly (`no-cache`, manifest MIME type, CSP `worker-src`/`manifest-src`). After each deploy, open tabs and installed apps show "New version available → Reload". Installing requires HTTPS, which the Railway domain provides.
+
 ## Notes
 
 - `railway.json` / `railway.toml` (Config as Code) is deprecated on Railway and new services can't opt into it, so this repo doesn't include one. The healthcheck is set in the dashboard. If you want file-based infra later, use Railway's Infrastructure as Code (`railway config init`).

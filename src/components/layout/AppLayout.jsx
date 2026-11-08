@@ -11,6 +11,7 @@ import Topbar from './Topbar.jsx';
 import { useActiveModule } from './ModuleNav.jsx';
 import cx from '../../lib/cx.js';
 import { NoAccess, ViewAsBanner } from './Access.jsx';
+import PwaStatus from './PwaStatus.jsx';
 import { useSession } from '../../app/SessionProvider.jsx';
 
 const COLLAPSE_KEY = 'gs.sidebarCollapsed';
@@ -64,6 +65,7 @@ export default function AppLayout() {
         </div>
         <CommandPalette open={searchOpen} onClose={closeSearch} />
         <AssistantLauncher />
+        <PwaStatus />
         <ScrollRestoration />
       </div>
     </QuickActionsProvider>
