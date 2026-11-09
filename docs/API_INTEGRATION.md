@@ -212,17 +212,19 @@ Each row: current function → suggested REST endpoint → Supabase equivalent. 
 | `prospectingService.update(ids, patch)` | `PATCH /prospects { ids, patch }` (bulk) | `update().in('id', ids)` |
 | `prospectingService.convertToLead(id)` | `POST /prospects/:id/convert` → lead | RPC `convert_prospect(id)` (transaction) |
 
-### Communications (WhatsApp + email)
+### Communications (WhatsApp, SMS and email)
 
 | Service function | REST | Supabase |
 |---|---|---|
 | `communicationsService.list({ channel, q, folder, label, starred, unread, assigneeId })` | `GET /conversations?...` | `from('conversations')` |
+| `unreadByChannel()` | `GET /conversations/unread` → `{ whatsapp, sms, email }` | view / RPC |
 | `counts(channel)` | `GET /conversations/counts?channel=` | view / RPC |
 | `thread(id)` | `GET /conversations/:id/messages` | `from('messages').eq('conversation_id', id)` |
 | `markRead(id)` | `POST /conversations/:id/read` | `update unread = 0` |
 | `send(id, { body, isNote, attachments })` | `POST /conversations/:id/messages` | Edge Function `send-message` |
 | `update(ids, patch)` (archive, star, label…) | `PATCH /conversations` (bulk) | `update().in('id', ids)` |
 | `compose({ to, cc, bcc, subject, body, draft })` | `POST /emails` | Edge Function `send-email` |
+| `recordSmsConsent(contactId, { source, note })` | `POST /contacts/:id/sms-consent` | insert `sms_consent_events` + update `contacts.sms_consent` |
 
 - **Sending never happens from the browser.** The server calls the WhatsApp Cloud API / Gmail or Microsoft Graph with tokens stored server-side (Settings → Channels only shows the connection state).
 - **Inbound:** WhatsApp / email webhooks → server stores the message → Realtime pushes it to the UI. In the UI, subscribe in `WhatsAppPage` / `EmailPage` and call `refetch()`:
@@ -233,6 +235,24 @@ useEffect(() => {
   return () => supabase.removeChannel(ch);
 }, [refetch]);
 ```
+
+#### SMS (Twilio, Telnyx, Vonage or Bandwidth)
+
+What the UI already does: it shows the consent state, blocks replies after STOP, adds the brand name and opt-out footer to the first text, holds texts during quiet hours (`status: 'scheduled'`, `scheduledFor`), counts segments (`src/lib/sms.js`) and allows images as MMS. With a real provider:
+
+1. **Number + registration.** Buy a local number and register the **A2P 10DLC** brand and campaign (or verify a toll-free number). US carriers filter unregistered business traffic. Show the real statuses in Settings → Channels (`registration.brand / campaign`).
+2. **Sending** (`send(id, { body, attachments })` for an `sms` conversation): the server applies the same rules as the mock, and is the authority for them:
+   - refuse with `409 { code: 'opted_out' }` if the contact opted out;
+   - add prefix and footer on the first outbound text;
+   - during quiet hours, store the message as `scheduled` and send it from a job at `quietTo` (recipient's time zone; use the contact's area code or address if you have it);
+   - call the provider (e.g. Twilio `POST /Messages` with `From`, `To`, `Body`, `MediaUrl` for MMS, `StatusCallback`);
+   - save `provider_message_id` and `segments`.
+3. **Inbound webhook** (`POST /webhooks/sms`, validate the provider signature, e.g. `X-Twilio-Signature`): find the contact by phone (E.164), append the message to its `sms` conversation (create it if new, as an unknown contact or new lead) and push it with Realtime.
+   - Keywords: **STOP**/STOPALL/UNSUBSCRIBE/CANCEL/END/QUIT → `opted_out` + STOP reply; **START**/YES/UNSTOP → `opted_in` (source `reply_start`) + START reply; **HELP**/INFO → HELP reply. Record each change in `sms_consent_events`.
+   - If the provider's own "Advanced Opt-Out" is on, it sends the replies itself. Then only record the consent change.
+4. **Status callbacks** (`POST /webhooks/sms/status`): update `messages.status` (`sent` → `delivered` / `failed`, with the error code). Show `failed` as a red tick in the bubble.
+5. **Consent proof:** keep `sms_consent_events` (who, when, how, note). Web forms that collect phone numbers need an unchecked "I agree to receive texts" box + the disclosure text. Store that as `source: 'web_form'`.
+6. **Never** put provider credentials (Account SID / auth token / API key) in `VITE_*` variables.
 
 - The **24-hour WhatsApp window** is computed from `last_inbound_at`. Only templates with `status = 'approved'` can be sent outside it (the composer already filters them).
 - Templates and the email signature come from Settings (`settingsService.templates()` / `channels()`).
@@ -337,7 +357,7 @@ Today the logo is a data URL in memory and receipts/documents store only a file 
 3. ☐ **Auth:** replace `authService`; make `SessionProvider` async (`loading` splash); handle `401`; build `/reset-password` and `/accept-invite`.
 4. ☐ Load the **reference cache** after sign-in: lookups, settings, permission matrix.
 5. ☐ Generic CRUD: replace `createCrudService` with a real implementation that follows the list contract (one file for all tables).
-6. ☐ Module by module (suggested order): Contacts & Leads → Pipeline & Agenda → Projects → Finance → Communications (webhooks + Realtime) → Prospecting → Settings → AI.
+6. ☐ Module by module (suggested order): Contacts & Leads → Pipeline & Agenda → Projects → Finance → Communications (webhooks + Realtime; for SMS start the number + A2P 10DLC registration early, approval takes days) → Prospecting → Settings → AI.
    Use `VITE_DATA_SOURCE` (or a per-service flag) to keep the rest on mocks while you migrate.
 7. ☐ Move computed data to the server: project metrics, dashboard, finance summary and reports, AI analyses.
 8. ☐ Enforce permissions with RLS / middleware; test with each demo role.

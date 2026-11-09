@@ -64,6 +64,18 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - "Budget risk" = active project where budget used − progress > 10 points.
 - Services simulate 180–420 ms of latency, so skeletons and loading states are exercised.
 
+## SMS (US clients text more than they email)
+- A third channel next to WhatsApp and Email, with the same inbox UI (`MessagingPage` serves WhatsApp and SMS). Each conversation keeps one shape (`channel: 'sms'`), so a provider (Twilio, Telnyx, Vonage, Bandwidth) plugs in behind `communicationsService` like the others.
+- **Compliance built into the UI** (US carriers + TCPA/CTIA):
+  - **Consent per contact** (`contact.smsConsent`: `opted_in` · `unknown` · `opted_out`, plus source, date and who recorded it). With no consent you can reply, but reminders and offers need consent first ("Record consent" in the contact panel).
+  - **STOP** blocks texting, and the service refuses too (409 `opted_out`). Only the client can undo it by replying START. Auto-replies for STOP / HELP / START are editable.
+  - **First text** of a conversation gets the brand name and the opt-out footer automatically.
+  - **Quiet hours** (default 9 PM–8 AM, recipient's local time): texts written then are scheduled for the morning, never sent at night.
+  - **Carrier registration** (A2P 10DLC brand + campaign) is shown in Settings with its status. Toll-free numbers are also supported.
+- **Segment counter**: GSM-7 = 160 characters (153 per part), any emoji or special character switches to Unicode = 70 (67 per part). The composer and the template editor show "N characters · N SMS · encoding", because carriers bill per segment (`src/lib/sms.js`).
+- **MMS**: images up to 5 MB (can be turned off in Settings).
+- Mock: 8 fictional SMS threads (reminder with "C" confirm, showroom address, photo by MMS, an opt-out by STOP, a new lead with no consent…), all generated with their own seed so the rest of the demo data stays identical.
+
 ## Projects module
 - **Projected margin** = (contract value − estimated cost at completion) ÷ contract value. Estimated cost = `max(budget, spent ÷ progress)` once progress ≥ 10%, otherwise the budget. Shown as red under 10%, amber under 18% and green otherwise, always with the number.
 - **At budget risk** = budget used − progress > 10 points. The same rule is used on the Dashboard.

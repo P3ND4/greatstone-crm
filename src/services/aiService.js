@@ -117,7 +117,7 @@ export const aiService = {
         negative: rows.filter((r) => r.sentiment === 'negative').length,
         atRisk: rows.filter((r) => r.atRisk).length,
       },
-      responseTimes: [responseTimes('whatsapp'), responseTimes('email')],
+      responseTimes: [responseTimes('whatsapp'), responseTimes('email'), responseTimes('sms')],
       topics: count('topics'),
       objections: count('objections'),
       opportunities: rows.filter((r) => r.opportunities.length).slice(0, 6),
@@ -301,7 +301,7 @@ export const aiService = {
         items: rows.slice(0, 5).map((l) => ({ label: l.name, meta: `${l.neighborhood} · ${l.score}`, to: `/crm/leads/${l.id}` })),
         actions: [{ key: 'openLeads', to: '/crm/leads?status=new&sort=score:desc' }, { key: 'runLeadFinder', to: '/ai/lead-finder' }] };
     }
-    if (/(message|mensaje|reply|respond|whatsapp|email|correo)/.test(q)) {
+    if (/(message|mensaje|reply|respond|whatsapp|email|correo|sms|text)/.test(q)) {
       const rows = table('conversations').filter((c) => c.lastDirection === 'in').sort((a, b) => a.lastMessageAt.localeCompare(b.lastMessageAt));
       return { key: 'unanswered', vars: { n: rows.length },
         items: rows.slice(0, 5).map((c) => ({ label: byId('contacts', c.contactId)?.name, meta: c.channel, to: `/crm/communications/${c.channel}?c=${c.id}` })),

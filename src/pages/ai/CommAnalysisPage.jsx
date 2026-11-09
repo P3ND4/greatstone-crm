@@ -1,3 +1,4 @@
+import ChannelBadge from '../../components/comms/ChannelBadge.jsx';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, CheckSquare, Clock, Frown, Lightbulb, Meh, MessageCircle, Smile } from 'lucide-react';
 import AiModuleShell from '../../components/ai/AiModuleShell.jsx';
@@ -30,7 +31,7 @@ export default function CommAnalysisPage() {
             <div className="summary-strip">
               <Kpi icon={MessageCircle} label={t('ai.comms.analyzed')} value={number(tot.conversations)} />
               <Kpi icon={Smile} label={t('ai.comms.sentimentMix')} value={percent(tot.positive / tot.conversations)} meta={t('ai.comms.mix', { pos: tot.positive, neu: tot.neutral, neg: tot.negative })} />
-              <Kpi icon={Clock} label={t('ai.comms.medianResponse')} value={fmtMin(data.responseTimes[0].medianMin, t)} meta={`${t('channels.whatsapp')} · ${t('channels.email')}: ${fmtMin(data.responseTimes[1].medianMin, t)}`} />
+              <Kpi icon={Clock} label={t('ai.comms.medianResponse')} value={fmtMin(data.responseTimes[0].medianMin, t)} meta={`${t('channels.whatsapp')} · ${t('channels.sms')}: ${fmtMin(data.responseTimes[2].medianMin, t)} · ${t('channels.email')}: ${fmtMin(data.responseTimes[1].medianMin, t)}`} />
               <Kpi icon={AlertTriangle} label={t('ai.comms.atRisk')} value={number(tot.atRisk)} metaTone={tot.atRisk ? 'alert' : undefined} meta={t('ai.comms.atRiskHint')} />
             </div>
             <div className="grid grid-3">
@@ -95,7 +96,7 @@ export default function CommAnalysisPage() {
                 {data.summaries.map((s) => (
                   <li key={s.id}>
                     <Link className="list-item" to={`/crm/communications/${s.channel}?c=${s.id}`} style={{ alignItems: 'flex-start' }}>
-                      <Badge tone={s.channel === 'whatsapp' ? 'success' : 'info'}>{t(`channels.${s.channel}`)}</Badge>
+                      <ChannelBadge channel={s.channel} />
                       <div className="list-item__main">
                         <p className="list-item__title">{s.contact?.name}{s.subject ? ` — ${s.subject}` : ''}</p>
                         <p className="list-item__meta" style={{ whiteSpace: 'normal' }}>

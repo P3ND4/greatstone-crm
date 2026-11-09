@@ -53,6 +53,7 @@ greatstone-crm/
 | `/login?next=` · `/forgot-password` | Sign in (demo accounts) · reset password — public | ✅ |
 | `/` | Dashboard (`?range=`) | ✅ |
 | `/crm/communications/whatsapp?c=&f=&q=` | WhatsApp inbox (list · thread · contact panel) | ✅ |
+| `/crm/communications/sms?c=&f=&q=` | SMS / MMS inbox (consent, STOP, quiet hours, segments) | ✅ |
 | `/crm/communications/email?folder=&label=&c=&q=` | Email (folders · list · reader) | ✅ |
 | `/crm/communications/email/compose?to=&reply=` | Email composer (page) | ✅ |
 | `/crm/communications/:channel/:id` | Expanded conversation (page) | ✅ |
@@ -110,7 +111,8 @@ Rule of thumb: a short, self-contained action with roughly 6 fields or fewer ope
 | Delete appointment | Modal (`ConfirmDialog`) | sm |
 | Appointment full detail | Page `/crm/agenda/:id` | — |
 | Lead detail · Edit lead | Page `/crm/leads/:id` · `/edit` | — |
-| WhatsApp reply / internal note | Inline composer in the thread pane | — |
+| WhatsApp / SMS reply · internal note | Inline composer in the thread pane | — |
+| Record SMS consent (`ConsentModal`) | Modal | sm |
 | Email quick reply | Inline panel in the reading pane | — |
 | Email composer · expanded conversation | Page `/crm/communications/email/compose` · `/:channel/:id` | — |
 | Campaign / sequence | Page | — |

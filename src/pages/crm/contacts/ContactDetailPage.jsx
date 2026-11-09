@@ -1,5 +1,7 @@
+import ConsentBadge from '../../../components/comms/ConsentBadge.jsx';
+import ChannelBadge from '../../../components/comms/ChannelBadge.jsx';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Building2, CalendarPlus, CheckSquare, Mail, MapPin, MessageCircle, Pencil, Phone, Receipt, UserPlus } from 'lucide-react';
+import { Building2, CalendarPlus, CheckSquare, Mail, MapPin, MessageCircle, Pencil, Phone, Receipt, UserPlus, MessageSquareText } from 'lucide-react';
 import { CONTACT_TYPE_TONE, INVOICE_TONE, PROJECT_TONE } from '../../../components/crm/bits.jsx';
 import { useQuickActions } from '../../../components/quick/QuickActionsProvider.jsx';
 import { PageShell } from '../../../components/shells/index.js';
@@ -49,6 +51,7 @@ export default function ContactDetailPage() {
               </div>
               <div className="page-head__actions">
                 <Button icon={MessageCircle} to="/crm/communications/whatsapp">{t('channels.whatsapp')}</Button>
+                <Button icon={MessageSquareText} to={`/crm/communications/sms${data.conversations.find((cv) => cv.channel === 'sms') ? `?c=${data.conversations.find((cv) => cv.channel === 'sms').id}` : ''}`}>{t('channels.sms')}</Button>
                 <Button icon={Mail} to={`/crm/communications/email/compose?to=${encodeURIComponent(c.email)}&contact=${c.id}`}>{t('channels.email')}</Button>
                 <Button icon={CalendarPlus} onClick={() => quick.open('appointment', { contactId: c.id })}>{t('quick.appointment')}</Button>
                 <Button icon={Pencil} onClick={() => quick.open('contact', { contact: c, onSaved: refetch })}>{t('common.edit')}</Button>
@@ -64,6 +67,7 @@ export default function ContactDetailPage() {
                       <dl className="dl dl--2">
                         <div><dt>{t('leads.fields.email')}</dt><dd><a href={`mailto:${c.email}`}>{c.email}</a></dd></div>
                         <div><dt>{t('leads.fields.phone')}</dt><dd><a href={`tel:${c.phone}`} className="tnum">{c.phone}</a></dd></div>
+                        <div><dt>{t('comms.sms.consentTitle')}</dt><dd><ConsentBadge consent={c.smsConsent} /></dd></div>
                         <div><dt>{t('contacts.address')}</dt><dd>{c.address || '—'}</dd></div>
                         <div><dt>{t('leads.fields.neighborhood')}</dt><dd>{c.neighborhood || '—'}</dd></div>
                         <div><dt>{t('leads.fields.source')}</dt><dd>{t(`sources.${c.source}`)}</dd></div>
@@ -111,7 +115,7 @@ export default function ContactDetailPage() {
                       {data.conversations.map((cv) => (
                         <li key={cv.id}>
                           <Link className="list-item" to={`/crm/communications/${cv.channel}?c=${cv.id}`}>
-                            <Badge tone={cv.channel === 'whatsapp' ? 'success' : 'info'} icon={cv.channel === 'whatsapp' ? MessageCircle : Mail}>{t(`channels.${cv.channel}`)}</Badge>
+                            <ChannelBadge channel={cv.channel} />
                             <div className="list-item__main"><p className="list-item__title">{cv.subject || cv.lastMessage}</p><p className="list-item__meta">{cv.subject ? cv.lastMessage : ''}</p></div>
                             <span className="list-item__aside">{ago(cv.lastMessageAt)}</span>
                           </Link>

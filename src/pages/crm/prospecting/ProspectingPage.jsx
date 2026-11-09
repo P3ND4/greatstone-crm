@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, Ban, Mail, MessageCircle, Megaphone, Percent, Send, Target, UserCheck, Users, Workflow } from 'lucide-react';
+import { ArrowRight, Ban, Mail, MessageCircle, Megaphone, Percent, Send, Target, UserCheck, Users, Workflow, MessageSquareText } from 'lucide-react';
 import HBarChart from '../../../components/charts/HBarChart.jsx';
 import ChartCard from '../../../components/charts/ChartCard.jsx';
 import { PersonCell, PROSPECT_STATUS_TONE, RowMenu, Score, StatusBadge, UserChip } from '../../../components/crm/bits.jsx';
@@ -58,6 +58,7 @@ function ProspectsTab({ list }) {
           ...(p.status !== 'converted' ? [{ label: t('prospecting.convert'), icon: UserCheck, onClick: () => convert(p) }] : []),
           { label: t('channels.email'), icon: Mail, to: `/crm/communications/email/compose?to=${encodeURIComponent(p.email)}` },
           { label: t('channels.whatsapp'), icon: MessageCircle, to: '/crm/communications/whatsapp' },
+          { label: t('channels.sms'), icon: MessageSquareText, to: '/crm/communications/sms' },
           ...(p.status !== 'notInterested' ? [{ label: t('prospecting.notInterested'), icon: Ban, onClick: () => notInterested(p) }] : []),
         ]}
         />

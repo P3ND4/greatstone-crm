@@ -45,7 +45,7 @@ export default function IntegrationsSettings() {
         {data && (
           <div className="set-form">
             <SettingsSection title={t('settings.integrations.channels')} description={t('settings.integrations.channelsDesc')}>
-              {['whatsapp', 'email', 'calendar'].map((ch) => (
+              {['whatsapp', 'sms', 'email', 'calendar'].map((ch) => (
                 <div key={ch} className="toggle-row">
                   <span className="row" style={{ gap: 8, minWidth: 0 }}>
                     <span className="truncate" style={{ fontWeight: 500 }}>{t(`settings.channels.${ch}`)}</span>

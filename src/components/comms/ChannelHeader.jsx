@@ -1,9 +1,10 @@
 import { NavLink } from 'react-router-dom';
-import { Mail, MessageCircle } from 'lucide-react';
+import { Mail, MessageCircle, MessageSquareText } from 'lucide-react';
 import { useT } from '../../i18n/index.jsx';
 
-/** Shared header for both channels: title + WhatsApp / Email switch (sub-routes). */
-export default function ChannelHeader({ actions, unread = {} }) {
+/** Shared header for every channel: title + WhatsApp / SMS / Email switch (sub-routes). */
+export default function ChannelHeader({ actions, unread }) {
+  unread = unread || {};
   const t = useT();
   return (
     <>
@@ -15,6 +16,7 @@ export default function ChannelHeader({ actions, unread = {} }) {
         <div className="page-head__actions">
           <nav className="channel-switch" aria-label={t('comms.channels')}>
             <NavLink to="/crm/communications/whatsapp"><MessageCircle aria-hidden="true" />{t('channels.whatsapp')}{unread.whatsapp > 0 && <span className="nav__badge">{unread.whatsapp}</span>}</NavLink>
+            <NavLink to="/crm/communications/sms"><MessageSquareText aria-hidden="true" />{t('channels.sms')}{unread.sms > 0 && <span className="nav__badge">{unread.sms}</span>}</NavLink>
             <NavLink to="/crm/communications/email"><Mail aria-hidden="true" />{t('channels.email')}{unread.email > 0 && <span className="nav__badge">{unread.email}</span>}</NavLink>
           </nav>
           {actions}

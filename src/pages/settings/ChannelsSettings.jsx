@@ -1,12 +1,22 @@
 import { useState } from 'react';
-import { BadgeCheck, CalendarDays, Loader2, Mail, MessageCircle, Plug, Unplug } from 'lucide-react';
+import { BadgeCheck, CalendarDays, Loader2, Mail, MessageCircle, MessageSquareText, Plug, ShieldCheck, Unplug } from 'lucide-react';
+import { smsInfo } from '../../lib/sms.js';
 import { Badge, Button, DataState, Field, Input, Select, SkeletonList, Switch, Textarea, useToast } from '../../components/ui/index.js';
 import useResource from '../../hooks/useResource.js';
 import { useT } from '../../i18n/index.jsx';
 import { settingsService } from '../../services/index.js';
 import { SettingsForm, SettingsHeader, SettingsSection, setIn, useSettingsAccess } from './shared.jsx';
 
-const ICONS = { whatsapp: MessageCircle, email: Mail, calendar: CalendarDays };
+const ICONS = { whatsapp: MessageCircle, sms: MessageSquareText, email: Mail, calendar: CalendarDays };
+const SMS_PROVIDERS = [['twilio', 'Twilio'], ['telnyx', 'Telnyx'], ['vonage', 'Vonage'], ['bandwidth', 'Bandwidth']];
+const REG_TONE = { approved: 'success', pending: 'warning', rejected: 'danger', none: 'neutral' };
+
+/** "142 chars · 1 SMS" under texts that are sent as SMS. */
+function SmsHint({ text }) {
+  const t = useT();
+  const i = smsInfo(text);
+  return <>{t('comms.sms.counter', { n: i.units, segments: i.segments, encoding: i.encoding === 'GSM-7' ? 'GSM-7' : 'Unicode' })}</>;
+}
 
 /** Connection status + simulated connect / disconnect (no OAuth, no keys in this phase). */
 function ConnectionBar({ channel, connected, detail, onChange }) {
@@ -53,12 +63,21 @@ export default function ChannelsSettings() {
           <SettingsForm
             initial={{
               whatsapp: { displayName: data.whatsapp.displayName, businessHours: data.whatsapp.businessHours, hoursFrom: data.whatsapp.hoursFrom, hoursTo: data.whatsapp.hoursTo, awayMessage: data.whatsapp.awayMessage },
+              sms: {
+                provider: data.sms.provider, senderPrefix: data.sms.senderPrefix, complianceFooter: data.sms.complianceFooter, footerText: data.sms.footerText,
+                stopReply: data.sms.stopReply, helpReply: data.sms.helpReply, startReply: data.sms.startReply,
+                quietHours: data.sms.quietHours, quietFrom: data.sms.quietFrom, quietTo: data.sms.quietTo, mms: data.sms.mms,
+              },
               email: { fromName: data.email.fromName, trackOpens: data.email.trackOpens, signature: data.email.signature },
               calendar: { syncAppointments: data.calendar.syncAppointments, defaultDuration: String(data.calendar.defaultDuration), bufferMinutes: String(data.calendar.bufferMinutes) },
             }}
             validate={(v) => ({
               waName: !v.whatsapp.displayName.trim() && t('validation.required'),
               waHours: v.whatsapp.businessHours && v.whatsapp.hoursTo <= v.whatsapp.hoursFrom && t('settings.channels.hoursOrder'),
+              smsPrefix: v.sms.complianceFooter && !v.sms.senderPrefix.trim() && t('validation.required'),
+              smsFooter: v.sms.complianceFooter && !/stop/i.test(v.sms.footerText) && t('settings.sms.footerNeedsStop'),
+              smsStop: !v.sms.stopReply.trim() && t('validation.required'),
+              smsHelp: !v.sms.helpReply.trim() && t('validation.required'),
             })}
             onSave={(v) => settingsService.saveChannels({
               ...v,
@@ -68,6 +87,8 @@ export default function ChannelsSettings() {
             {(form) => {
               const wa = form.values.whatsapp;
               const em = form.values.email;
+              const sm = form.values.sms;
+              const reg = data.sms.registration;
               const cal = form.values.calendar;
               return (
                 <>
@@ -91,6 +112,55 @@ export default function ChannelsSettings() {
                         </Field>
                       </div>
                     )}
+                  </SettingsSection>
+
+                  <SettingsSection title={t('settings.channels.smsTitle')} description={t('settings.channels.smsDesc')}>
+                    <ConnectionBar channel="sms" connected={isOn('sms')} detail={`${data.sms.number} · ${SMS_PROVIDERS.find(([id]) => id === sm.provider)?.[1]} · ${t(`settings.sms.numberType.${data.sms.numberType}`)}`} onChange={(v) => setConn((c) => ({ ...c, sms: v }))} />
+                    <div className="sms-reg" aria-label={t('settings.sms.registration')}>
+                      <ShieldCheck aria-hidden="true" />
+                      <span className="grow" style={{ minWidth: 0 }}>
+                        <strong style={{ display: 'block', fontSize: 13 }}>{t('settings.sms.registration')}</strong>
+                        <span className="subtle" style={{ fontSize: 12 }}>{t('settings.sms.registrationHint', { useCase: reg.useCase })}</span>
+                      </span>
+                      <Badge tone={REG_TONE[reg.brand]} dot>{t('settings.sms.brand')}: {t(`settings.sms.reg.${reg.brand}`)}</Badge>
+                      <Badge tone={REG_TONE[reg.campaign]} dot>{t('settings.sms.campaign')}: {t(`settings.sms.reg.${reg.campaign}`)}</Badge>
+                    </div>
+                    <div className="field-grid field-grid--2" style={{ marginTop: 16 }}>
+                      <Field label={t('settings.sms.provider')} hint={t('settings.sms.providerHint')}>
+                        <Select value={sm.provider} onChange={(e) => setIn(form, 'sms', 'provider', e.target.value)} options={SMS_PROVIDERS.map(([value, label]) => ({ value, label }))} />
+                      </Field>
+                      <Field label={t('settings.sms.number')}><Input value={data.sms.number} readOnly /></Field>
+                    </div>
+                    <Switch className="mt-12" checked={sm.complianceFooter} onChange={(v) => setIn(form, 'sms', 'complianceFooter', v)} label={t('settings.sms.footer')} description={t('settings.sms.footerDesc')} />
+                    {sm.complianceFooter && (
+                      <div className="field-grid field-grid--2">
+                        <Field label={t('settings.sms.prefix')} error={form.errors.smsPrefix} hint={t('settings.sms.prefixHint')}>
+                          <Input name="smsPrefix" value={sm.senderPrefix} onChange={(e) => setIn(form, 'sms', 'senderPrefix', e.target.value)} />
+                        </Field>
+                        <Field label={t('settings.sms.footerText')} error={form.errors.smsFooter}>
+                          <Input name="smsFooter" value={sm.footerText} onChange={(e) => setIn(form, 'sms', 'footerText', e.target.value)} />
+                        </Field>
+                      </div>
+                    )}
+                    <div className="field-grid" style={{ marginTop: 16 }}>
+                      <Field label={t('settings.sms.stopReply')} error={form.errors.smsStop} hint={<SmsHint text={sm.stopReply} />} required>
+                        <Textarea name="smsStop" value={sm.stopReply} minRows={2} maxRows={4} onChange={(e) => setIn(form, 'sms', 'stopReply', e.target.value)} />
+                      </Field>
+                      <Field label={t('settings.sms.helpReply')} error={form.errors.smsHelp} hint={<SmsHint text={sm.helpReply} />} required>
+                        <Textarea name="smsHelp" value={sm.helpReply} minRows={2} maxRows={4} onChange={(e) => setIn(form, 'sms', 'helpReply', e.target.value)} />
+                      </Field>
+                      <Field label={t('settings.sms.startReply')} hint={<SmsHint text={sm.startReply} />}>
+                        <Textarea value={sm.startReply} minRows={2} maxRows={4} onChange={(e) => setIn(form, 'sms', 'startReply', e.target.value)} />
+                      </Field>
+                    </div>
+                    <Switch className="mt-12" checked={sm.quietHours} onChange={(v) => setIn(form, 'sms', 'quietHours', v)} label={t('settings.sms.quiet')} description={t('settings.sms.quietDesc')} />
+                    {sm.quietHours && (
+                      <div className="field-grid field-grid--2">
+                        <Field label={t('settings.sms.quietFrom')}><Input type="time" value={sm.quietFrom} onChange={(e) => setIn(form, 'sms', 'quietFrom', e.target.value)} /></Field>
+                        <Field label={t('settings.sms.quietTo')}><Input type="time" value={sm.quietTo} onChange={(e) => setIn(form, 'sms', 'quietTo', e.target.value)} /></Field>
+                      </div>
+                    )}
+                    <Switch className="mt-12" checked={sm.mms} onChange={(v) => setIn(form, 'sms', 'mms', v)} label={t('settings.sms.mms')} description={t('settings.sms.mmsDesc')} />
                   </SettingsSection>
 
                   <SettingsSection title={t('settings.channels.email')} description={t('settings.channels.emailDesc')}>

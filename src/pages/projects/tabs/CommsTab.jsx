@@ -1,3 +1,4 @@
+import ChannelBadge from '../../../components/comms/ChannelBadge.jsx';
 import { Link } from 'react-router-dom';
 import { Mail, MessageCircle } from 'lucide-react';
 import { Badge, Card, EmptyState } from '../../../components/ui/index.js';
@@ -14,7 +15,7 @@ export default function CommsTab({ d }) {
           {d.conversations.map((cv) => (
             <li key={cv.id}>
               <Link className="list-item" to={`/crm/communications/${cv.channel}?c=${cv.id}`}>
-                <Badge tone={cv.channel === 'whatsapp' ? 'success' : 'info'} icon={cv.channel === 'whatsapp' ? MessageCircle : Mail}>{t(`channels.${cv.channel}`)}</Badge>
+                <ChannelBadge channel={cv.channel} />
                 <div className="list-item__main">
                   <p className="list-item__title">{cv.subject || lookupService.contact(cv.contactId)?.name}</p>
                   <p className="list-item__meta">{cv.lastMessage}</p>

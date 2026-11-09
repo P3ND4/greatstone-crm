@@ -114,7 +114,7 @@ export const settingsService = {
       Object.assign(row, tpl, channel === 'whatsapp' && row.body !== tpl.body ? { status: 'pending' } : {});
       return delay(row);
     }
-    const row = { ...tpl, id: `${channel === 'whatsapp' ? 'wt' : 'et'}_${(seq += 1)}`, ...(channel === 'whatsapp' ? { status: 'pending' } : {}) };
+    const row = { ...tpl, id: `${{ whatsapp: 'wt', sms: 'st', email: 'et' }[channel]}_${(seq += 1)}`, ...(channel === 'whatsapp' ? { status: 'pending' } : {}) };
     list.push(row);
     return delay(row);
   },

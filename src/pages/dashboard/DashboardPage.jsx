@@ -1,3 +1,4 @@
+import ChannelBadge from '../../components/comms/ChannelBadge.jsx';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -216,7 +217,7 @@ export default function DashboardPage() {
                           <p className="list-item__meta">{c.subject || c.lastMessage}</p>
                         </div>
                         <span className="list-item__aside stack-sm" style={{ alignItems: 'flex-end', gap: 4 }}>
-                          <Badge tone={c.channel === 'whatsapp' ? 'success' : 'info'} icon={c.channel === 'whatsapp' ? MessageCircle : Mail}>{t(`channels.${c.channel}`)}</Badge>
+                          <ChannelBadge channel={c.channel} />
                           <span className="row" style={{ gap: 4 }}><Clock size={12} aria-hidden="true" />{ago(c.lastMessageAt)}</span>
                         </span>
                       </Link>

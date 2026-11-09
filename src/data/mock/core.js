@@ -339,6 +339,56 @@ for (let i = 0; i < 30; i += 1) {
     assigneeId: r.pick(userIds),
   });
 }
+/* ------------------------------------------------------------------ SMS (US clients text a lot) — own seed so other data stays identical */
+// [direction, body, attachment?, flags?] · flags.auto = automatic reply (opt-out / confirmations)
+const SMS_SCRIPTS = [
+  { consent: 'opted_in', source: 'web_form', unread: true, msgs: [['in', 'Hi, this is about the Brickell condo. Is tomorrow’s measure still at 10?'], ['out', 'Hi! Yes, Luis will be there at 10. Text here if anything changes.'], ['in', 'Great thx. Front desk has your name']] },
+  { consent: 'opted_in', source: 'signed_contract', msgs: [['out', 'Greatstone Design: Reminder, your design consultation is Thu at 2:30 PM. Reply C to confirm or R to reschedule. Reply STOP to opt out.'], ['in', 'C'], ['out', 'Confirmed, see you Thursday!', null, { auto: true }]] },
+  { consent: 'opted_in', source: 'verbal', unread: true, msgs: [['in', 'Can you text me the showroom address?'], ['out', 'Sure! 2550 S Bayshore Dr, Suite 210, Miami FL 33133. Garage parking, level 2.'], ['in', 'Perfect 👍 see you at 4']] },
+  { consent: 'opted_in', source: 'web_form', msgs: [['in', 'Here’s the water stain under the sink', 'IMG_0412.jpg'], ['out', 'Thanks for the photo. We’ll send the plumber Monday morning.'], ['in', 'Ok I’ll leave the key with the doorman'], ['out', 'Got it, thank you!']] },
+  { consent: 'opted_out', source: 'reply_stop', msgs: [['out', 'Greatstone Design: Fall offer, 10% off closet systems booked by 11/30. Reply STOP to opt out.'], ['in', 'STOP'], ['out', 'Greatstone Design: You’re unsubscribed and won’t receive more messages. Reply START to resubscribe.', null, { auto: true }]] },
+  { consent: 'unknown', source: null, unread: true, msgs: [['in', 'Hi! Got your number from Mariana. Do you do bathroom remodels in Key Biscayne? We have 2 baths'], ['note', 'New lead by text, referred by Mariana. No SMS consent on file yet.']] },
+  { consent: 'opted_in', source: 'signed_contract', msgs: [['out', 'Greatstone Design: Invoice INV-1046 is due 11/15. Questions? Just reply here. Reply STOP to opt out.'], ['in', 'Paid this morning!'], ['out', 'Received, thank you! Receipt is in your email.']] },
+  { consent: 'opted_in', source: 'verbal', msgs: [['in', 'Running 10 min late for the walkthrough, sorry!'], ['out', 'No problem, see you soon.']] },
+];
+{
+  const rs = createRandom(1717);
+  const smsContacts = clients.slice(-SMS_SCRIPTS.length).reverse();
+  SMS_SCRIPTS.forEach((script, i) => {
+    const contact = smsContacts[i];
+    const cid = `cv_${31 + i}`;
+    const lastAt = new Date(Date.now() - (i < 3 ? rs.int(5, 240) : rs.int(60 * 6, 60 * 24 * 12)) * 60 * 1000);
+    const built = script.msgs.map(([dir, body, attachment, flags], k) => ({
+      id: `m_s${i}_${k}`, conversationId: cid, channel: 'sms',
+      direction: dir === 'note' ? 'out' : dir, isNote: dir === 'note', auto: Boolean(flags?.auto), body,
+      attachments: attachment ? [{ name: attachment, size: `${rs.int(300, 2800)} KB`, type: attachment.split('.').pop() }] : [],
+      sentAt: new Date(lastAt.getTime() - (script.msgs.length - 1 - k) * rs.int(3, 90) * 60 * 1000).toISOString(),
+      status: dir === 'out' ? 'delivered' : null,
+      segments: dir === 'note' ? null : Math.max(1, Math.ceil(body.length / 153)),
+      authorId: dir === 'in' || flags?.auto ? null : rs.pick(userIds),
+    }));
+    messages.push(...built);
+    const real = built.filter((m) => !m.isNote);
+    const last = real[real.length - 1];
+    const firstOutAt = real.find((m) => m.direction === 'out')?.sentAt;
+    contact.smsConsent = {
+      status: script.consent,
+      source: script.source,
+      at: script.consent === 'unknown' ? null : script.consent === 'opted_out' ? real.find((m) => m.body === 'STOP').sentAt : new Date(new Date(firstOutAt || last.sentAt).getTime() - 86400000 * rs.int(3, 40)).toISOString(),
+    };
+    conversations.push({
+      id: cid, channel: 'sms', contactId: contact.id, projectId: i % 2 === 0 ? rs.pick(projects).id : null,
+      subject: null, labels: [], folder: null, starred: false,
+      lastMessage: last.body, lastMessageAt: built[built.length - 1].sentAt, lastDirection: last.direction,
+      lastInboundAt: [...real].reverse().find((m) => m.direction === 'in')?.sentAt ?? null,
+      unread: script.unread ? rs.int(1, 2) : 0, assigneeId: rs.pick(userIds),
+    });
+  });
+  // Everyone else: clients gave consent on the intake form; partners/vendors are unknown.
+  contacts.forEach((c) => {
+    if (!c.smsConsent) c.smsConsent = c.type === 'client' ? { status: 'opted_in', source: 'web_form', at: c.createdAt ?? null } : { status: 'unknown', source: null, at: null };
+  });
+}
 conversations.sort((a, b) => b.lastMessageAt.localeCompare(a.lastMessageAt));
 
 /* ------------------------------------------------------------------ approvals */

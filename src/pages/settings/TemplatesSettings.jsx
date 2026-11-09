@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { BadgeCheck, Copy, Mail, MessageCircle, Pencil, Plus, Trash2 } from 'lucide-react';
+import { BadgeCheck, Copy, Mail, MessageCircle, Pencil, Plus, Trash2, MessageSquareText } from 'lucide-react';
 import { RowMenu } from '../../components/crm/bits.jsx';
 import { ConfirmDialog, FormShell, ModalShell } from '../../components/shells/index.js';
 import { Badge, Button, DataState, Field, Input, SkeletonList, Tabs, Textarea, useToast } from '../../components/ui/index.js';
@@ -8,6 +8,7 @@ import useResource from '../../hooks/useResource.js';
 import useUrlState from '../../hooks/useUrlState.js';
 import { useT } from '../../i18n/index.jsx';
 import { settingsService } from '../../services/index.js';
+import { smsInfo } from '../../lib/sms.js';
 import { SettingsHeader, useSettingsAccess } from './shared.jsx';
 
 const VARIABLES = ['first', 'date', 'number', 'project'];
@@ -17,21 +18,28 @@ const WA_MAX = 1024;
 
 const fill = (text) => String(text || '').replace(/\{(\w+)\}/g, (m, k) => SAMPLE[k] ?? m);
 
+function smsHintText(t, text) {
+  const i = smsInfo(text);
+  return t('comms.sms.counter', { n: i.units, segments: i.segments, encoding: i.encoding === 'GSM-7' ? 'GSM-7' : 'Unicode' });
+}
+
 function TemplateModal({ channel, template, onClose, onSaved }) {
   const t = useT();
   const toast = useToast();
   const bodyRef = useRef(null);
   const isWa = channel === 'whatsapp';
+  const isEmail = channel === 'email';
+  const isSms = channel === 'sms';
   const form = useForm(
     { name: template?.name || '', subject: template?.subject || '', body: template?.body || '' },
     {
       validate: (v) => ({
         name: !v.name.trim() && t('validation.required'),
-        subject: !isWa && !v.subject.trim() && t('validation.required'),
+        subject: isEmail && !v.subject.trim() && t('validation.required'),
         body: !v.body.trim() ? t('validation.required') : isWa && v.body.length > WA_MAX && t('settings.templates.tooLong', { n: WA_MAX }),
       }),
       onSubmit: async (v) => {
-        const saved = await settingsService.saveTemplate(channel, { ...(template?.id ? { id: template.id } : {}), name: v.name.trim(), body: v.body, ...(isWa ? {} : { subject: v.subject.trim() }) });
+        const saved = await settingsService.saveTemplate(channel, { ...(template?.id ? { id: template.id } : {}), name: v.name.trim(), body: v.body, ...(isEmail ? { subject: v.subject.trim() } : {}) });
         toast.show(isWa && saved.status === 'pending' ? t('settings.templates.submitted', { name: saved.name }) : t('settings.templates.saved', { name: saved.name }));
         onSaved();
         onClose();
@@ -62,8 +70,8 @@ function TemplateModal({ channel, template, onClose, onSaved }) {
           <div className="tpl-editor">
             <div className="stack">
               <Field label={t('settings.templates.name')} error={form.errors.name} required><Input {...form.bind('name')} data-autofocus /></Field>
-              {!isWa && <Field label={t('settings.templates.subject')} error={form.errors.subject} required><Input {...form.bind('subject')} /></Field>}
-              <Field label={t('settings.templates.body')} error={form.errors.body} required hint={isWa ? t('settings.templates.count', { n: form.values.body.length, max: WA_MAX }) : undefined}>
+              {isEmail && <Field label={t('settings.templates.subject')} error={form.errors.subject} required><Input {...form.bind('subject')} /></Field>}
+              <Field label={t('settings.templates.body')} error={form.errors.body} required hint={isWa ? t('settings.templates.count', { n: form.values.body.length, max: WA_MAX }) : isSms ? smsHintText(t, fill(form.values.body)) : undefined}>
                 <Textarea ref={bodyRef} {...form.bind('body')} minRows={5} maxRows={14} />
               </Field>
               <div>
@@ -73,11 +81,12 @@ function TemplateModal({ channel, template, onClose, onSaved }) {
                 </div>
               </div>
               {isWa && <p className="field__hint">{t('settings.templates.waReview')}</p>}
+              {isSms && <p className="field__hint">{t('settings.templates.smsNote')}</p>}
             </div>
             <div className="tpl-preview" aria-label={t('settings.templates.preview')}>
               <p className="field__label">{t('settings.templates.preview')}</p>
-              {isWa
-                ? <div className="tpl-preview__wa"><div className="bubble bubble--out"><p className="bubble__body">{fill(form.values.body) || "…"}</p></div></div>
+              {!isEmail
+                ? <div className={isSms ? 'tpl-preview__wa tpl-preview__sms' : 'tpl-preview__wa'}><div className="bubble bubble--out"><p className="bubble__body">{fill(form.values.body) || "…"}</p></div></div>
                 : (
                   <div className="tpl-preview__mail">
                     <p className="tpl-preview__subject">{fill(form.values.subject) || '…'}</p>
@@ -103,9 +112,10 @@ export default function TemplatesSettings() {
   const { data, loading, error, refetch } = useResource(() => settingsService.templates(), []);
   const list = data?.[tab] || [];
   const isWa = tab === 'whatsapp';
+  const isEmail = tab === 'email';
 
   const duplicate = async (tpl) => {
-    await settingsService.saveTemplate(tab, { name: t('settings.templates.copyOf', { name: tpl.name }), body: tpl.body, ...(isWa ? {} : { subject: tpl.subject }) });
+    await settingsService.saveTemplate(tab, { name: t('settings.templates.copyOf', { name: tpl.name }), body: tpl.body, ...(isEmail ? { subject: tpl.subject } : {}) });
     toast.show(t('settings.templates.duplicated'));
     refetch();
   };
@@ -124,6 +134,7 @@ export default function TemplatesSettings() {
         onChange={setTab}
         tabs={[
           { id: 'whatsapp', label: t('settings.channels.whatsapp'), count: data?.whatsapp.length },
+          { id: 'sms', label: t('settings.channels.sms'), count: data?.sms.length },
           { id: 'email', label: t('settings.channels.email'), count: data?.email.length },
         ]}
       />
@@ -134,7 +145,7 @@ export default function TemplatesSettings() {
           onRetry={refetch}
           skeleton={<SkeletonList rows={4} />}
           empty={!list.length}
-          emptyIcon={isWa ? MessageCircle : Mail}
+          emptyIcon={isWa ? MessageCircle : isEmail ? Mail : MessageSquareText}
           emptyTitle={t('settings.templates.emptyTitle')}
           emptyBody={t('settings.templates.emptyBody')}
           emptyAction={!readOnly && <Button variant="primary" icon={Plus} onClick={() => setEditing({ template: null })}>{t('settings.templates.new')}</Button>}
@@ -146,7 +157,8 @@ export default function TemplatesSettings() {
                 <div className="tpl-card__head">
                   <span className="grow" style={{ minWidth: 0 }}>
                     <h3 className="tpl-card__name truncate">{tpl.name}</h3>
-                    {!isWa && <span className="subtle truncate" style={{ display: 'block', fontSize: 13 }}>{tpl.subject}</span>}
+                    {isEmail && <span className="subtle truncate" style={{ display: 'block', fontSize: 13 }}>{tpl.subject}</span>}
+                    {tab === 'sms' && <span className="subtle" style={{ display: 'block', fontSize: 12 }}>{smsHintText(t, fill(tpl.body))}</span>}
                   </span>
                   {isWa && <Badge tone={STATUS_TONE[tpl.status]} dot>{t(`settings.templates.status.${tpl.status}`)}</Badge>}
                   {!readOnly && (

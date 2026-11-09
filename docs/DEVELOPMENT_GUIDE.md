@@ -87,7 +87,7 @@ src/
 │  ├─ layout/             AppLayout, Sidebar, Topbar, ModuleNav, CommandPalette, Access, PwaStatus
 │  ├─ list/               ListToolbar (búsqueda, filtros, vista tabla/tarjetas)
 │  ├─ quick/              modales de creación rápida (+ Nuevo)
-│  └─ crm/ finance/ comms/ charts/ ai/   componentes de dominio
+│  └─ crm/ finance/ comms/ charts/ ai/   componentes de dominio (comms: inbox de chat compartido WhatsApp/SMS, ConsentBadge, ChannelBadge)
 └─ pages/                 una carpeta por módulo; cada archivo = una ruta
 scripts/                  qa/ (auditoría y capturas) · make-icons.cjs
 public/                   favicon, icons/ (PWA), screenshots/ (diálogo de instalación)
@@ -432,6 +432,7 @@ t('settings.users.invited', { email });  // 'Invitation sent to {email}'
 - Los enums se traducen con claves dinámicas: `t(\`leadStatus.${lead.status}\`)`.
 - Formato (`src/lib/format.js`): `money`, `moneyCompact`, `number`, `percent`, `date(value, 'MMM d, yyyy')`, `time`, `dayLabel`, `ago`, `initials`. Usa siempre estas funciones; nunca `toFixed` en la UI.
 - Dinero exacto (`src/lib/money.js`): cálculo en centavos, redondeando una vez por línea (`lineAmounts`, `documentTotals`).
+- SMS (`src/lib/sms.js`): `smsInfo(text)` → segmentos GSM-7/Unicode, `composeSms` (prefijo + pie de baja en el primer SMS), palabras clave STOP/START/HELP, `minutesInZone` para las horas de silencio.
 
 ---
 
@@ -528,7 +529,7 @@ Objetivo: quedarte con **el esqueleto** (layout, shells, componentes, hooks, ser
 | `src/components/ui`, `shells`, `list`, `layout` | **conservar** | núcleo de la plantilla |
 | `src/components/crm/bits.jsx` | conservar `PersonCell`, `RowMenu`, `UserChip`, `StatusBadge` | muévelos a `components/ui` o a `components/common` |
 | `src/components/quick` | conservar `QuickActionsProvider` + 1 modal de ejemplo | borra los de dominio |
-| `src/components/finance`, `comms`, `ai`, `charts` | quitar (o conservar `charts/ChartCard` si habrá dashboard) | |
+| `src/components/finance`, `comms`, `ai`, `charts` | quitar (o conservar `charts/ChartCard` si habrá dashboard) | si la plantilla necesita mensajería, `pages/crm/communications/MessagingPage.jsx` + `components/comms` + `lib/sms.js` son reutilizables tal cual |
 | `src/hooks`, `src/lib` (`format`, `color`, `cx`, `random`) | **conservar** | `money.js` solo si hay dinero |
 | `src/i18n` | conservar `app`, `nav`, `topbar`, `common`, `list`, `states`, `validation`, `auth`, `pwa`, `settings` (parcial), `roles` | borra claves de dominio en **ambos** archivos |
 | `src/services` | conservar `client.js`, `index.js`, `authService`, `settingsService` (recortado), `searchService`, `lookupService` | borra los de dominio |

@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import { Check, CheckCheck, FileText, Image as ImageIcon, Lock } from 'lucide-react';
+import { Bot, Check, CheckCheck, Clock, FileText, Image as ImageIcon, Lock } from 'lucide-react';
 import { useT } from '../../i18n/index.jsx';
 import { time } from '../../lib/format.js';
 import { lookupService } from '../../services/index.js';
@@ -9,6 +9,7 @@ import { dayDivider } from './util.js';
 function Status({ status }) {
   const t = useT();
   if (!status) return null;
+  if (status === 'scheduled') return <Clock className="bubble__status" aria-label={t('comms.status.scheduled')} />;
   const Icon = status === 'sent' ? Check : CheckCheck;
   return <Icon className={cx('bubble__status', status === 'read' && 'is-read')} aria-label={t(`comms.status.${status}`)} />;
 }
@@ -24,7 +25,7 @@ export function Attachment({ file }) {
   );
 }
 
-/** WhatsApp-style message list: day dividers, in/out bubbles, delivery ticks, internal notes. */
+/** Chat message list (WhatsApp / SMS): day dividers, in/out bubbles, delivery ticks, internal notes, auto-replies, scheduled texts. */
 export default function Bubbles({ messages }) {
   const t = useT();
   let lastDay = null;
@@ -53,7 +54,9 @@ export default function Bubbles({ messages }) {
               {m.body && <p className="bubble__body">{m.body}</p>}
               <span className="bubble__meta">
                 <span className="sr-only">{m.direction === 'out' ? t('comms.sent') : t('comms.received')}</span>
-                {time(m.sentAt)}
+                {m.auto && <span className="bubble__tag"><Bot aria-hidden="true" />{t('comms.sms.auto')}</span>}
+                {m.segments > 1 && <span className="bubble__tag">{t('comms.sms.segments', { n: m.segments })}</span>}
+                {m.status === 'scheduled' ? t('comms.sms.scheduledFor', { time: time(m.scheduledFor) }) : time(m.sentAt)}
                 {m.direction === 'out' && <Status status={m.status} />}
               </span>
             </li>

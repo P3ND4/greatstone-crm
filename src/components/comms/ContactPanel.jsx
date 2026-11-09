@@ -1,14 +1,19 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Building2, CalendarPlus, CheckSquare, Mail, Phone, UserPlus } from 'lucide-react';
+import { Building2, CalendarPlus, CheckSquare, Mail, Phone, ShieldCheck, UserPlus } from 'lucide-react';
+import ConsentBadge from './ConsentBadge.jsx';
+import ConsentModal from './ConsentModal.jsx';
+import { date } from '../../lib/format.js';
 import { CONTACT_TYPE_TONE } from '../crm/bits.jsx';
 import { useQuickActions } from '../quick/QuickActionsProvider.jsx';
 import { Avatar, Badge, Button } from '../ui/index.js';
 import { useT } from '../../i18n/index.jsx';
 import { percent } from '../../lib/format.js';
 
-/** Right panel: linked contact / project + quick actions (task, appointment, lead, project). */
-export default function ContactPanel({ conversation }) {
+/** Right panel: linked contact / project, SMS consent (SMS threads) + quick actions (task, appointment, lead). */
+export default function ContactPanel({ conversation, channel, sms, onConsentChange }) {
   const t = useT();
+  const [consentOpen, setConsentOpen] = useState(false);
   const quick = useQuickActions();
   const c = conversation.contact;
   const p = conversation.project;
@@ -29,6 +34,18 @@ export default function ContactPanel({ conversation }) {
       ) : (
         <div className="comms-side__block"><p className="muted">{t('comms.unknownContact')}</p></div>
       )}
+      {channel === 'sms' && sms && c && (
+        <div className="comms-side__block stack-sm">
+          <p className="comms-side__label">{t('comms.sms.consentTitle')}</p>
+          <div><ConsentBadge consent={sms.consent} /></div>
+          <p className="muted" style={{ fontSize: 13 }}>
+            {sms.consent.status === 'unknown'
+              ? t('comms.sms.consentUnknownBody')
+              : t(`comms.sms.consentBody.${sms.consent.status}`, { source: sms.consent.source ? t(`comms.sms.source.${sms.consent.source}`) : '—', date: sms.consent.at ? date(sms.consent.at) : '—' })}
+          </p>
+          {sms.consent.status === 'unknown' && <Button size="sm" icon={ShieldCheck} onClick={() => setConsentOpen(true)}>{t('comms.sms.recordConsent')}</Button>}
+        </div>
+      )}
       <div className="comms-side__block">
         <p className="comms-side__label">{t('nav.projects')}</p>
         {p ? (
@@ -47,6 +64,7 @@ export default function ContactPanel({ conversation }) {
         <Button size="sm" plain icon={CalendarPlus} onClick={() => quick.open('appointment', { contactId: c?.id ?? '', projectId: p?.id ?? '' })}>{t('comms.createAppointment')}</Button>
         <Button size="sm" plain icon={UserPlus} to="/crm/leads/new">{t('comms.createLead')}</Button>
       </div>
+      {consentOpen && <ConsentModal contact={c} onClose={() => setConsentOpen(false)} onSaved={onConsentChange} />}
     </aside>
   );
 }

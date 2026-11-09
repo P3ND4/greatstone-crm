@@ -510,6 +510,12 @@ kbd {
 .channel-switch a svg { width: 16px; height: 16px; }
 .channel-switch a.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-1); }
 .channel-switch .nav__badge { margin-left: 2px; }
+/* Three channels on very small phones: tighter tabs, icons dropped (labels + badges stay). */
+@media (max-width: 400px) {
+  .channel-switch { max-width: 100%; }
+  .channel-switch a { padding: 6px 8px; gap: 4px; }
+  .channel-switch a svg { display: none; }
+}
 
 .comms, .mail {
   display: grid; height: calc(100dvh - var(--topbar-h) - 190px); min-height: 480px;
@@ -1110,3 +1116,20 @@ body.has-savebar .ai-fab { bottom: 92px; }
 .device-row__desc { font-size: var(--fs-13); color: var(--text-muted); margin-top: 2px; }
 .ios-steps { margin: 8px 0 0; padding-left: 20px; font-size: var(--fs-13); display: flex; flex-direction: column; gap: 4px; }
 .ios-steps svg { width: 14px; height: 14px; vertical-align: -2px; margin-right: 6px; }
+
+/* ===================== SMS ===================== */
+.composer__warn { display: flex; align-items: flex-start; gap: 6px; }
+.composer__warn svg { width: 14px; height: 14px; flex: none; margin-top: 1px; }
+.composer__warn--danger { color: var(--danger); background: var(--danger-soft); }
+.composer__meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11px; color: var(--text-subtle); padding: 0 2px; }
+.composer label.icon-btn.is-disabled { opacity: .45; pointer-events: none; }
+.bubble__tag { display: inline-flex; align-items: center; gap: 3px; padding: 0 6px; border-radius: var(--radius-pill); background: color-mix(in srgb, var(--text) 8%, transparent); font-size: 10px; font-weight: var(--fw-medium); }
+.bubble__tag svg { width: 11px; height: 11px; }
+.conn-bar__icon--sms { background: #2F6690; }
+.sms-reg { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 10px; margin-top: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); }
+.sms-reg > svg { width: 18px; height: 18px; color: var(--success); flex: none; }
+.sms-reg .grow { min-width: 200px; }
+.tpl-preview__sms { background: var(--surface-2); }
+.tpl-preview__sms .bubble--out { background: #2F6690; color: #fff; }
+.tpl-preview__sms .bubble--out .bubble__body { color: #fff; }
+.composer__send:disabled { opacity: .45; cursor: not-allowed; }

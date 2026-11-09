@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowRight, CalendarPlus, CheckSquare, CircleDot, Mail, MessageCircle, Pencil, Phone, Sparkles, UserPlus, Users } from 'lucide-react';
+import { ArrowRight, CalendarPlus, CheckSquare, CircleDot, Mail, MessageCircle, Pencil, Phone, Sparkles, UserPlus, Users, MessageSquareText } from 'lucide-react';
 import { LEAD_STATUS_TONE, Score, StatusBadge } from '../../../components/crm/bits.jsx';
 import { useQuickActions } from '../../../components/quick/QuickActionsProvider.jsx';
 import { PageShell } from '../../../components/shells/index.js';
@@ -112,6 +112,7 @@ export default function LeadDetailPage() {
                     <li className="row"><Mail size={16} className="subtle" aria-hidden="true" /><a className="truncate" href={`mailto:${lead.email}`}>{lead.email}</a></li>
                     <li className="row"><Phone size={16} className="subtle" aria-hidden="true" /><a href={`tel:${lead.phone}`}>{lead.phone}</a></li>
                     <li className="row"><MessageCircle size={16} className="subtle" aria-hidden="true" /><Link to="/crm/communications/whatsapp">{t('channels.whatsapp')}</Link></li>
+                    <li className="row"><MessageSquareText size={16} className="subtle" aria-hidden="true" /><Link to="/crm/communications/sms">{t('channels.sms')}</Link></li>
                   </ul>
                 </Card>
                 <Card title={t('leads.sections.qualification')}>

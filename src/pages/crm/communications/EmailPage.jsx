@@ -121,7 +121,7 @@ export default function EmailPage() {
   }, { replace: true });
 
   const { data, loading, error, refetch } = useResource(() => communicationsService.list({ channel: 'email', folder: folder || undefined, label: label || undefined, q }), [folder, label, q]);
-  const { data: counts, refetch: refetchCounts } = useResource(() => Promise.all([communicationsService.counts('email'), communicationsService.counts('whatsapp')]), []);
+  const { data: counts, refetch: refetchCounts } = useResource(() => Promise.all([communicationsService.counts('email'), communicationsService.unreadByChannel()]), []);
   useEffect(() => { setSelected([]); }, [folder, label, q]);
   const items = data?.items || [];
   const allSelected = items.length > 0 && selected.length === items.length;
@@ -140,7 +140,7 @@ export default function EmailPage() {
   return (
     <>
       <ChannelHeader
-        unread={{ email: counts?.[0].unread, whatsapp: counts?.[1].unread }}
+        unread={counts?.[1]}
         actions={<Button variant="primary" icon={PenSquare} to="/crm/communications/email/compose">{t('comms.compose')}</Button>}
       />
       <div className={cx('mail', active && 'has-active')}>

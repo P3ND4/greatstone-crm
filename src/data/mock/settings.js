@@ -56,6 +56,23 @@ export const channels = {
     hoursTo: '18:00',
     awayMessage: 'Thanks for reaching out to Greatstone Design! Our studio hours are Mon–Fri 9 AM – 6 PM. We’ll reply first thing tomorrow.',
   },
+  sms: {
+    connected: true,
+    provider: 'twilio', // twilio | telnyx | vonage | bandwidth — simulated, no credentials in the browser
+    number: '+1 (305) 555-0142',
+    numberType: '10dlc', // 10dlc (local number) | tollfree
+    registration: { brand: 'approved', campaign: 'approved', useCase: 'Customer care + account notifications' },
+    senderPrefix: 'Greatstone Design:',
+    complianceFooter: true,
+    footerText: 'Reply STOP to opt out.',
+    stopReply: 'Greatstone Design: You’re unsubscribed and won’t receive more messages. Reply START to resubscribe.',
+    helpReply: 'Greatstone Design: Help at (305) 555-0100 or studio@example.com. Msg & data rates may apply. Reply STOP to opt out.',
+    startReply: 'Greatstone Design: You’re subscribed again. Reply STOP to opt out at any time.',
+    quietHours: true,
+    quietFrom: '21:00', // no texts from 9 PM…
+    quietTo: '08:00', // …until 8 AM, in the recipient's time zone (TCPA guidance)
+    mms: true,
+  },
   email: {
     connected: true,
     provider: 'google',
@@ -81,6 +98,12 @@ export const templates = {
     { id: 'wt_2', name: 'Follow-up estimate', status: 'approved', body: 'Hi {first}, just checking in on the estimate — happy to walk you through it whenever works for you.' },
     { id: 'wt_3', name: 'Install reminder', status: 'approved', body: 'Reminder: the crew arrives tomorrow at 9 AM. Please reserve one parking spot for the truck.' },
     { id: 'wt_4', name: 'Selections ready', status: 'pending', body: 'Hi {first}! Your finish selections are ready to review in your project portal. Let us know your favorites by {date}.' },
+  ],
+  sms: [
+    { id: 'st_1', name: 'Visit reminder', body: 'Hi {first}, reminder: we’ll see you {date}. Reply C to confirm or R to reschedule.' },
+    { id: 'st_2', name: 'On our way', body: 'Hi {first}, the Greatstone crew is on the way and will arrive in about 20 minutes.' },
+    { id: 'st_3', name: 'Invoice due', body: 'Hi {first}, invoice {number} is due {date}. Reply here with any questions. Thank you!' },
+    { id: 'st_4', name: 'Review request', body: 'Hi {first}, it was a pleasure working on {project}! Would you share a quick review? It helps us a lot.' },
   ],
   email: [
     { id: 'et_1', name: 'Estimate sent', subject: 'Your estimate from Greatstone Design', body: 'Hi {first},\n\nAttached is the estimate we discussed. Let me know if you have any questions — I’m happy to review it together.\n\nWarmly,' },
