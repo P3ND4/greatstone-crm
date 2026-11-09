@@ -60,6 +60,15 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse, co
       {open && <div className="sidebar-scrim" onClick={onClose} aria-hidden="true" />}
       <aside ref={ref} className={cx('sidebar', open && 'is-open')} aria-label={t('nav.main')} {...(open ? { role: 'dialog', 'aria-modal': 'true' } : {})}>
         <div className="sidebar__brand">
+          {/* Desktop only. Same corner as the topbar's "expand" button, so hiding and showing the sidebar never move the control. */}
+          <IconButton
+            className="sidebar__toggle"
+            icon={PanelLeftClose}
+            label={t('nav.collapse')}
+            title={`${t('nav.collapse')} (Ctrl/⌘ + B)`}
+            aria-expanded={!collapsed}
+            onClick={onToggleCollapse}
+          />
           <NavLink to="/" className="wordmark" aria-label="Greatstone CRM — Dashboard" onClick={onClose}>
             G<span className="wm-rest" style={{ color: 'inherit' }}>reatstone</span><span>.</span><small>CRM</small>
           </NavLink>
@@ -80,19 +89,6 @@ export default function Sidebar({ open, collapsed, onClose, onToggleCollapse, co
             {NAV_FOOTER.map((item) => <NavItem key={item.id} item={item} counts={counts} onNavigate={onClose} />)}
           </div>
         </nav>
-        <div className="sidebar__foot">
-          {/* Desktop only: hides the sidebar; the modules then move to the topbar (expand button there). */}
-          <button
-            type="button"
-            className="nav__link sidebar__toggle"
-            onClick={onToggleCollapse}
-            aria-expanded={!collapsed}
-            title={`${t('nav.collapse')} (Ctrl/⌘ + B)`}
-          >
-            <PanelLeftClose aria-hidden="true" />
-            <span className="nav__label">{t('nav.collapse')}</span>
-          </button>
-        </div>
       </aside>
     </>
   );

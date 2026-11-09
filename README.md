@@ -37,7 +37,7 @@ Every module in the brief is built. Step 8 is the final polish pass.
 ## Try it
 
 - **Sign in**: open the app → `/login`. Click any demo teammate (password `greatstone` for everyone): Tessa = admin, Luis/Priya = designer, Owen = accounting, Mia = viewer. User menu → **Sign out**.
-- **Collapse the sidebar** (bottom button or **Ctrl/⌘ + B**): it slides away, the module icons slide into the topbar with the submodules below, and pages use the extra width (more table columns, more cards per row).
+- **Collapse the sidebar** (button in the top-left corner or **Ctrl/⌘ + B**): it slides away, the module icons slide into the topbar with the submodules below, and pages use the extra width (more table columns, more cards per row).
 - **Ctrl/⌘ + K**: global search and command palette.
 - **+ New → Task / Appointment / Note**: quick **modal** forms. Try Esc with changes, Ctrl/⌘+Enter, and the inline validation.
 - **+ New → Lead**: full **page** form with **← Back**. Back returns to the same screen, scroll and filters. If you leave with unsaved changes, it asks first.

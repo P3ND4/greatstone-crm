@@ -57,8 +57,6 @@
 
 .nav__bottom { margin-top: auto; padding-top: var(--sp-3); }
 .nav > .nav__link + .nav__group, .nav > .nav__group + .nav__link { margin-top: var(--sp-1); }
-.sidebar__foot { padding: var(--sp-3); border-top: 1px solid var(--brand-3); flex: none; }
-.sidebar__foot .nav__link { color: var(--brand-muted); }
 
 /* Desktop: persistent sidebar. Collapsing hides it completely (slides out) and the modules move to the topbar. */
 @media (min-width: 1024px) {
@@ -186,7 +184,13 @@
 
 /* Sidebar collapse toggle (desktop only) */
 .sidebar__toggle { display: none !important; }
-@media (min-width: 1024px) { .sidebar__toggle { display: flex !important; } }
+@media (min-width: 1024px) {
+  .sidebar__toggle { display: inline-grid !important; flex: none; color: var(--brand-muted); }
+  .sidebar__toggle:hover { background: var(--brand-2); color: var(--brand-contrast); }
+  /* Toggle sits in the top-left corner, exactly where the topbar's expand button appears. */
+  .sidebar__brand { justify-content: flex-start; padding-left: var(--sp-3); }
+  .sidebar__brand .wordmark { margin-left: 2px; }
+}
 
 /* ---------- Content ---------- */
 .content { container: page / inline-size; width: 100%; max-width: var(--content-max); margin: 0 auto; padding: var(--sp-5) var(--sp-4) 96px; flex: 1; min-width: 0; } /* bottom room for the floating assistant */
