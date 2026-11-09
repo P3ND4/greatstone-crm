@@ -6,6 +6,8 @@ greatstone-crm/
 ├─ public/              favicon.svg · icons/ (PWA + Apple touch icons) · screenshots/ (install dialog)
 ├─ docs/brief/          original prompt (PDF + text)
 ├─ docs/API_INTEGRATION.md  guide to replace the mock services with a real API
+├─ docs/DEVELOPMENT_GUIDE.md  how everything is built + how to fork it into a simpler template
+├─ scripts/             qa/ (audit.cjs, shot.cjs, routes.cjs, session.cjs) · make-icons.cjs
 ├─ docs/screenshots/
 └─ src/
    ├─ main.jsx          providers (i18n, session, toasts) + router

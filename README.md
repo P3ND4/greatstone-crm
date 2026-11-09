@@ -10,6 +10,15 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
+## Quality checks (optional, needs Playwright: `npm i -D playwright && npx playwright install chromium`)
+
+```bash
+npm run qa:audit                 # every route × 10 widths: page overflow + console errors (against npm run preview)
+COLLAPSED=1 npm run qa:audit     # same with the sidebar hidden
+npm run qa:shot -- /crm/leads out.png 1440 900
+npm run icons                    # regenerate PWA icons from the brand mark
+```
+
 ## Local production build
 
 ```bash
@@ -85,6 +94,7 @@ The CRM is a **Progressive Web App**: it installs like a native app and works of
 
 ## Docs
 
+- **`docs/DEVELOPMENT_GUIDE.md`: development guide (Spanish)**: architecture, design system, layout, patterns, components, i18n, auth, PWA, QA, recipes, and how to fork this repo into a simpler template.
 - `DECISIONS.md`: design decisions, brand values taken from the client site, and assumptions.
 - `STRUCTURE.md`: folder map, routes, and the "Action → Modal or Page" table.
 - `src/data/schema.md`: entities and fields, the base for the database model.
