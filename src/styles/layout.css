@@ -375,3 +375,17 @@
 }
 @media (prefers-reduced-motion: no-preference) { .auth__card { animation: auth-in 260ms ease-out both; } }
 @keyframes auth-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Pull to refresh (touch) ----------
+   The topbar stays still; the page content slides down under it and a spinner fades in. */
+.ptr { position: fixed; left: 50%; top: var(--topbar-h); z-index: calc(var(--z-topbar) - 1); width: 40px; height: 40px; margin-left: -20px; pointer-events: none;
+  opacity: 0; transform: translateY(calc(var(--ptr, 0px) - 44px)); }
+@media (min-width: 1024px) { .ptr { left: calc(50% + var(--sidebar-w) / 2); } .app.is-collapsed .ptr { left: 50%; } }
+.ptr__spinner { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-2); color: var(--text-muted); }
+.ptr__spinner svg { width: 18px; height: 18px; transform: rotate(calc(var(--ptr, 0px) * 3)); }
+.app.is-pulling .ptr, .app.is-ptr-refreshing .ptr { opacity: 1; }
+.app.is-ptr-ready .ptr__spinner { color: var(--accent); border-color: var(--accent); }
+.app.is-ptr-refreshing .ptr__spinner svg { animation: spin .8s linear infinite; color: var(--accent); }
+.app.is-pulling .content, .app.is-ptr-refreshing .content { transform: translateY(var(--ptr, 0px)); }
+.app.is-ptr-release .content, .app.is-ptr-release .ptr { transition: transform 200ms var(--nav-ease), opacity 200ms; }
+@media (prefers-reduced-motion: reduce) { .app.is-ptr-refreshing .ptr__spinner svg { animation: none; } }

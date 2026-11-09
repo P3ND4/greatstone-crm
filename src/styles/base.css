@@ -1,6 +1,7 @@
 /* Reset + base typography. Mobile-first. */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; overscroll-behavior-y: none; } /* no rubber-band / native pull-to-refresh: the sticky topbar never slides down (iOS Safari 16+, Chrome). The app has its own pull-to-refresh. */
+body { overscroll-behavior-y: none; }
 body {
   margin: 0;
   font-family: var(--font-sans);

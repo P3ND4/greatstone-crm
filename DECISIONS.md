@@ -100,6 +100,10 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - The assistant is intent matching (English and Spanish) over CRM data. Answers include deep links and suggested actions (open a filtered list, create an appointment…). It is available as a floating, non-blocking side panel on every screen and as a full page.
 - Global AI preferences (assistant on/off, tone, reply language, data access, human review, schedule) live in **Settings → AI**. Turning the assistant off hides the floating button for everyone.
 
+## iPhone / touch: the topbar never moves
+- On iOS Safari, pulling down at the top of the page normally drags the whole page, sticky topbar included, to show the browser's refresh spinner. The document now has `overscroll-behavior-y: none` (Safari 16+, Chrome), so it never bounces and the topbar stays put.
+- The refresh gesture is kept with our own **pull-to-refresh** (`hooks/usePullToRefresh.js`, touch screens only). The page content slides down *under* the topbar, a spinner appears, and releasing past the threshold reloads the page. It does not start inside lists or threads that are scrolled, in modals or the open drawer, or on sideways swipes, and it respects *reduce motion*. It works the same in Safari, Chrome and the installed app (where browsers have no pull-to-refresh at all).
+
 ## Sign in / sign out (mock auth)
 - `/login` and `/forgot-password` sit outside the app shell. Every app route is protected (`RequireAuth`): a signed-out visitor goes to `/login?next=<page>` and comes back to the same page (with its filters) after signing in. Only same-app paths are accepted in `next` (no open redirects).
 - **Demo accounts**: the five fictional teammates, one per role, all with the password `greatstone`. The sign-in page lists them, so signing in as Owen (accounting) or Mia (viewer) shows real role permissions, not just the "view as" preview.

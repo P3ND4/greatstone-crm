@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, ScrollRestoration, useLocation } from 'react-router-dom';
 import useHotkey from '../../hooks/useHotkey.js';
+import usePullToRefresh from '../../hooks/usePullToRefresh.js';
+import { RefreshCw } from 'lucide-react';
 import useResource from '../../hooks/useResource.js';
 import { conversationsService, lookupService } from '../../services/index.js';
 import { QuickActionsProvider } from '../quick/QuickActionsProvider.jsx';
@@ -23,6 +25,8 @@ export default function AppLayout() {
   const [searchOpen, setSearchOpen] = useState(false);
   // Animations run only after the user toggles (not on first paint with a remembered state).
   const [navAnim, setNavAnim] = useState(false);
+  const appRef = useRef(null);
+  usePullToRefresh(appRef);
   const collapsedRef = useRef(collapsed);
   collapsedRef.current = collapsed;
   const toggleCollapsed = useCallback(() => {
@@ -54,7 +58,9 @@ export default function AppLayout() {
 
   return (
     <QuickActionsProvider>
-      <div className={cx('app', collapsed && 'is-collapsed', hasSubmodules && 'has-subbar', navAnim && 'nav-anim')}>
+      <div ref={appRef} className={cx('app', collapsed && 'is-collapsed', hasSubmodules && 'has-subbar', navAnim && 'nav-anim')}>
+        {/* Pull-to-refresh indicator (touch only): sits under the topbar, which never moves. */}
+        <div className="ptr" aria-hidden="true"><span className="ptr__spinner"><RefreshCw /></span></div>
         <a className="sr-only" href="#main">Skip to content</a>
         <Sidebar
           open={navOpen}

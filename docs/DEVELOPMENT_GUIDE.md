@@ -463,6 +463,7 @@ t('settings.users.invited', { email });  // 'Invitation sent to {email}'
 | Atajos | `hooks/useHotkey('mod+b', fn, { allowInInputs: false })` | `mod` = Ctrl o ⌘ |
 | Foco | `useFocusTrap(ref, active)` | enfoca el primer campo (o `[data-autofocus]`) y devuelve el foco al cerrar |
 | Scroll | `useScrollLock(active)` | con contador, para modales apilados |
+| Pull-to-refresh | `usePullToRefresh(appRef)` (en `AppLayout`) | solo táctil; el documento no rebota (`overscroll-behavior-y: none`), así la topbar no se mueve en iPhone; el contenido baja bajo la topbar y recarga al soltar |
 | Toasts | `useToast()` | `aria-live`, tono success o danger |
 | Barra de guardado | `pages/settings/shared.jsx → SaveBar` | sticky abajo; mueve el botón de IA hacia arriba con `body.has-savebar` |
 | PWA | `layout/PwaStatus.jsx` | "Listo para funcionar sin conexión", "Nueva versión → Recargar" |
