@@ -3,7 +3,7 @@
    Mobile-first: off-canvas sidebar < 1024px, persistent ≥ 1024px.
    ========================================================================= */
 
-.app { min-height: 100vh; }
+.app { min-height: 100vh; min-height: 100dvh; }
 
 /* ---------- Sidebar ---------- */
 .sidebar {
@@ -68,7 +68,7 @@
 @media (prefers-reduced-motion: reduce) { .app { --nav-dur: 1ms; } }
 
 /* ---------- Main column ---------- */
-.main { min-width: 0; display: flex; flex-direction: column; min-height: 100vh; transition: padding-left var(--nav-dur) var(--nav-ease); }
+.main { min-width: 0; display: flex; flex-direction: column; min-height: 100vh; min-height: 100dvh; transition: padding-left var(--nav-dur) var(--nav-ease); }
 @media (min-width: 1024px) {
   .main { padding-left: var(--sidebar-w); }
   .app.is-collapsed .main { padding-left: 0; }
@@ -248,7 +248,7 @@
 .modal > .form-shell { max-height: var(--modal-max-h); flex: 1 1 auto; }
 @media (max-width: 479px) {
   .modal-root { padding: 0; place-items: end stretch; }
-  .modal { border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-height: 92vh; }
+  .modal { border-radius: var(--radius-lg) var(--radius-lg) 0 0; max-height: 92vh; max-height: 92dvh; padding-bottom: var(--safe-bottom); }
   .modal > .form-shell { max-height: 92vh; }
 }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
@@ -389,3 +389,26 @@
 .app.is-pulling .content, .app.is-ptr-refreshing .content { transform: translateY(var(--ptr, 0px)); }
 .app.is-ptr-release .content, .app.is-ptr-release .ptr { transition: transform 200ms var(--nav-ease), opacity 200ms; }
 @media (prefers-reduced-motion: reduce) { .app.is-ptr-refreshing .ptr__spinner svg { animation: none; } }
+
+/* =========================================================================
+   iPhone / mobile hardening
+   - The page never bounces (overscroll-behavior in base.css).
+   - < 1024px the topbar is position: fixed (a sticky bar still moves with iOS' elastic scroll in
+     some cases); .main reserves its height with padding-top: var(--topbar-h). Desktop keeps sticky.
+   - Solid topbar background on phones (backdrop blur stutters while scrolling on iOS).
+   - Safe areas: notch (landscape) and home indicator, with viewport-fit=cover.
+   ========================================================================= */
+.app { --topbar-h: calc(var(--topbar-row-h) + var(--safe-top)); }
+.app.has-subbar { --topbar-h: calc(var(--topbar-row-h) + var(--subbar-h) + var(--safe-top)); }
+@media (min-width: 1024px) { .app.has-subbar:not(.is-collapsed) { --topbar-h: calc(var(--topbar-row-h) + var(--safe-top)); } }
+.topbar { padding: var(--safe-top) var(--safe-right) 0 var(--safe-left); }
+@media (max-width: 1023px) {
+  .topbar { position: fixed; top: 0; left: 0; right: 0; background: var(--bg); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .main { padding-top: var(--topbar-h); }
+  .sidebar { padding: var(--safe-top) 0 var(--safe-bottom) var(--safe-left); }
+}
+.content { padding-left: max(var(--sp-4), var(--safe-left)); padding-right: max(var(--sp-4), var(--safe-right)); padding-bottom: calc(96px + var(--safe-bottom)); }
+@media (min-width: 768px) { .content { padding-left: max(var(--sp-6), var(--safe-left)); padding-right: max(var(--sp-6), var(--safe-right)); } }
+@media (min-width: 1280px) { .content { padding-left: var(--sp-8); padding-right: var(--sp-8); } }
+.auth__main { padding-bottom: calc(var(--sp-8) + var(--safe-bottom)); padding-right: max(var(--sp-4), var(--safe-right)); }
+.auth__brand { padding-top: max(var(--sp-5), var(--safe-top)); }

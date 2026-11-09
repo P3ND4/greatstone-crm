@@ -397,7 +397,7 @@ kbd {
 
 /* ---------- Kanban ---------- */
 .kanban { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(264px, 1fr); gap: var(--sp-3); overflow-x: auto; padding-bottom: var(--sp-3); align-items: start; scroll-snap-type: x proximity; }
-.kanban__col { display: flex; flex-direction: column; min-height: 320px; max-height: calc(100vh - 290px); background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); scroll-snap-align: start; transition: background var(--transition), border-color var(--transition); }
+.kanban__col { display: flex; flex-direction: column; min-height: 320px; max-height: calc(100vh - 290px); max-height: calc(100dvh - 290px); background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); scroll-snap-align: start; transition: background var(--transition), border-color var(--transition); }
 .kanban__col.is-over { background: var(--accent-soft); border-color: var(--accent); }
 .kanban__col--success { background: color-mix(in srgb, var(--success-soft) 60%, var(--surface-2)); }
 .kanban__col--muted { opacity: .92; }
@@ -528,7 +528,7 @@ kbd {
   .comms.has-active .comms-list { display: flex; }
 }
 @container page (min-width: 960px) { .comms.has-panel { grid-template-columns: 320px minmax(0, 1fr) 280px; } }
-.comms--page { height: calc(100vh - var(--topbar-h) - 140px); }
+.comms--page { height: calc(100vh - var(--topbar-h) - 140px); height: calc(100dvh - var(--topbar-h) - 140px); }
 @container page (min-width: 720px) { .comms--page.has-panel { grid-template-columns: minmax(0, 1fr) 300px; } }
 .comms--mail-page { grid-template-columns: minmax(0, 1fr) !important; }
 
@@ -1133,3 +1133,18 @@ body.has-savebar .ai-fab { bottom: 92px; }
 .tpl-preview__sms .bubble--out { background: #2F6690; color: #fff; }
 .tpl-preview__sms .bubble--out .bubble__body { color: #fff; }
 .composer__send:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ---------- Safe areas for everything pinned to the bottom of the screen (iPhone home indicator) ---------- */
+.toasts { bottom: calc(var(--sp-4) + var(--safe-bottom)); right: calc(var(--sp-4) + var(--safe-right)); }
+.ai-fab { bottom: calc(20px + var(--safe-bottom)); right: calc(20px + var(--safe-right)); }
+.savebar { bottom: calc(var(--sp-4) + var(--safe-bottom)); }
+.pwa-update { bottom: calc(16px + var(--safe-bottom)); left: calc(16px + var(--safe-left)); }
+body.has-savebar .ai-fab { bottom: calc(92px + var(--safe-bottom)); }
+@media (max-width: 479px) {
+  .ai-fab { right: calc(14px + var(--safe-right)); bottom: calc(14px + var(--safe-bottom)); }
+  .ai-panel-root { top: calc(64px + var(--safe-top)); }
+  .ai-panel { padding-bottom: var(--safe-bottom); }
+  .savebar { bottom: calc(8px + var(--safe-bottom)); }
+  .pwa-update { bottom: calc(8px + var(--safe-bottom)); left: 8px; }
+  body.has-savebar .ai-fab { bottom: calc(128px + var(--safe-bottom)); }
+}

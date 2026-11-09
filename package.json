@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "qa:audit": "node scripts/qa/audit.cjs",
     "qa:shot": "node scripts/qa/shot.cjs",
-    "icons": "node scripts/make-icons.cjs"
+    "icons": "node scripts/make-icons.cjs",
+    "splash": "node scripts/make-splash.cjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

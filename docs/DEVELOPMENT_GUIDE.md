@@ -483,6 +483,7 @@ t('settings.users.invited', { email });  // 'Invitation sent to {email}'
 - `vite.config.js → VitePWA`: manifest (nombre, colores, iconos, atajos, capturas) + Workbox (precache del shell, chunks, iconos y fuentes latinas; fallback SPA; `/health` excluido).
 - `registerType: 'prompt'`: **nunca recarga sola**; `PwaStatus` muestra "Nueva versión → Recargar" y busca actualizaciones cada hora.
 - `src/app/pwa.js`: `usePwa()` → `{ canInstall, installed, online, isIOS, install() }`. También tiene helpers de notificaciones locales.
+- iPhone: `viewport-fit=cover` + tokens `--safe-top/right/bottom/left`; topbar `fixed` bajo 1024 px (sticky en escritorio); `100dvh`; campos a 16 px en iOS (sin zoom); pantallas de arranque con `npm run splash` (imprime los `<link>` para `index.html`).
 - Iconos: `npm run icons` (o con variables `MARK="A" BG="#111" FG="#fff" ACCENT="#38BDF8"`) genera `public/icons/*`. El manifest y `index.html` ya apuntan ahí.
 - Caddy sirve `sw.js` y el manifest con `no-cache`, y la CSP permite `worker-src` y `manifest-src 'self'`.
 
@@ -539,7 +540,7 @@ Objetivo: quedarte con **el esqueleto** (layout, shells, componentes, hooks, ser
 | `src/app/*` | **conservar** | edita `navigation.js` y `router.jsx` |
 | `docs/API_INTEGRATION.md` | conservar y reducir al nuevo dominio | |
 | `docs/brief`, `docs/screenshots`, `src/data/schema.md` | reemplazar | |
-| `scripts/`, `vite.config.js`, `Caddyfile`, `railpack.json`, `vercel.json` | **conservar** | cambia nombre y colores del manifest |
+| `scripts/`, `vite.config.js`, `Caddyfile`, `railpack.json`, `vercel.json` | **conservar** | cambia nombre y colores del manifest; regenera iconos y splash con tu marca (`npm run icons`, `npm run splash`) |
 
 ### 19.2 Paso a paso
 

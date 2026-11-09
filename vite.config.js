@@ -41,7 +41,7 @@ const pwa = VitePWA({
   workbox: {
     // App shell + every route chunk + Latin fonts. Other font subsets are cached the first time they're used.
     globPatterns: ['**/*.{js,css,html,svg,png,webmanifest}', 'assets/*-latin-*.woff2'],
-    globIgnores: ['screenshots/**'],
+    globIgnores: ['screenshots/**', 'splash/**'], // iOS reads launch screens itself; no need to precache them
     navigateFallback: '/index.html',
     navigateFallbackDenylist: [/^\/health$/],
     cleanupOutdatedCaches: true,

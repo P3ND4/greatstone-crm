@@ -17,6 +17,7 @@ npm run qa:audit                 # every route × 10 widths: page overflow + con
 COLLAPSED=1 npm run qa:audit     # same with the sidebar hidden
 npm run qa:shot -- /crm/leads out.png 1440 900
 npm run icons                    # regenerate PWA icons from the brand mark
+npm run splash                   # regenerate iOS launch screens (prints the <link> tags for index.html)
 ```
 
 ## Local production build
@@ -82,7 +83,7 @@ The CRM is a **Progressive Web App**: it installs like a native app and works of
 
 - **Desktop (Chrome / Edge)**: the install icon in the address bar, or user menu → **Install app**. It opens in its own window with a dock/taskbar icon.
 - **Android (Chrome)**: menu → **Install app** / **Add to Home screen**.
-- **iPhone / iPad (Safari)**: Share → **Add to Home Screen** (instructions in Settings → My profile → This device).
+- **iPhone / iPad (Safari)**: Share → **Add to Home Screen** (instructions in Settings → My profile → This device). It opens with a branded launch screen; on iOS 16.4+ it can also show notifications.
 - Long-press the icon for shortcuts: New lead, WhatsApp inbox, Agenda, New estimate.
 - **Offline**: the whole app (and its demo data) is cached; an "Offline" pill appears in the topbar when there's no connection.
 - **Updates**: after a new deploy the app shows "New version available → Reload". It never reloads on its own.
