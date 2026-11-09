@@ -1,3 +1,4 @@
+import { useSession } from '../../../app/SessionProvider.jsx';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormPage, PageShell } from '../../../components/shells/index.js';
 import { Card, DataState, Field, Input, Select, Skeleton, Textarea, useToast } from '../../../components/ui/index.js';
@@ -17,12 +18,13 @@ const NEIGHBORHOODS = ['Coconut Grove', 'Brickell', 'Coral Gables', 'Miami Beach
  */
 const EMPTY = {
   firstName: '', lastName: '', email: '', phone: '', startWhen: '', description: '',
-  source: 'referral', referredById: '', budget: '', serviceType: 'design', neighborhood: '', score: 50, assigneeId: 'u_1',
+  source: 'referral', referredById: '', budget: '', serviceType: 'design', neighborhood: '', score: 50, assigneeId: '',
 };
 
 /** Route entry: /crm/leads/new (create) and /crm/leads/:id/edit (edit, loads the lead first). */
 export default function LeadFormRoute() {
   const t = useT();
+  const session = useSession();
   const { id } = useParams();
   const { data, loading, error, refetch } = useResource(() => (id ? leadsService.get(id) : Promise.resolve(null)), [id]);
   if (id && (loading || error)) {
@@ -34,7 +36,7 @@ export default function LeadFormRoute() {
   }
   const initial = data
     ? Object.fromEntries(Object.keys(EMPTY).map((k) => [k, data[k] ?? EMPTY[k]]))
-    : EMPTY;
+    : { ...EMPTY, assigneeId: session.user.id };
   if (initial.budget == null) initial.budget = '';
   return <LeadFormPage key={id || 'new'} lead={data} initial={{ ...initial, budget: initial.budget === '' ? '' : String(initial.budget), referredById: initial.referredById || '' }} />;
 }

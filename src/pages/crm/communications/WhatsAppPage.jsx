@@ -1,3 +1,4 @@
+import { useSession } from '../../../app/SessionProvider.jsx';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Clock, Expand, MessageCircle, PanelRightClose, PanelRightOpen } from 'lucide-react';
@@ -69,6 +70,7 @@ export function ThreadView({ id, showPanel, onTogglePanel, expanded, onSent }) {
 
 export default function WhatsAppPage() {
   const t = useT();
+  const session = useSession();
   const [params, setParams] = useSearchParams();
   const active = params.get('c');
   const filter = params.get('f') || 'all';
@@ -77,7 +79,7 @@ export default function WhatsAppPage() {
   const set = (k, v) => setParams((p) => { const n = new URLSearchParams(p); if (v) n.set(k, v); else n.delete(k); return n; }, { replace: true });
 
   const { data, loading, error, refetch } = useResource(
-    () => communicationsService.list({ channel: 'whatsapp', q, unread: filter === 'unread', assigneeId: filter === 'mine' ? 'u_1' : undefined }),
+    () => communicationsService.list({ channel: 'whatsapp', q, unread: filter === 'unread', assigneeId: filter === 'mine' ? session.user.id : undefined }),
     [q, filter],
   );
   const { data: counts } = useResource(() => Promise.all([communicationsService.counts('whatsapp'), communicationsService.counts('email')]), [active]);

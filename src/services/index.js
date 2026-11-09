@@ -23,3 +23,4 @@ export { projectsService } from './projectsService.js';
 export { financeService, estimatesApi, invoicesApi } from './financeService.js';
 export { aiService } from './aiService.js';
 export { settingsService, settingsSnapshot, SETTINGS_META } from './settingsService.js';
+export { authService, DEMO_PASSWORD } from './authService.js';

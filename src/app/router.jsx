@@ -32,13 +32,18 @@ import EmailMiningPage from '../pages/ai/EmailMiningPage.jsx';
 import CampaignsPage from '../pages/ai/CampaignsPage.jsx';
 import AssistantPage from '../pages/ai/AssistantPage.jsx';
 import SettingsPage from '../pages/settings/SettingsPage.jsx';
+import LoginPage from '../pages/auth/LoginPage.jsx';
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage.jsx';
+import RequireAuth from '../pages/auth/RequireAuth.jsx';
 import NotFoundPage from '../pages/system/NotFoundPage.jsx';
 
 /** Route map — see STRUCTURE.md. */
 export const router = createBrowserRouter([
+  { path: '/login', element: <LoginPage /> },
+  { path: '/forgot-password', element: <ForgotPasswordPage /> },
   {
     path: '/',
-    element: <AppLayout />,
+    element: <RequireAuth><AppLayout /></RequireAuth>,
     children: [
       { index: true, element: <DashboardPage /> },
 

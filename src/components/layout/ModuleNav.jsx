@@ -23,7 +23,7 @@ function useScrollActiveIntoView(ref, key) {
   }, [ref, key]);
 }
 
-/** Row 1 of the topbar: same modules as the sidebar. */
+/** Topbar module icons — shown on desktop only while the sidebar is hidden (CSS), animated in one by one. */
 export function ModuleRow() {
   const t = useT();
   const active = useActiveModule();
@@ -31,7 +31,7 @@ export function ModuleRow() {
   useScrollActiveIntoView(ref, active?.id);
   return (
     <nav ref={ref} className="modnav" aria-label={t('nav.modules')}>
-      {ALL.map((m) => {
+      {ALL.map((m, i) => {
         const Icon = m.icon;
         const isActive = active?.id === m.id;
         return (
@@ -42,6 +42,7 @@ export function ModuleRow() {
             className={cx('modnav__link', isActive && 'active')}
             aria-current={isActive ? 'page' : undefined}
             title={t(m.labelKey)}
+            style={{ '--i': i }}
           >
             <Icon aria-hidden="true" />
             <span>{t(m.labelKey)}</span>

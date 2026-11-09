@@ -1,3 +1,4 @@
+import { useSession } from '../../app/SessionProvider.jsx';
 import { format } from 'date-fns';
 import { useT } from '../../i18n/index.jsx';
 import useForm from '../../hooks/useForm.js';
@@ -8,9 +9,10 @@ import { DatePicker, Field, Input, Select, Textarea, useToast } from '../ui/inde
 /** Quick task — modal (≤ 6 fields). Size: sm. */
 export default function TaskModal({ open, onClose, projectId = '', onSaved }) {
   const t = useT();
+  const session = useSession();
   const toast = useToast();
   const form = useForm(
-    { title: '', dueAt: format(new Date(), 'yyyy-MM-dd'), priority: 'medium', projectId, assigneeId: 'u_1', notes: '' },
+    { title: '', dueAt: format(new Date(), 'yyyy-MM-dd'), priority: 'medium', projectId, assigneeId: session.user.id, notes: '' },
     {
       validate: (v) => ({ title: !v.title.trim() && t('validation.required'), dueAt: !v.dueAt && t('validation.required') }),
       onSubmit: async (v) => {

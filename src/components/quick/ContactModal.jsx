@@ -1,3 +1,4 @@
+import { useSession } from '../../app/SessionProvider.jsx';
 import { useT } from '../../i18n/index.jsx';
 import useForm, { isEmail, isPhone } from '../../hooks/useForm.js';
 import { contactsService } from '../../services/index.js';
@@ -9,6 +10,7 @@ export const CONTACT_TYPES = ['client', 'partner', 'referrer', 'architect', 'con
 /** Quick add / edit contact — modal (6 fields). Size: md. Full record lives on the contact page. */
 export default function ContactModal({ open, onClose, contact, type = 'client', onSaved }) {
   const t = useT();
+  const session = useSession();
   const toast = useToast();
   const editing = Boolean(contact);
   const form = useForm(
@@ -27,7 +29,7 @@ export default function ContactModal({ open, onClose, contact, type = 'client', 
         const payload = { ...v, name: `${v.firstName.trim()} ${v.lastName.trim()}`, company: v.company || null };
         const saved = editing
           ? await contactsService.update(contact.id, payload)
-          : await contactsService.create({ ...payload, tags: [], source: v.type === 'client' ? 'referral' : 'partner', ownerId: 'u_1', neighborhood: '', address: null });
+          : await contactsService.create({ ...payload, tags: [], source: v.type === 'client' ? 'referral' : 'partner', ownerId: session.user.id, neighborhood: '', address: null });
         toast.show(editing ? t('contacts.updated') : t('contacts.created'));
         onSaved?.(saved);
         onClose();

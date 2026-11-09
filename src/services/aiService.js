@@ -4,7 +4,7 @@
  * (e.g. a Supabase Edge Function calling an LLM) without touching the UI.
  */
 import { differenceInCalendarDays, differenceInMinutes, format, getDay, getHours, startOfMonth, subMonths } from 'date-fns';
-import { delay, table } from './client.js';
+import { delay, table, currentUserId } from './client.js';
 import * as ai from '../data/mock/ai.js';
 
 const byId = (t, id) => table(t).find((r) => r.id === id) || null;
@@ -167,13 +167,13 @@ export const aiService = {
       table('leads').unshift({
         id: `l_ai_${(seq += 1)}`, firstName, lastName: rest.join(' '), name: r.name, email: '', phone: '', source: 'website', referredById: null,
         startWhen: 'unsure', description: `AI Lead Finder — ${r.signal}`, serviceType: 'design', budget: r.estBudget, neighborhood: r.neighborhood,
-        score: r.score, status: 'new', assigneeId: 'u_1', createdAt: new Date().toISOString(),
+        score: r.score, status: 'new', assigneeId: currentUserId(), createdAt: new Date().toISOString(),
       });
       r.status = 'added';
     } else if (action === 'prospect') {
       table('prospects').unshift({
         id: `pr_ai_${(seq += 1)}`, listId: 'pl_2', segment: 'agent', company: r.persona, name: r.name, role: r.persona, email: '', phone: '',
-        neighborhood: r.neighborhood, status: 'new', score: r.score, sequenceId: null, step: 0, lastTouchAt: null, nextTouchAt: null, ownerId: 'u_1',
+        neighborhood: r.neighborhood, status: 'new', score: r.score, sequenceId: null, step: 0, lastTouchAt: null, nextTouchAt: null, ownerId: currentUserId(),
       });
       r.status = 'added';
     } else {

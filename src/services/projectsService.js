@@ -5,7 +5,7 @@
  *   projectedMargin = (contractValue − projectedCost) / contractValue
  *   budgetUsed      = spent / budget
  */
-import { delay, table } from './client.js';
+import { delay, table, currentUserId } from './client.js';
 import { projectDetails, projectExpenses } from '../data/mock/projectDetails.js';
 
 let seq = 9000;
@@ -83,7 +83,7 @@ export const projectsService = {
     return delay(p);
   },
 
-  async addNote(id, body, authorId = 'u_1') {
+  async addNote(id, body, authorId = currentUserId()) {
     const note = { id: `nt_${(seq += 1)}`, body, authorId, createdAt: new Date().toISOString() };
     detailOf(id).notes.unshift(note);
     return delay(note);
@@ -98,7 +98,7 @@ export const projectsService = {
   async addDocuments(id, files, type) {
     const docs = files.map((f) => ({
       id: `doc_${(seq += 1)}`, type, name: f.name, size: `${Math.max(1, Math.round(f.size / 1024))} KB`,
-      uploadedAt: new Date().toISOString(), uploadedBy: 'u_1', status: type === 'permits' ? 'submitted' : null,
+      uploadedAt: new Date().toISOString(), uploadedBy: currentUserId(), status: type === 'permits' ? 'submitted' : null,
     }));
     detailOf(id).documents.unshift(...docs);
     return delay(docs);

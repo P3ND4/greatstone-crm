@@ -1,25 +1,27 @@
-import { Download, WifiOff, Eye, Bell, CalendarPlus, CheckSquare, ChevronDown, FileText, LogOut, Menu as MenuIcon, Plus, Receipt, Search, SlidersHorizontal, StickyNote, User, UserPlus, Building2, Languages } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { PanelLeftOpen, Download, WifiOff, Eye, Bell, CalendarPlus, CheckSquare, ChevronDown, FileText, LogOut, Menu as MenuIcon, Plus, Receipt, Search, SlidersHorizontal, StickyNote, User, UserPlus, Building2, Languages } from 'lucide-react';
+import { Link, NavLink } from 'react-router-dom';
 import { useI18n } from '../../i18n/index.jsx';
 import { useQuickActions } from '../quick/QuickActionsProvider.jsx';
 import Avatar from '../ui/Avatar.jsx';
 import Button, { IconButton } from '../ui/Button.jsx';
 import Menu from '../ui/Menu.jsx';
-import { ModuleRow, SubmoduleRow } from './ModuleNav.jsx';
+import { ModuleRow, SubmoduleRow, useActiveModule } from './ModuleNav.jsx';
 import { useSession } from '../../app/SessionProvider.jsx';
 import { SETTINGS_META } from '../../services/index.js';
 import { usePwa } from '../../app/pwa.js';
 
 /**
- * Two-row topbar.
- * Row 1: menu (mobile) · modules (same as sidebar) · search · + New · notifications · user.
- * Row 2: submodules of the active module (only when it has submodules).
- * Both rows scroll horizontally on narrow screens instead of wrapping or overflowing.
+ * Topbar. Never repeats what the sidebar already shows:
+ * - Desktop, sidebar open: wide search · + New · notifications · user (single row).
+ * - Desktop, sidebar hidden: expand · "G." · module icons (animated in) · search · actions,
+ *   plus row 2 with the submodules of the active module.
+ * - Phone / tablet: menu · current module name · actions; row 2 = submodules as text tabs (no icons).
  */
-export default function Topbar({ onOpenNav, onOpenSearch, unread = [], counts }) {
+export default function Topbar({ onOpenNav, onToggleCollapse, onOpenSearch, unread = [], counts }) {
+  const active = useActiveModule();
   const { t, locale, setLocale } = useI18n();
   const quick = useQuickActions();
-  const { user: me, role, realRole, setViewAs } = useSession();
+  const { user: me, role, realRole, setViewAs, signOut } = useSession();
   const pwa = usePwa();
   const isMac = typeof navigator !== 'undefined' && /Mac|iPhone|iPad/.test(navigator.platform);
 
@@ -27,14 +29,17 @@ export default function Topbar({ onOpenNav, onOpenSearch, unread = [], counts })
     <header className="topbar">
       <div className="topbar__row">
         <IconButton className="topbar__menu" icon={MenuIcon} label={t('nav.openMenu')} onClick={onOpenNav} />
+        <IconButton className="topbar__expand" icon={PanelLeftOpen} label={t('nav.expand')} title={`${t('nav.expand')} (Ctrl/⌘ + B)`} aria-expanded="false" onClick={onToggleCollapse} />
+        <NavLink to="/" end className="topbar__brand" aria-label="Greatstone CRM — Dashboard" tabIndex={-1}>G<span>.</span></NavLink>
+        <p className="topbar__title" aria-hidden="true">{active ? t(active.labelKey) : ''}</p>
         <ModuleRow />
+        <button type="button" className="search-trigger" onClick={onOpenSearch} aria-label={`${t('topbar.searchShort')} (${isMac ? '⌘' : 'Ctrl'}+K)`} title={`${t('topbar.searchShort')} (${isMac ? '⌘' : 'Ctrl'}+K)`}>
+          <Search aria-hidden="true" />
+          <span className="label">{t('topbar.searchShort')}</span>
+          <kbd>{isMac ? '⌘' : 'Ctrl'} K</kbd>
+        </button>
         <div className="topbar__actions">
           {!pwa.online && <span className="offline-pill" role="status" title={t('pwa.offlineHint')}><WifiOff aria-hidden="true" /><span className="hide-mobile">{t('pwa.offline')}</span><span className="sr-only">{t('pwa.offlineHint')}</span></span>}
-          <button type="button" className="search-trigger" onClick={onOpenSearch} aria-label={`${t('topbar.searchShort')} (${isMac ? '⌘' : 'Ctrl'}+K)`} title={`${t('topbar.searchShort')} (${isMac ? '⌘' : 'Ctrl'}+K)`}>
-            <Search aria-hidden="true" />
-            <span className="label">{t('topbar.searchShort')}</span>
-            <kbd>{isMac ? '⌘' : 'Ctrl'} K</kbd>
-          </button>
           <Menu
             label={t('topbar.new')}
             trigger={(p) => <Button variant="primary" className="topbar__new" icon={Plus} aria-label={t('topbar.new')} {...p}><span className="btn-label">{t('topbar.new')}</span></Button>}
@@ -103,7 +108,7 @@ export default function Topbar({ onOpenNav, onOpenSearch, unread = [], counts })
                   </button>
                 ))}
                 <div className="menu__sep" />
-                <button role="menuitem" type="button" className="menu__item" onClick={close}><LogOut />{t('topbar.signOut')}</button>
+                <button role="menuitem" type="button" className="menu__item" onClick={() => { close(); signOut(); }}><LogOut />{t('topbar.signOut')}</button>
               </>
             )}
           </Menu>

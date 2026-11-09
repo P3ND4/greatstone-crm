@@ -35,16 +35,19 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - The sidebar collapsed state is kept in `localStorage`, as a per-user convenience only.
 - Dark theme tokens exist (`[data-theme="dark"]`) but are not exposed in the UI yet. The brief marks this as low priority.
 
-## Navigation (request from Marcos)
-- **Collapsible sidebar** + **two-row topbar** that repeats the same modules: row 1 holds the modules (Dashboard, CRM, Projects, Finance, AI, Settings) plus search, + New, notifications and the user menu; row 2 holds the submodules of the active module and is hidden when the module has none. Both come from one config (`src/app/navigation.js`), so they never drift apart.
-- Sidebar toggle: a "Collapse / Expand sidebar" button at the bottom of the sidebar, visible in both states, plus **Ctrl/⌘ + B** (ignored while typing). The state is remembered per browser. Below 1024px the sidebar becomes a drawer (☰).
-- The sticky header height is a CSS variable (`--topbar-h` = row + subbar), so sticky table headers and page-form headers always sit right under it.
-- Below 1280px, inactive modules in row 1 show only their icon (the label stays in the tooltip and for screen readers). Both rows scroll sideways on small screens and never overflow the page.
+## Navigation (Marcos' request, refined by Jose Carlos)
+- **Nothing is shown twice.** With the sidebar open, the topbar only holds a wide search, + New, notifications and the user menu. The modules and submodules live in the sidebar.
+- **Collapsing hides the sidebar completely** (desktop, ≥1024px): it slides out while the **module icons slide into the topbar one by one**, and a second row shows the **submodules** of the active module. This is Marcos' two-row topbar, shown only when the sidebar is hidden. An expand button (and **Ctrl/⌘ + B**, ignored while typing) brings the sidebar back. Keyboard focus moves to the control that undoes the action. Animations run only after a toggle (not on load) and respect *reduce motion*. The state is remembered per browser.
+- **Phones and tablets** (<1024px): no module icons in the topbar. It shows ☰ (drawer with all modules), the current module name and the actions. Submodules appear as a text-only tab row.
+- Topbar, sidebar, palette and breadcrumbs all come from one config (`src/app/navigation.js`). The sticky header height is a CSS variable (`--topbar-h`), so sticky table headers and page-form headers always sit right under it.
+- Below 1280px, inactive modules in the topbar show only their icon (label in the tooltip and for screen readers).
 
 ## Responsive
-- Mobile-first CSS with breakpoints 480 / 640 / 768 / 1024 / 1280 / 1440. Content max width is 1760px, so wide screens use the extra space.
+- Mobile-first CSS. Page chrome (sidebar, topbar, modals) uses viewport breakpoints 480 / 640 / 768 / 1024 / 1280 / 1440.
+- **Page content responds to the space it actually has** (CSS container queries on `.content`, container `page`), not to the screen width. When the sidebar is hidden, the page gains ~250px and uses them: tables show more columns, card grids add columns, split views (inbox, detail + side panel, document + preview) open earlier. Margins stay the same (16 / 24 / 32px). Content max width is 2400px, so even 2560px screens get more columns instead of bigger margins; at ≥2200px of content the 10 dashboard KPIs fit in one row.
+- Container widths used (≈ old viewport breakpoints with the sidebar open): 560 · 700 · 720 · 960 · 1120 · 1216 · 1600.
 - Audited automatically at **320, 375, 414, 600, 768, 1024, 1280, 1536, 1920 and 2560px** on 30 routes: no horizontal page overflow and no console errors or warnings.
-- Tables: low-priority columns hide progressively. Below 1280px a table scrolls inside its own box, never the page. On phones, filters sit in one horizontally scrollable row.
+- Tables: low-priority columns hide progressively based on the content width (`hide: 'md' | 'lg' | 'xl' | 'xxl' | '3xl'`). Below 1280px a table scrolls inside its own box, never the page. On phones, filters sit in one horizontally scrollable row.
 
 ## CRM module
 - **Lists**: q, filters, sort, page and view (table/cards) all live in the URL (`useListState`), so Back and shared links restore the exact view. Rows open the record **page**, and the row "⋯" menu holds secondary actions.
@@ -84,6 +87,13 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - Each module uses the same `AiModuleShell`: Results · Configure · Run history, plus **Run now** with simulated progress. The view lives in the URL (`?view=`).
 - The assistant is intent matching (English and Spanish) over CRM data. Answers include deep links and suggested actions (open a filtered list, create an appointment…). It is available as a floating, non-blocking side panel on every screen and as a full page.
 - Global AI preferences (assistant on/off, tone, reply language, data access, human review, schedule) live in **Settings → AI**. Turning the assistant off hides the floating button for everyone.
+
+## Sign in / sign out (mock auth)
+- `/login` and `/forgot-password` sit outside the app shell. Every app route is protected (`RequireAuth`): a signed-out visitor goes to `/login?next=<page>` and comes back to the same page (with its filters) after signing in. Only same-app paths are accepted in `next` (no open redirects).
+- **Demo accounts**: the five fictional teammates, one per role, all with the password `greatstone`. The sign-in page lists them, so signing in as Owen (accounting) or Mia (viewer) shows real role permissions, not just the "view as" preview.
+- "Keep me signed in" stores the session in localStorage (30 days); otherwise sessionStorage (closes with the tab, max 12 h). Sign out clears it and shows "You've signed out" with the email kept.
+- Errors are explicit and never reveal whether an email exists. After 5 wrong attempts sign-in locks for 30 s. Password reset always answers the same way.
+- `authService` has the contract of the real one (Supabase Auth or REST). See **`docs/API_INTEGRATION.md`**, the guide for wiring every service to a real backend.
 
 ## Settings module
 - **One page per section** (`/settings/:section`), listed in topbar row 2 and the sidebar like any other module. Sections with many fields are pages, short create/edit actions (invite user, catalog item, template) are modals — same rule as the rest of the app.

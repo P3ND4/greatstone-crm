@@ -4,7 +4,7 @@
  * Same async contract as every other service; values are edited in memory so the rest of the
  * demo reacts (e.g. a new tax rate is used by the next estimate, templates show up in composers).
  */
-import { delay, settings, table } from './client.js';
+import { delay, settings, table, currentUserId } from './client.js';
 import { NOTIFICATION_CHANNELS, NOTIFICATION_EVENTS, PERMISSION_MODULES, ROLES, futureIntegrations } from '../data/mock/settings.js';
 
 let seq = 9000;
@@ -73,7 +73,7 @@ export const settingsService = {
     return delay(u);
   },
   async invite({ email, role }) {
-    const row = { id: `inv_u${(seq += 1)}`, email: email.trim().toLowerCase(), role, sentAt: new Date().toISOString(), invitedBy: 'u_1' };
+    const row = { id: `inv_u${(seq += 1)}`, email: email.trim().toLowerCase(), role, sentAt: new Date().toISOString(), invitedBy: currentUserId() };
     table('invites').unshift(row);
     return delay(row);
   },

@@ -24,7 +24,7 @@ export default function LeadsPage() {
 
   const { data, loading, error, refetch } = useResource(() => leadsService.list({
     q: list.q, page: list.page, pageSize: list.pageSize, sort: list.sort,
-    filter: (l) => (!status || l.status === status) && (!source || l.source === source) && (!service || l.serviceType === service) && (!assignee || l.assigneeId === assignee),
+    where: { status, source, serviceType: service, assigneeId: assignee },
   }), [list.q, list.page, list.sort, status, source, service, assignee]);
 
   const users = lookupService.users();

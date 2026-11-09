@@ -1,3 +1,4 @@
+import { useSession } from '../../app/SessionProvider.jsx';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addMonths, format } from 'date-fns';
 import { FormPage, PageShell } from '../../components/shells/index.js';
@@ -29,6 +30,7 @@ export default function ProjectFormRoute() {
 
 function ProjectForm({ project }) {
   const t = useT();
+  const session = useSession();
   const toast = useToast();
   const navigate = useNavigate();
   const editing = Boolean(project);
@@ -38,7 +40,7 @@ function ProjectForm({ project }) {
       name: project?.name ?? '',
       clientId: project?.clientId ?? '',
       status: project?.status ?? 'planning',
-      managerId: project?.managerId ?? 'u_1',
+      managerId: project?.managerId ?? session.user.id,
       address: project?.address ?? '',
       neighborhood: project?.neighborhood ?? '',
       startDate: toDate(project?.startDate) || format(today, 'yyyy-MM-dd'),

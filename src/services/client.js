@@ -3,6 +3,9 @@
  * To connect Supabase/API later, replace the functions in this file (or each service)
  * with real calls; components and hooks keep the same contract:
  *   list(params) -> Promise<{ items, total }>, get(id) -> Promise<item>, create(data), update(id, data), remove(id)
+ * list params are plain, serializable values (they map 1:1 to query strings / PostgREST filters):
+ *   { q, page, pageSize, sort: 'field:asc|desc', where: { field: value | [values] | { gt|gte|lt|lte: n } } }
+ * See docs/API_INTEGRATION.md.
  */
 import * as db from '../data/mock/core.js';
 import { users } from '../data/mock/users.js';
@@ -41,6 +44,10 @@ const tables = {
   invites: st.invites,
 };
 
+/** Signed-in user for services that stamp authorship (set by authService; phase 2: from the auth session/JWT). */
+export const auth = { userId: null };
+export const currentUserId = () => auth.userId;
+
 /** Mutable settings objects (edited in Settings, read by services). */
 export const settings = {
   finance: fin.financeSettings,
@@ -63,12 +70,25 @@ export function table(name) {
   return tables[name];
 }
 
+/** where: { field: value } equality · [a, b] any of · { gt, gte, lt, lte } range. Empty values ('' | null | undefined) are ignored. */
+export function matches(row, where) {
+  return Object.entries(where).every(([field, cond]) => {
+    if (cond === '' || cond == null) return true;
+    const v = row[field];
+    if (Array.isArray(cond)) return cond.includes(v);
+    if (typeof cond === 'object') {
+      return (cond.gt == null || v > cond.gt) && (cond.gte == null || v >= cond.gte) && (cond.lt == null || v < cond.lt) && (cond.lte == null || v <= cond.lte);
+    }
+    return v === cond;
+  });
+}
+
 let seq = 1000;
 export function createCrudService(name, { searchFields = ['name'], defaultSort } = {}) {
   return {
-    async list({ q = '', page = 1, pageSize = 25, sort = defaultSort, filter } = {}) {
+    async list({ q = '', page = 1, pageSize = 25, sort = defaultSort, where } = {}) {
       let rows = table(name);
-      if (filter) rows = rows.filter(filter);
+      if (where) rows = rows.filter((row) => matches(row, where));
       if (q) {
         const needle = q.toLowerCase();
         rows = rows.filter((row) => searchFields.some((f) => String(row[f] ?? '').toLowerCase().includes(needle)));

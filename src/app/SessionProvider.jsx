@@ -1,14 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useReducer, useState } from 'react';
 import { DEFAULT_ACCENT } from './theme.js';
 import { accentVars } from '../lib/color.js';
-import { lookupService, settingsSnapshot } from '../services/index.js';
+import { authService, lookupService, settingsSnapshot } from '../services/index.js';
 
 /*
- * Session = who is signed in (mock), the role being previewed ("View as"), module access,
- * theme and brand accent. Phase 2: user + role come from Supabase Auth; access is enforced by RLS,
- * this provider only drives the UI states (no-access page, read-only settings).
+ * Session = who is signed in (authService), the role being previewed ("View as"), module access,
+ * theme and brand accent. Phase 2: user + role come from the real auth session; access is enforced
+ * by the backend (RLS), this provider only drives the UI (login redirect, no-access page, read-only settings).
  */
-export const CURRENT_USER_ID = 'u_1';
 const VIEW_AS_KEY = 'gs.viewAs';
 const THEME_KEY = 'gs.theme';
 
@@ -26,8 +25,10 @@ export function SessionProvider({ children }) {
   const [theme, setThemeState] = useState(() => read('localStorage', THEME_KEY) || 'light');
   const [sysDark, setSysDark] = useState(systemDark);
 
-  const user = lookupService.user(CURRENT_USER_ID);
-  const realRole = user?.role || 'admin';
+  const [userId, setUserId] = useState(() => authService.restore()?.userId ?? null);
+  const [signedOut, setSignedOut] = useState(null); // { email } right after an explicit sign-out
+  const user = userId ? lookupService.user(userId) : null;
+  const realRole = user?.role || 'viewer';
   const role = viewAs && viewAs !== realRole ? viewAs : realRole;
 
   const setViewAs = useCallback((r) => {
@@ -69,7 +70,30 @@ export function SessionProvider({ children }) {
     });
   }, [accent, version, resolvedTheme]);
 
+  const signIn = useCallback(async (credentials) => {
+    const { user: u } = await authService.signIn(credentials);
+    write('sessionStorage', VIEW_AS_KEY, null);
+    setViewAsState(null);
+    setSignedOut(null);
+    setUserId(u.id);
+    return u;
+  }, []);
+
+  const signOut = useCallback(async () => {
+    const email = userId ? lookupService.user(userId)?.email : '';
+    await authService.signOut();
+    write('sessionStorage', VIEW_AS_KEY, null);
+    setViewAsState(null);
+    setSignedOut({ email });
+    setUserId(null);
+  }, [userId]);
+
   const value = useMemo(() => ({
+    isAuthenticated: Boolean(user),
+    signedOut,
+    clearSignedOut: () => setSignedOut(null),
+    signIn,
+    signOut,
     user,
     realRole,
     role,
@@ -82,7 +106,7 @@ export function SessionProvider({ children }) {
     setTheme,
     refresh,
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [user, realRole, role, setViewAs, theme, resolvedTheme, setTheme, version]);
+  }), [user, realRole, role, setViewAs, theme, resolvedTheme, setTheme, version, signIn, signOut, signedOut]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

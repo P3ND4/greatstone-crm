@@ -1,3 +1,4 @@
+import { useSession } from '../../app/SessionProvider.jsx';
 import { format } from 'date-fns';
 import { useT } from '../../i18n/index.jsx';
 import useForm from '../../hooks/useForm.js';
@@ -13,6 +14,7 @@ export default function AppointmentModal({ open, onClose, contactId = '', projec
   const editing = Boolean(appointment);
   const start = appointment ? new Date(appointment.start) : null;
   const t = useT();
+  const session = useSession();
   const toast = useToast();
   const form = useForm(
     appointment
@@ -30,7 +32,7 @@ export default function AppointmentModal({ open, onClose, contactId = '', projec
       }),
       onSubmit: async (v) => {
         const payload = { title: v.title, type: v.type, contactId: v.contactId, projectId: v.projectId || null, location: v.location, start: new Date(`${v.date}T${v.time}:00`).toISOString(), durationMin: Number(v.durationMin) };
-        const saved = editing ? await appointmentsService.update(appointment.id, payload) : await appointmentsService.create({ ...payload, assigneeId: 'u_1' });
+        const saved = editing ? await appointmentsService.update(appointment.id, payload) : await appointmentsService.create({ ...payload, assigneeId: session.user.id });
         toast.show(editing ? t('appointment.updated') : t('appointment.created'));
         onSaved?.(saved);
         onClose();

@@ -5,6 +5,7 @@ greatstone-crm/
 ├─ index.html · vite.config.js (React + PWA manifest/Workbox) · vercel.json (SPA rewrite)
 ├─ public/              favicon.svg · icons/ (PWA + Apple touch icons) · screenshots/ (install dialog)
 ├─ docs/brief/          original prompt (PDF + text)
+├─ docs/API_INTEGRATION.md  guide to replace the mock services with a real API
 ├─ docs/screenshots/
 └─ src/
    ├─ main.jsx          providers (i18n, session, toasts) + router
@@ -34,19 +35,20 @@ greatstone-crm/
    │  ├─ comms/         ChannelHeader · ConversationList · Bubbles · WaComposer · ContactPanel
    │  └─ charts/        ChartCard (with table view) · RevenueExpensesChart · HBarChart
    ├─ hooks/            useResource · useUrlState · useListState · useForm · useHotkey · useFocusTrap · useScrollLock · useCssVars
-   ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard · crm · communications · prospecting · projects · finance · ai · settings · search · lookup
+   ├─ services/         client.js (mock adapter) · index.js (entity services) · dashboard · crm · communications · prospecting · projects · finance · ai · settings · auth · search · lookup
    ├─ data/
    │  ├─ mock/          core.js · people.js · users.js · prospecting.js · projectDetails.js · finance.js · ai.js · settings.js   (never imported by components)
    │  ├─ constants.js   static option lists (neighborhoods, services, sources)
    │  └─ schema.md      entities → DB model
    ├─ lib/              format (USD, dates) · money (exact cents) · color (accent shades, contrast) · random (seeded) · cx
-   └─ pages/            dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · projects/ (+ tabs/) · finance/ · ai/ · settings/ (one file per section + shared SettingsForm/SaveBar) · system/ (404)
+   └─ pages/            auth/ (Login, ForgotPassword, RequireAuth, AuthLayout) · dashboard/ · crm/{leads,contacts,pipeline,agenda,communications,prospecting}/ · projects/ (+ tabs/) · finance/ · ai/ · settings/ (one file per section + shared SettingsForm/SaveBar) · system/ (404)
 ```
 
 ## Routes
 
 | Route | Screen | Status |
 |---|---|---|
+| `/login?next=` · `/forgot-password` | Sign in (demo accounts) · reset password — public | ✅ |
 | `/` | Dashboard (`?range=`) | ✅ |
 | `/crm/communications/whatsapp?c=&f=&q=` | WhatsApp inbox (list · thread · contact panel) | ✅ |
 | `/crm/communications/email?folder=&label=&c=&q=` | Email (folders · list · reader) | ✅ |

@@ -28,7 +28,7 @@ export default function ContactsPage() {
 
   const { data, loading, error, refetch } = useResource(() => contactsService.list({
     q: list.q, page: list.page, pageSize: list.pageSize, sort: list.sort,
-    filter: (c) => (!TABS[tab] || TABS[tab].includes(c.type)) && (!hood || c.neighborhood === hood) && (!owner || c.ownerId === owner),
+    where: { type: TABS[tab], neighborhood: hood, ownerId: owner },
   }), [list.q, list.page, list.sort, tab, hood, owner]);
 
   const menu = (c) => [

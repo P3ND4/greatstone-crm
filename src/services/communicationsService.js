@@ -2,7 +2,7 @@
  * Conversations + messages for BOTH channels (whatsapp | email) with one shape,
  * so the WhatsApp Cloud API and Gmail/IMAP can be plugged in behind the same calls.
  */
-import { delay, settings, table } from './client.js';
+import { delay, settings, table, currentUserId } from './client.js';
 
 const contactOf = (id) => table('contacts').find((c) => c.id === id) || null;
 const projectOf = (id) => table('projects').find((p) => p.id === id) || null;
@@ -50,7 +50,7 @@ export const communicationsService = {
     return delay({ ok: true });
   },
 
-  async send(conversationId, { body, isNote = false, attachments = [], authorId = 'u_1' }) {
+  async send(conversationId, { body, isNote = false, attachments = [], authorId = currentUserId() }) {
     const conv = table('conversations').find((c) => c.id === conversationId);
     const msg = {
       id: `m_${(seq += 1)}`, conversationId, channel: conv.channel, direction: 'out', isNote, body, attachments,
@@ -75,9 +75,9 @@ export const communicationsService = {
     table('conversations').unshift({
       id, channel: 'email', contactId: contactId || null, projectId: projectId || null, subject, labels: [],
       folder: draft ? 'drafts' : 'sent', starred: false, lastMessage: body.split('\n')[0] || subject, lastMessageAt: sentAt,
-      lastDirection: 'out', lastInboundAt: null, unread: 0, assigneeId: 'u_1', to, cc, bcc,
+      lastDirection: 'out', lastInboundAt: null, unread: 0, assigneeId: currentUserId(), to, cc, bcc,
     });
-    table('messages').push({ id: `m_${(seq += 1)}`, conversationId: id, channel: 'email', direction: 'out', isNote: false, body, attachments: [], sentAt, status: draft ? null : 'sent', authorId: 'u_1' });
+    table('messages').push({ id: `m_${(seq += 1)}`, conversationId: id, channel: 'email', direction: 'out', isNote: false, body, attachments: [], sentAt, status: draft ? null : 'sent', authorId: currentUserId() });
     return delay({ id });
   },
 };

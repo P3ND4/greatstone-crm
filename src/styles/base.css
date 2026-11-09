@@ -53,12 +53,12 @@ td.num, th.num { text-align: right; white-space: nowrap; }
 .grow { flex: 1 1 auto; min-width: 0; }
 
 .grid { display: grid; gap: var(--sp-4); grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 768px) {
+@container page (min-width: 700px) {
   .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-@media (min-width: 1280px) {
+@container page (min-width: 960px) {
   .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .span-2 { grid-column: span 2; }
