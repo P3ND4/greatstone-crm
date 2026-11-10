@@ -145,6 +145,7 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 - **Install button**: the browser's `beforeinstallprompt` is captured early (`src/app/pwa.js`) and exposed as *Install app* in the user menu and in Settings → My profile → This device. iOS has no install API, so it shows the Safari "Add to Home Screen" steps instead.
 - **Notifications**: phase 1 only asks for permission and can show a local test notification. Real push (new lead, new WhatsApp message) needs a push server with VAPID keys — phase 2, on the backend.
 - **Offline data in phase 2**: once Supabase is connected, API calls are network-first; offline writes (e.g. notes from a site visit) would need a queue (Workbox background sync). Not built in phase 1.
+- **Installed on Windows / macOS / Linux, the title bar is part of the app** (`display_override: window-controls-overlay`). The minimize/maximize/close buttons are drawn over the top-right corner (top-left on macOS), so the topbar reserves that space using `env(titlebar-area-*)` and never puts the user menu under them. The sidebar header and the expand button do the same on the left. Empty parts of the topbar drag the window, and the title-bar color follows the topbar (light or dark). The chevron in the title bar switches back to a classic title bar.
 - Caddy serves `sw.js` and the manifest with `no-cache` (so updates are detected) and the CSP allows `worker-src 'self'` and `manifest-src 'self'`.
 
 ## Deployment

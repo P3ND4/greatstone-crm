@@ -56,7 +56,17 @@ export function SessionProvider({ children }) {
     const root = document.documentElement;
     if (resolvedTheme === 'dark') root.setAttribute('data-theme', 'dark');
     else root.removeAttribute('data-theme');
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', resolvedTheme === 'dark' ? '#0C0A04' : '#171200');
+    // theme-color paints the browser / app title bar. When the installed desktop app draws its content
+    // in the title bar (Window Controls Overlay), match the topbar so min/max/close blend in.
+    let wco = null;
+    try { wco = window.matchMedia('(display-mode: window-controls-overlay)'); } catch { /* old browsers */ }
+    const apply = () => {
+      const color = wco?.matches ? (resolvedTheme === 'dark' ? '#12100A' : '#FBFAF2') : (resolvedTheme === 'dark' ? '#0C0A04' : '#171200');
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', color);
+    };
+    apply();
+    wco?.addEventListener?.('change', apply);
+    return () => wco?.removeEventListener?.('change', apply);
   }, [resolvedTheme]);
 
   // Brand accent from Settings → Organization (default = tokens.css, so nothing is overridden).

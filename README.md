@@ -81,7 +81,7 @@ Every module in the brief is built. Step 8 is the final polish pass.
 
 The CRM is a **Progressive Web App**: it installs like a native app and works offline after the first visit.
 
-- **Desktop (Chrome / Edge)**: the install icon in the address bar, or user menu → **Install app**. It opens in its own window with a dock/taskbar icon.
+- **Desktop (Chrome / Edge)**: the install icon in the address bar, or user menu → **Install app**. It opens in its own window with a dock/taskbar icon. The topbar sits in the title bar and leaves room for minimize/maximize/close (drag the window from any empty part of the topbar; the chevron in the title bar switches to a classic title bar).
 - **Android (Chrome)**: menu → **Install app** / **Add to Home screen**.
 - **iPhone / iPad (Safari)**: Share → **Add to Home Screen** (instructions in Settings → My profile → This device). It opens with a branded launch screen; on iOS 16.4+ it can also show notifications.
 - Long-press the icon for shortcuts: New lead, WhatsApp inbox, Agenda, New estimate.

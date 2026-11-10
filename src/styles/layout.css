@@ -405,3 +405,24 @@
 @media (min-width: 1280px) { .content { padding-left: var(--sp-8); padding-right: var(--sp-8); } }
 .auth__main { padding-bottom: calc(var(--sp-8) + var(--safe-bottom)); padding-right: max(var(--sp-4), var(--safe-right)); }
 .auth__brand { padding-top: max(var(--sp-5), var(--safe-top)); }
+
+/* =========================================================================
+   Installed desktop app with the title bar hidden (Window Controls Overlay).
+   Windows/Linux draw minimize/maximize/close over the top-right corner (macOS: traffic lights
+   top-left). env(titlebar-area-*) tells where the free strip is: reserve the rest so the user
+   menu (right) and the sidebar/expand button (left) are never covered, and let empty parts of
+   the topbar drag the window.
+   ========================================================================= */
+@media (display-mode: window-controls-overlay) {
+  .app {
+    --wco-x: env(titlebar-area-x, 0px);
+    --wco-w: env(titlebar-area-width, 100vw);
+    --wco-left: var(--wco-x);
+    --wco-right: max(0px, calc(100vw - var(--wco-x) - var(--wco-w)));
+  }
+  .topbar__row { padding-right: calc(var(--wco-right) + var(--sp-3)); -webkit-app-region: drag; app-region: drag; }
+  .sidebar__brand { padding-left: max(var(--sp-3), calc(var(--wco-left) + var(--sp-2))); -webkit-app-region: drag; app-region: drag; }
+  .app.is-collapsed .topbar__row { padding-left: max(var(--sp-3), calc(var(--wco-left) + var(--sp-2))); }
+  .topbar__row :is(a, button, input, select, label, .modnav, .menu, .topbar__actions),
+  .sidebar__brand :is(a, button) { -webkit-app-region: no-drag; app-region: no-drag; }
+}
