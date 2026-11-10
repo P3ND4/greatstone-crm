@@ -5,6 +5,7 @@ greatstone-crm/
 ├─ index.html · vite.config.js (React + PWA manifest/Workbox) · vercel.json (SPA rewrite)
 ├─ public/              favicon.svg · icons/ (PWA + Apple touch icons) · splash/ (iOS launch screens) · screenshots/ (install dialog)
 ├─ docs/brief/          original prompt (PDF + text)
+├─ docs/DEMO_ACCOUNTS.md  demo sign-in accounts (kept off the login screen)
 ├─ docs/API_INTEGRATION.md  guide to replace the mock services with a real API
 ├─ docs/DEVELOPMENT_GUIDE.md  how everything is built + how to fork it into a simpler template
 ├─ scripts/             qa/ (audit.cjs, shot.cjs, routes.cjs, session.cjs) · make-icons.cjs · make-splash.cjs
@@ -50,7 +51,7 @@ greatstone-crm/
 
 | Route | Screen | Status |
 |---|---|---|
-| `/login?next=` · `/forgot-password` | Sign in (demo accounts) · reset password — public | ✅ |
+| `/login?next=` · `/forgot-password` | Sign in · reset password — public (demo accounts: `docs/DEMO_ACCOUNTS.md`) | ✅ |
 | `/` | Dashboard (`?range=`) | ✅ |
 | `/crm/communications/whatsapp?c=&f=&q=` | WhatsApp inbox (list · thread · contact panel) | ✅ |
 | `/crm/communications/sms?c=&f=&q=` | SMS / MMS inbox (consent, STOP, quiet hours, segments) | ✅ |

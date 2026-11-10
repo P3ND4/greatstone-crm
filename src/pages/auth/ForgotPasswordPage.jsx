@@ -24,7 +24,6 @@ export default function ForgotPasswordPage() {
             <span className="auth__icon" aria-hidden="true"><MailCheck /></span>
             <h1 className="auth__title">{t('auth.resetSentTitle')}</h1>
             <p className="auth__subtitle">{t('auth.resetSentBody', { email: sentTo })}</p>
-            <p className="field__hint">{t('auth.resetDemo')}</p>
             <Button to="/login" state={{ email: sentTo }} variant="primary" block icon={ArrowLeft}>{t('auth.backToSignIn')}</Button>
           </div>
         ) : (

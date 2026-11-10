@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { AlertCircle, ArrowRight, Eye, EyeOff, Info, Loader2, LogIn } from 'lucide-react';
+import { AlertCircle, Eye, EyeOff, Info, Loader2, LogIn } from 'lucide-react';
 import { useSession } from '../../app/SessionProvider.jsx';
-import { Badge, Button, Field, Input } from '../../components/ui/index.js';
+import { Button, Field, Input } from '../../components/ui/index.js';
 import useForm, { isEmail } from '../../hooks/useForm.js';
-import useResource from '../../hooks/useResource.js';
 import { useT } from '../../i18n/index.jsx';
-import { authService, DEMO_PASSWORD } from '../../services/index.js';
 import AuthLayout from './AuthLayout.jsx';
 
 /** Only same-app paths are accepted as ?next= (no open redirects). */
@@ -23,7 +21,6 @@ export default function LoginPage() {
   const next = safeNext(params.get('next'));
   const [show, setShow] = useState(false);
   const [error, setError] = useState(null);
-  const { data: demo } = useResource(() => authService.demoAccounts(), []);
   // The sign-out redirect already happened; later deep links should use ?next= again.
   useEffect(() => { if (session.signedOut) session.clearSignedOut(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -46,8 +43,6 @@ export default function LoginPage() {
   });
 
   if (session.isAuthenticated) return <Navigate to={next} replace />;
-
-  const fillDemo = (u) => { form.set('email', u.email); form.set('password', DEMO_PASSWORD); setError(null); };
 
   return (
     <AuthLayout>
@@ -94,26 +89,6 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        {demo?.length > 0 && (
-          <section className="auth__demo" aria-labelledby="demo-title">
-            <h2 id="demo-title" className="auth__demo-title">{t('auth.demoTitle')}</h2>
-            <p className="auth__demo-sub">{t('auth.demoSub', { password: DEMO_PASSWORD })}</p>
-            <ul className="auth__demo-list">
-              {demo.map((u) => (
-                <li key={u.id}>
-                  <button type="button" className="auth__demo-user" onClick={() => fillDemo(u)}>
-                    <span className="grow" style={{ minWidth: 0 }}>
-                      <span className="truncate" style={{ display: 'block', fontWeight: 500 }}>{u.name}</span>
-                      <span className="truncate subtle" style={{ display: 'block', fontSize: 12 }}>{u.email}</span>
-                    </span>
-                    <Badge tone={u.role === 'admin' ? 'accent' : 'neutral'}>{t(`roles.${u.role}`)}</Badge>
-                    <ArrowRight className="auth__demo-arrow" aria-hidden="true" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
       </div>
     </AuthLayout>
   );

@@ -450,7 +450,7 @@ t('settings.users.invited', { email });  // 'Invitation sent to {email}'
 | `assistantEnabled` | Settings → IA |
 | `refresh()` | fuerza re-render tras guardar ajustes globales (permisos, acento) |
 
-- **Login mock:** `authService` (contrato real, ver `API_INTEGRATION.md`). Hay cuentas demo, una por rol, todas con la contraseña `greatstone`. "Mantener sesión" usa localStorage (30 días); si no, sessionStorage (12 h).
+- **Login mock:** `authService` (contrato real, ver `API_INTEGRATION.md`). Hay cuentas demo, una por rol, todas con la contraseña `greatstone`, listadas en `docs/DEMO_ACCOUNTS.md` (no en la pantalla de login, que se ve como en producción). "Mantener sesión" usa localStorage (30 días); si no, sessionStorage (12 h).
 - **Permisos:** `AppLayout` cambia el contenido por `NoAccess` si `access(módulo) === 'none'`. Settings queda en solo lectura si no es `full`. El botón de IA se oculta sin acceso a IA. **El servidor debe aplicar la misma matriz** (RLS).
 
 ---

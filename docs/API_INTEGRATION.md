@@ -370,8 +370,8 @@ Today the logo is a data URL in memory and receipts/documents store only a file 
 |---|---|
 | `src/data/mock/*` | all mock data (keep as seed scripts if useful) |
 | `src/services/client.js` | `delay()`, `table()`, mock `createCrudService`, `settings` objects |
-| `src/services/authService.js` | `DEMO_PASSWORD`, `demoAccounts()`, client-side lockout (the server does it) |
-| `src/pages/auth/LoginPage.jsx` | the "Demo access" block |
+| `src/services/authService.js` | `DEMO_PASSWORD`, client-side lockout (the server does it) |
+| `docs/DEMO_ACCOUNTS.md` | the list of demo accounts |
 | `src/app/SessionProvider.jsx` | "View as role" → admin-only (or remove) |
 | `aiService.js` | heuristics (replace with real AI endpoints) |
 

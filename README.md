@@ -46,7 +46,7 @@ Every module in the brief is built. Step 8 is the final polish pass.
 
 ## Try it
 
-- **Sign in**: open the app → `/login`. Click any demo teammate (password `greatstone` for everyone): Tessa = admin, Luis/Priya = designer, Owen = accounting, Mia = viewer. User menu → **Sign out**.
+- **Sign in**: open the app → `/login` (it looks like production: no demo hints). Accounts and password are in **[`docs/DEMO_ACCOUNTS.md`](docs/DEMO_ACCOUNTS.md)**: one per role (admin, designer, accounting, viewer). User menu → **Sign out**.
 - **Collapse the sidebar** (button in the top-left corner or **Ctrl/⌘ + B**): it slides away, the module icons slide into the topbar with the submodules below, and pages use the extra width (more table columns, more cards per row).
 - **Ctrl/⌘ + K**: global search and command palette.
 - **+ New → Task / Appointment / Note**: quick **modal** forms. Try Esc with changes, Ctrl/⌘+Enter, and the inline validation.
@@ -96,6 +96,7 @@ The CRM is a **Progressive Web App**: it installs like a native app and works of
 
 ## Docs
 
+- **`docs/DEMO_ACCOUNTS.md`: demo sign-in accounts** (emails, password, what each role can do).
 - **`docs/DEVELOPMENT_GUIDE.md`: development guide (Spanish)**: architecture, design system, layout, patterns, components, i18n, auth, PWA, QA, recipes, and how to fork this repo into a simpler template.
 - `DECISIONS.md`: design decisions, brand values taken from the client site, and assumptions.
 - `STRUCTURE.md`: folder map, routes, and the "Action → Modal or Page" table.

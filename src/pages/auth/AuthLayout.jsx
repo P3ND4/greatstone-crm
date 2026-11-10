@@ -14,7 +14,7 @@ export default function AuthLayout({ children }) {
             <h2 className="auth__headline">{t('auth.headline')}</h2>
             <p className="auth__lede">{t('auth.lede')}</p>
           </div>
-          <p className="auth__foot">{t('auth.demoNote')}</p>
+          <p className="auth__foot">{t('auth.footer', { year: new Date().getFullYear() })}</p>
         </div>
         <div className="auth__arches" aria-hidden="true"><span /><span /><span /></div>
       </aside>

@@ -111,7 +111,7 @@ Instagram (@greatstonedesign) could not be checked because it requires a login. 
 
 ## Sign in / sign out (mock auth)
 - `/login` and `/forgot-password` sit outside the app shell. Every app route is protected (`RequireAuth`): a signed-out visitor goes to `/login?next=<page>` and comes back to the same page (with its filters) after signing in. Only same-app paths are accepted in `next` (no open redirects).
-- **Demo accounts**: the five fictional teammates, one per role, all with the password `greatstone`. The sign-in page lists them, so signing in as Owen (accounting) or Mia (viewer) shows real role permissions, not just the "view as" preview.
+- **Demo accounts**: five fictional teammates, one per role, all with the password `greatstone`. They are listed in `docs/DEMO_ACCOUNTS.md`, **not on the sign-in screen**, so the login looks exactly as it will in production. Signing in as Owen (accounting) or Mia (viewer) shows real role permissions, not just the "view as" preview.
 - "Keep me signed in" stores the session in localStorage (30 days); otherwise sessionStorage (closes with the tab, max 12 h). Sign out clears it and shows "You've signed out" with the email kept.
 - Errors are explicit and never reveal whether an email exists. After 5 wrong attempts sign-in locks for 30 s. Password reset always answers the same way.
 - `authService` has the contract of the real one (Supabase Auth or REST). See **`docs/API_INTEGRATION.md`**, the guide for wiring every service to a real backend.

@@ -10,7 +10,8 @@
 import { auth, delay, table } from './client.js';
 
 const KEY = 'gs.auth';
-// Demo only: every fictional user signs in with this password. No real credentials exist in phase 1.
+// Demo only: every fictional user signs in with this password (accounts listed in docs/DEMO_ACCOUNTS.md).
+// No real credentials exist in phase 1.
 export const DEMO_PASSWORD = 'greatstone';
 const SHORT = 12 * 60 * 60 * 1000; // 12 h
 const LONG = 30 * 24 * 60 * 60 * 1000; // 30 days ("Keep me signed in")
@@ -79,7 +80,4 @@ export const authService = {
     void email;
     return delay({ ok: true });
   },
-
-  /** Demo helper for the sign-in screen (fictional team members and their roles). Not part of the real API. */
-  demoAccounts: () => delay(table('users').filter((u) => u.status !== 'inactive').map(({ id, name, email, role, title }) => ({ id, name, email, role, title }))),
 };
